@@ -10,6 +10,13 @@
 /* -------------------------------------------------------------------------- */
 
 #include "Tools.h"
+#include "picosha2.h"
+
+#ifndef WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
 
 
 /* -------------------------------------------------------------------------- */
@@ -74,6 +81,64 @@ bool Tools::fileStat(
     }
 
     return false;
+}
+
+
+/* ------------------------------------------------------------------------- */
+
+std::string Tools::getTimestamp()
+{
+    using namespace std::chrono;
+
+    // get current time
+    auto now = system_clock::now();
+    auto us = duration_cast<microseconds>(now.time_since_epoch());
+    auto timer = system_clock::to_time_t(now);
+
+    std::tm bt = *std::localtime(&timer);
+
+    std::ostringstream oss;
+
+    // YYYY-MM-DDTHH:MM:SS.uuuuuuZ
+    oss << std::put_time(&bt, "%Y-%m-%dT%H:%M:%S");
+    oss << '.' << std::setfill('0') << std::setw(6) << us.count() % 1000000 << "Z";
+
+    return oss.str();
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
+{
+    struct stat rstat = { 0 };
+    const int ret = stat(fileName.c_str(), &rstat);
+    if (ret < 0)
+        return false;
+
+    std::tm bt = *localtime(&(rstat.st_atime));
+
+    std::ostringstream ossTS;
+
+#ifndef WIN32
+    size_t microsec = (rstat.st_atimensec / 1000) % 1000000;
+#else
+    size_t microsec = 0;
+#endif
+    // YYYY-MM-DDTHH:MM:SS.uuuuuuZ
+    ossTS << std::put_time(&bt, "%Y-%m-%dT%H:%M:%S");
+    ossTS << '.' << std::setfill('0') << std::setw(6) << microsec << "Z";
+
+    std::string id;
+    picosha2::hash256_hex_string(fileName, id);
+
+    std::stringstream oss;
+    oss << "\"id\"\": \"" << id << "\"" << std::endl;
+    oss << "\"name\": \"" << fileName << "\"" << std::endl;
+    oss << "\"size\": " << rstat.st_size << std::endl;
+    oss << "\"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
+
+    return true;
 }
 
 

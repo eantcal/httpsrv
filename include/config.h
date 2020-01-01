@@ -24,8 +24,8 @@
 #define HTTP_SERVER_WROOT "/tmp"
 #endif
 #define HTTP_SERVER_INDEX "index.html"
-#define HTTP_SERVER_PORT 80
-#define HTTP_SERVER_NAME "TinyHttpServer"
+#define HTTP_SERVER_PORT 8080
+#define HTTP_SERVER_NAME "httpsrv"
 #define HTTP_SERVER_MAJ_V 1
 #define HTTP_SERVER_MIN_V 0
 #define HTTP_SERVER_TX_BUF_SIZE 0x100000

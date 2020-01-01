@@ -15,10 +15,12 @@
 
 /* -------------------------------------------------------------------------- */
 
-#include <chrono>
 #include <regex>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 #include <string>
-#include <time.h>
 
 #include "OsSocketSupport.h"
 
@@ -101,6 +103,21 @@ bool fileStat(const std::string& fileName, std::string& dateTime,
 /* -------------------------------------------------------------------------- */
 
 /**
+ * Returns file attributes of fileName formatted using a JSON record of
+ * id, name, size, timestame, where id is sha256 of fileName,
+ * name is the fileName, size is the size in bytes of file, 
+ * timestamp is a unix access timestamp of file
+ *
+ * @param fileName String containing the path of existing file
+ * @param jsonOutput output JSON string
+ * @return true if operation successfully completed, false otherwise
+ */
+bool jsonStat(const std::string& fileName, std::string& jsonOutput);
+
+
+/* -------------------------------------------------------------------------- */
+
+/**
  * Splits a text line into a vector of tokens.
  *
  * @param line The string to split
@@ -112,6 +129,12 @@ bool fileStat(const std::string& fileName, std::string& dateTime,
 bool splitLineInTokens(const std::string& line,
     std::vector<std::string>& tokens, const std::string& sep);
 
+
+/**
+ * Gets timestamp formatted as YYYY-MM-DDThh:mm:ss.uuuuuuZ
+ * @return timestamp string
+ */
+std::string getTimestamp();
 
 } // namespace Tools
 

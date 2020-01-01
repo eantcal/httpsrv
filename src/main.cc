@@ -15,13 +15,12 @@
 #include <iostream>
 #include <string>
 
-
 /* -------------------------------------------------------------------------- */
 
-class prog_args_t {
+class ProgArgsParser {
 private:
-    std::string _prog_name;
-    std::string _command_line;
+    std::string _progName;
+    std::string _commandLine;
     std::string _webRootPath = HTTP_SERVER_WROOT;
 
     TcpSocket::TranspPort _http_server_port = HTTP_SERVER_PORT;
@@ -36,27 +35,27 @@ private:
     static const int _maj_ver = HTTP_SERVER_MAJ_V;
 
 public:
-    prog_args_t() = delete;
+    ProgArgsParser() = delete;
 
 
-    const std::string& get_prog_name() const { 
-       return _prog_name; 
+    const std::string& getProgName() const { 
+       return _progName; 
     }
 
-    const std::string& get_command_line() const { 
-       return _command_line; 
+    const std::string& getCommandLine() const { 
+       return _commandLine; 
     }
 
     const std::string& getWebRootPath() const { 
        return _webRootPath; 
     }
 
-    TcpSocket::TranspPort get_http_server_port() const {
+    TcpSocket::TranspPort getHttpServerPort() const {
         return _http_server_port;
     }
 
 
-    bool is_good() const { 
+    bool isValid() const { 
        return !_error; 
     }
 
@@ -68,7 +67,7 @@ public:
        return _err_msg; 
     }
 
-    bool show_info(std::ostream& os) const {
+    bool showUsage(std::ostream& os) const {
         if (_show_ver)
             os << HTTP_SERVER_NAME << " " << _maj_ver << "." << _min_ver
                << "\n";
@@ -77,7 +76,7 @@ public:
             return _show_ver;
 
         os << "Usage:\n";
-        os << "\t" << get_prog_name() << "\n";
+        os << "\t" << getProgName() << "\n";
         os << "\t\t-p | --port <port>\n";
         os << "\t\t\tBind server to a TCP port number (default is "
            << HTTP_SERVER_PORT << ") \n";
@@ -100,12 +99,12 @@ public:
     /**
      * Parse the command line
      */
-    prog_args_t(int argc, char* argv[]) {
+    ProgArgsParser(int argc, char* argv[]) {
         if (!argc)
             return;
 
-        _prog_name = argv[0];
-        _command_line = _prog_name;
+        _progName = argv[0];
+        _commandLine = _progName;
 
         if (argc <= 1)
             return;
@@ -115,8 +114,8 @@ public:
         for (int idx = 1; idx < argc; ++idx) {
             std::string sarg = argv[idx];
 
-            _command_line += " ";
-            _command_line += sarg;
+            _commandLine += " ";
+            _commandLine += sarg;
 
             switch (state) {
             case State::OPTION:
@@ -155,6 +154,25 @@ public:
     }
 };
 
+std::string getTimestamp()
+{
+    using namespace std::chrono;
+
+    // get current time
+    auto now = system_clock::now();
+    auto us = duration_cast<microseconds>(now.time_since_epoch());
+    auto timer = system_clock::to_time_t(now);
+
+    std::tm bt = *std::localtime(&timer);
+
+    std::ostringstream oss;
+
+    oss << std::put_time(&bt, "%Y-%m-%dT%H:%M:%S"); // HH:MM:SS
+    oss << '.' << std::setfill('0') << std::setw(6) << us.count() % 1000000 << "Z";
+
+    return oss.str();
+}
+
 
 /* -------------------------------------------------------------------------- */
 
@@ -163,9 +181,12 @@ public:
  */
 int main(int argc, char* argv[])
 {
+    std::cout << getTimestamp()
+         << std::endl;
+
     std::string msg;
 
-    // Initialize O/S specific libraries
+    // Initialize any O/S specific libraries
     if (!OsSocketSupport::initSocketLibrary(msg)) {
         
         if (!msg.empty())
@@ -176,14 +197,14 @@ int main(int argc, char* argv[])
 
 
     // Parse the command line
-    prog_args_t args(argc, argv);
+    ProgArgsParser args(argc, argv);
 
-    if (!args.is_good()) {
+    if (!args.isValid()) {
         std::cerr << args.error() << std::endl;
         return 1;
     }
 
-    if (args.show_info(std::cout)) {
+    if (args.showUsage(std::cout)) {
         return 0;
     }
 
@@ -191,10 +212,10 @@ int main(int argc, char* argv[])
 
     httpsrv.setupWebRootPath(args.getWebRootPath());
 
-    bool res = httpsrv.bind(args.get_http_server_port());
+    bool res = httpsrv.bind(args.getHttpServerPort());
 
     if (!res) {
-        std::cerr << "Error binding server port " << args.get_http_server_port()
+        std::cerr << "Error binding server port " << args.getHttpServerPort()
                   << "\n";
         return 1;
     }
@@ -206,10 +227,10 @@ int main(int argc, char* argv[])
     }
 
     std::cout << Tools::getLocalTime() << std::endl
-              << "Command line :'" << args.get_command_line() << "'"
+              << "Command line :'" << args.getCommandLine() << "'"
               << std::endl
               << HTTP_SERVER_NAME << " is listening on TCP port "
-              << args.get_http_server_port() << std::endl
+              << args.getHttpServerPort() << std::endl
               << "Working directory is '" << args.getWebRootPath() << "'\n";
 
     httpsrv.setupLogger(args.verboseModeOn() ? &std::clog : nullptr);
