@@ -19,6 +19,8 @@
 #endif
 
 
+#include <iostream>
+
 /* -------------------------------------------------------------------------- */
 
 void Tools::convertDurationInTimeval(const TimeoutInterval& d, timeval& tv)
@@ -113,6 +115,7 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
 {
     struct stat rstat = { 0 };
     const int ret = stat(fileName.c_str(), &rstat);
+    
     if (ret < 0)
         return false;
 
@@ -133,10 +136,12 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
     picosha2::hash256_hex_string(fileName, id);
 
     std::stringstream oss;
-    oss << "\"id\"\": \"" << id << "\"" << std::endl;
+    oss << "\"id\": \"" << id << "\"" << std::endl;
     oss << "\"name\": \"" << fileName << "\"" << std::endl;
     oss << "\"size\": " << rstat.st_size << std::endl;
     oss << "\"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
+
+    jsonOutput = oss.str();
 
     return true;
 }

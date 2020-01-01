@@ -154,25 +154,6 @@ public:
     }
 };
 
-std::string getTimestamp()
-{
-    using namespace std::chrono;
-
-    // get current time
-    auto now = system_clock::now();
-    auto us = duration_cast<microseconds>(now.time_since_epoch());
-    auto timer = system_clock::to_time_t(now);
-
-    std::tm bt = *std::localtime(&timer);
-
-    std::ostringstream oss;
-
-    oss << std::put_time(&bt, "%Y-%m-%dT%H:%M:%S"); // HH:MM:SS
-    oss << '.' << std::setfill('0') << std::setw(6) << us.count() % 1000000 << "Z";
-
-    return oss.str();
-}
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -181,8 +162,10 @@ std::string getTimestamp()
  */
 int main(int argc, char* argv[])
 {
-    std::cout << getTimestamp()
-         << std::endl;
+    std::string json;
+    Tools::jsonStat("nino.txt", json);
+    std::cout << json;
+    return 0;
 
     std::string msg;
 
