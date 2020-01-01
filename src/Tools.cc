@@ -121,7 +121,7 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
     std::ostringstream ossTS;
 
 #ifndef WIN32
-    size_t microsec = (rstat.st_atimensec / 1000) % 1000000;
+    size_t microsec = (rstat.st_atim.tv_nsec / 1000) % 1000000;
 #else
     size_t microsec = 0;
 #endif
