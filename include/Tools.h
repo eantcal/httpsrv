@@ -130,12 +130,6 @@ bool splitLineInTokens(const std::string& line,
     std::vector<std::string>& tokens, const std::string& sep);
 
 
-/**
- * Gets timestamp formatted as YYYY-MM-DDThh:mm:ss.uuuuuuZ
- * @return timestamp string
- */
-std::string getTimestamp();
-
 } // namespace Tools
 
 

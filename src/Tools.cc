@@ -86,29 +86,6 @@ bool Tools::fileStat(
 }
 
 
-/* ------------------------------------------------------------------------- */
-
-std::string Tools::getTimestamp()
-{
-    using namespace std::chrono;
-
-    // get current time
-    auto now = system_clock::now();
-    auto us = duration_cast<microseconds>(now.time_since_epoch());
-    auto timer = system_clock::to_time_t(now);
-
-    std::tm bt = *std::localtime(&timer);
-
-    std::ostringstream oss;
-
-    // YYYY-MM-DDTHH:MM:SS.uuuuuuZ
-    oss << std::put_time(&bt, "%Y-%m-%dT%H:%M:%S");
-    oss << '.' << std::setfill('0') << std::setw(6) << us.count() % 1000000 << "Z";
-
-    return oss.str();
-}
-
-
 /* -------------------------------------------------------------------------- */
 
 bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
@@ -124,6 +101,7 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
     std::ostringstream ossTS;
 
 #ifdef __linux__
+    // Supported by Linux only
     size_t microsec = (rstat.st_atim.tv_nsec / 1000) % 1000000;
 #else
     size_t microsec = 0;
@@ -135,12 +113,24 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
     std::string id;
     picosha2::hash256_hex_string(fileName, id);
 
-    std::stringstream oss;
-    oss << "\"id\": \"" << id << "\"" << std::endl;
-    oss << "\"name\": \"" << fileName << "\"" << std::endl;
-    oss << "\"size\": " << rstat.st_size << std::endl;
-    oss << "\"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
+    /*
+    Example of JSON output
 
+    {
+      "id": "0d0dad8f655e69a1c5788682781bcc143fc9bf55e0b3dbb778e4a85f8e9e586b",
+      "name": "nino.txt",
+      "size": 123,
+      "timestamp": "2020-01-01T17:40:46.560645Z"
+    }
+    */
+
+    std::stringstream oss;
+    oss << "{" << std::endl;
+    oss << "  \"id\": \"" << id << "\"," << std::endl;
+    oss << "  \"name\": \"" << fileName << "\"," << std::endl;
+    oss << "  \"size\": " << rstat.st_size << "," << std::endl;
+    oss << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
+    oss << "}";
     jsonOutput = oss.str();
 
     return true;
