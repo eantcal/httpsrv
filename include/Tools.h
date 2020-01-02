@@ -1,5 +1,5 @@
 //
-// This file is part of thttpd
+// This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
 // All rights reserved.  
 // Licensed under the MIT License. 
@@ -22,7 +22,7 @@
 #include <sstream>
 #include <string>
 
-#include "OsSocketSupport.h"
+#include "OsSpecific.h"
 
 
 /* -------------------------------------------------------------------------- */
@@ -113,6 +113,55 @@ bool fileStat(const std::string& fileName, std::string& dateTime,
  * @return true if operation successfully completed, false otherwise
  */
 bool jsonStat(const std::string& fileName, std::string& jsonOutput);
+
+
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Trivial but portable version of basic touch command
+ *
+ * @param fileName String containing the path of existing or new file
+ * @return true if operation successfully completed, false otherwise
+ */
+
+bool touch(const std::string& fileName);
+
+
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Gets full path of existing file or directory
+ *
+ * @param partialPath String containing the path of existing file
+ * @param fullPath String containing the full path of existing file
+ * @return true if operation successfully completed, false otherwise
+ */
+
+bool getFullPath(const std::string& partialPath, std::string& fullPath);
+
+
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Return true if pathName exists and it is an accessable directory
+ *
+ * @param pathName String containing a path of directory
+ * @return true if directory found, false otherwise
+ */
+bool directoryExists(const std::string& pathName);
+
+
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Creates a new relative directory relativeDirName if not already existant 
+ * and retreives the full path name
+ *
+ * @param relativeDirName String containing a path of directory
+ * @param fullPath String that will contain the full path of the directory
+ * @return true if directory found, false otherwise
+ */
+bool touchDir(const std::string& relativeDirName, std::string& fullPath);
 
 
 /* -------------------------------------------------------------------------- */

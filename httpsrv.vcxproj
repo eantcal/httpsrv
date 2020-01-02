@@ -159,7 +159,7 @@
     <ClInclude Include="include\Tools.h" />
     <ClInclude Include="include\config.h" />
     <ClInclude Include="include\HttpServer.h" />
-    <ClInclude Include="include\OsSocketSupport.h" />
+    <ClInclude Include="include\OsSpecific.h" />
     <ClInclude Include="PicoSHA2\picosha2.h" />
   </ItemGroup>
   <ItemGroup>
@@ -170,7 +170,7 @@
     <ClCompile Include="src\TransportSocket.cc" />
     <ClCompile Include="src\Tools.cc" />
     <ClCompile Include="src\HttpServer.cc" />
-    <ClCompile Include="src\OsSocketSupport.cc" />
+    <ClCompile Include="src\OsSpecific.cc" />
     <ClCompile Include="src\TcpListener.cc" />
     <ClCompile Include="src\main.cc" />
   </ItemGroup>

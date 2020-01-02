@@ -1,5 +1,5 @@
 //
-// This file is part of thttpd
+// This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
 // All rights reserved.  
 // Licensed under the MIT License. 
@@ -134,6 +134,92 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
     jsonOutput = oss.str();
 
     return true;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+bool Tools::touch(const std::string& fileName)
+{
+    std::fstream ofs;
+    ofs.open(fileName, std::ofstream::out | std::ofstream::in);
+
+    if (ofs) {
+        ofs.seekg(0, ofs.end);
+        auto length = ofs.tellg();
+        ofs.seekg(0, ofs.beg);
+
+        if (length > 0) {
+            char c = 0;
+            ofs.read(&c, 1);
+            ofs.seekg(0, ofs.beg);
+            ofs.write(&c, 1);
+        }
+        ofs.close();
+
+        if (length < 1) {
+            ofs.open(fileName, std::ofstream::out);
+        }
+    }
+    else {
+        ofs.open(fileName, std::ofstream::out);
+    }
+
+    return !ofs.fail();
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+bool Tools::getFullPath(const std::string& partialPath, std::string& fullPath)
+{
+#ifdef WIN32
+    char full[_MAX_PATH];
+
+    if (_fullpath(full, partialPath.c_str(), _MAX_PATH) != 0) {
+        fullPath = full;
+        return true;
+    }
+#else
+    auto actualpath = realpath(partialPath.c_str(), 0);
+    if (actualpath) {
+        fullPath = actualpath;
+        free(actualpath);
+        return true;
+    }
+#endif
+    
+    return false;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+bool Tools::directoryExists(const std::string& pathName) 
+{
+    struct stat info;
+
+    if (stat(pathName.c_str(), &info) != 0)
+        return false;
+    else if (S_ISDIR(info.st_mode))
+        return true;
+
+    return false;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+bool Tools::touchDir(
+    const std::string& relativeDirName,
+    std::string& fullPath)
+{
+    // Create a new support directory if it does not exist
+    mkdir(relativeDirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+    return
+        Tools::directoryExists(relativeDirName) &&
+        Tools::getFullPath(relativeDirName, fullPath);
 }
 
 

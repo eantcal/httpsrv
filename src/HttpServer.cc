@@ -1,5 +1,5 @@
 //
-// This file is part of thttpd
+// This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
 // All rights reserved.  
 // Licensed under the MIT License. 
@@ -151,7 +151,11 @@ void HttpServerTask::operator()(Handle task_handle)
 auto HttpServer::getInstance() -> HttpServer&
 {
     if (!_instance) {
-        _instance = new HttpServer();
+        _instance = new (std::nothrow) HttpServer();
+        if (!_instance) {
+            // no memory, fatal error
+            exit(1);
+        }
     }
 
     return *_instance;

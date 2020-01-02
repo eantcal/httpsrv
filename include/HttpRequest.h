@@ -1,5 +1,5 @@
 //
-// This file is part of thttpd
+// This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
 // All rights reserved.  
 // Licensed under the MIT License. 

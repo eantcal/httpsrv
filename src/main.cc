@@ -1,5 +1,5 @@
 //
-// This file is part of thttpd
+// This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
 // All rights reserved.  
 // Licensed under the MIT License. 
@@ -17,53 +17,41 @@
 
 /* -------------------------------------------------------------------------- */
 
-class ProgArgsParser {
-private:
-    std::string _progName;
-    std::string _commandLine;
-    std::string _webRootPath = HTTP_SERVER_WROOT;
-
-    TcpSocket::TranspPort _http_server_port = HTTP_SERVER_PORT;
-    
-    bool _show_help = false;
-    bool _show_ver = false;
-    bool _error = false;
-    bool _verboseModeOn = false;
-    std::string _err_msg;
-
-    static const int _min_ver = HTTP_SERVER_MIN_V;
-    static const int _maj_ver = HTTP_SERVER_MAJ_V;
-
+class Configuration {
 public:
-    ProgArgsParser() = delete;
+    using Handle = std::shared_ptr<Configuration>;
 
+    Configuration() = delete;
 
-    const std::string& getProgName() const { 
+    static Handle make(int argc, char* argv[]) {
+        return Handle( new (std::nothrow) Configuration(argc, argv) );
+    }
+
+    const std::string& getProgName() const noexcept { 
        return _progName; 
     }
 
-    const std::string& getCommandLine() const { 
+    const std::string& getCommandLine() const noexcept { 
        return _commandLine; 
     }
 
-    const std::string& getWebRootPath() const { 
+    const std::string& getWebRootPath() const noexcept { 
        return _webRootPath; 
     }
 
-    TcpSocket::TranspPort getHttpServerPort() const {
+    TcpSocket::TranspPort getHttpServerPort() const noexcept {
         return _http_server_port;
     }
 
-
-    bool isValid() const { 
-       return !_error; 
+    bool isValid() const noexcept { 
+        return !_error; 
     }
 
-    bool verboseModeOn() const { 
+    bool verboseModeOn() const noexcept { 
        return _verboseModeOn; 
     }
 
-    const std::string& error() const { 
+    const std::string& error() const noexcept { 
        return _err_msg; 
     }
 
@@ -97,9 +85,9 @@ public:
     /* -------------------------------------------------------------------------- */
 
     /**
-     * Parse the command line
+     * Parse the command line getting initialization configuration
      */
-    ProgArgsParser(int argc, char* argv[]) {
+    Configuration(int argc, char* argv[]) {
         if (!argc)
             return;
 
@@ -152,6 +140,128 @@ public:
             }
         }
     }
+
+private:
+    std::string _progName;
+    std::string _commandLine;
+    std::string _webRootPath = HTTP_SERVER_WROOT;
+
+    TcpSocket::TranspPort _http_server_port = HTTP_SERVER_PORT;
+
+    bool _show_help = false;
+    bool _show_ver = false;
+    bool _error = false;
+    bool _verboseModeOn = false;
+    std::string _err_msg;
+
+    static const int _min_ver = HTTP_SERVER_MIN_V;
+    static const int _maj_ver = HTTP_SERVER_MAJ_V;
+
+};
+
+
+/* -------------------------------------------------------------------------- */
+
+class FileRepository {
+public:
+    using Handle = std::shared_ptr<FileRepository>;
+
+    static Handle make(const std::string& dirName) {
+        FileRepository::Handle handle(new (std::nothrow) FileRepository(dirName));
+        return handle && !handle->_directoryName.empty() ? handle : nullptr;
+    }
+
+    const std::string& getDirName() const noexcept {
+        return _directoryName;
+    }
+
+
+private:
+    FileRepository(const std::string& dirName)
+    {
+        if (!Tools::touchDir(dirName, _directoryName)) {
+            // make sure error is propagate to factory function
+            _directoryName.clear();
+        }
+    }
+
+    std::string _directoryName;
+};
+
+
+/* -------------------------------------------------------------------------- */
+
+class Application {
+public:
+    static Application& getInstance() {
+        static Application applicationInstance;
+        return applicationInstance;
+    }
+
+    enum class ErrCode {
+        success,
+        fileRepositoryInitError,
+        socketInitiError,
+        configurationError,
+        httpSrvBindError,
+        httpSrvListenError,
+    };
+
+    ErrCode init(int argc, char* argv[]) {
+        const std::string repositoryDir = "./files"; // TODO
+
+        // Creates or validates (if already existant) a file repository
+        _fileRepository = FileRepository::make(repositoryDir);
+        if (!_fileRepository) {
+            return ErrCode::fileRepositoryInitError;
+        }
+
+        // Initialize any O/S specific libraries
+        if (!OsSpecific::initSocketLibrary()) {
+            return ErrCode::socketInitiError;
+        }
+
+        _configuration = Configuration::make(argc, argv);
+        if (!_configuration || !_configuration->isValid()) {
+            return ErrCode::configurationError;
+        }
+
+        auto & httpSrv = HttpServer::getInstance();
+        httpSrv.setupWebRootPath(_configuration->getWebRootPath());
+        
+        if (!httpSrv.bind(_configuration->getHttpServerPort())) {
+            return ErrCode::httpSrvBindError;
+        }
+
+        if (!httpSrv.listen(HTTP_SERVER_BACKLOG)) {
+            return ErrCode::httpSrvListenError;
+        }
+
+        httpSrv.setupLogger(_configuration->verboseModeOn() ? 
+            &std::clog : nullptr);
+
+        return ErrCode::success;
+    }
+
+    bool runServer() {
+        return  HttpServer::getInstance().run();
+    }
+
+    FileRepository::Handle getFileRepositoryHandle() const noexcept {
+        return _fileRepository;
+    }
+
+    Configuration::Handle getConfiguration() const noexcept {
+        return _configuration;
+    }
+    
+private:
+    Application() {
+    }
+
+    // Parse the command line
+    Configuration::Handle _configuration;
+    FileRepository::Handle _fileRepository;
 };
 
 
@@ -162,63 +272,54 @@ public:
  */
 int main(int argc, char* argv[])
 {
-    std::string json;
-    Tools::jsonStat("nino.txt", json);
-    std::cout << json;
-    return 0;
-
-    std::string msg;
-
-    // Initialize any O/S specific libraries
-    if (!OsSocketSupport::initSocketLibrary(msg)) {
-        
-        if (!msg.empty())
-            std::cerr << msg << std::endl;
-
+    Application& application = Application::getInstance();
+    auto errCode = application.init(argc, argv);
+    auto cfg = application.getConfiguration();
+  
+    if (!cfg) {
+        std::cerr << "Fatal error, out of memory?" << std::endl;
         return 1;
     }
 
-
-    // Parse the command line
-    ProgArgsParser args(argc, argv);
-
-    if (!args.isValid()) {
-        std::cerr << args.error() << std::endl;
-        return 1;
-    }
-
-    if (args.showUsage(std::cout)) {
+    if (cfg->showUsage(std::cerr)) {
         return 0;
     }
 
-    HttpServer& httpsrv = HttpServer::getInstance();
+    switch (errCode) {
+        case Application::ErrCode::success:
+        default:
+            break;
 
-    httpsrv.setupWebRootPath(args.getWebRootPath());
+        case Application::ErrCode::configurationError: {
+            std::cerr << cfg->error() << std::endl;
+            return 1;
+        }
 
-    bool res = httpsrv.bind(args.getHttpServerPort());
+        case Application::ErrCode::httpSrvBindError: {
+            std::cerr << "Error binding server port "
+                << cfg->getHttpServerPort() << std::endl;
 
-    if (!res) {
-        std::cerr << "Error binding server port " << args.getHttpServerPort()
-                  << "\n";
-        return 1;
+            return 1;
+        }
+
+        case Application::ErrCode::httpSrvListenError: {
+            std::cerr << "Error trying to listen to server port "
+                << cfg->getHttpServerPort() << std::endl;
+
+            return 1;
+        }
     }
 
-    res = httpsrv.listen(HTTP_SERVER_BACKLOG);
-    if (!res) {
-        std::cerr << "Error setting listeing mode\n";
-        return 1;
+    if (cfg->verboseModeOn()) {
+        std::clog << Tools::getLocalTime() << std::endl
+            << "Command line :'" << cfg->getCommandLine() << "'"
+            << std::endl
+            << HTTP_SERVER_NAME << " is listening on TCP port "
+            << cfg->getHttpServerPort() << std::endl
+            << "Working directory is '" << cfg->getWebRootPath() << "'\n";
     }
 
-    std::cout << Tools::getLocalTime() << std::endl
-              << "Command line :'" << args.getCommandLine() << "'"
-              << std::endl
-              << HTTP_SERVER_NAME << " is listening on TCP port "
-              << args.getHttpServerPort() << std::endl
-              << "Working directory is '" << args.getWebRootPath() << "'\n";
-
-    httpsrv.setupLogger(args.verboseModeOn() ? &std::clog : nullptr);
-
-    if (!httpsrv.run()) {
+    if (!application.runServer()) {
         std::cerr << "Error starting the server\n";
         return 1;
     }
