@@ -14,6 +14,10 @@
 
 #include <iostream>
 #include <string>
+#include <map>
+#include <unordered_map>
+
+#include <boost/filesystem.hpp>
 
 /* -------------------------------------------------------------------------- */
 
@@ -164,6 +168,9 @@ private:
 
 class FileRepository {
 public:
+    using TimeOrderedFileList = std::multimap<std::time_t, boost::filesystem::path>;
+    using IdFileNameCache = std::unordered_map<std::string, boost::filesystem::path>;
+
     using Handle = std::shared_ptr<FileRepository>;
 
     static Handle make(const std::string& dirName) {
@@ -175,6 +182,21 @@ public:
         return _directoryName;
     }
 
+    void scan(const std::string& path, TimeOrderedFileList& list)
+    {
+       boost::filesystem::path dirPath(path);
+       boost::filesystem::directory_iterator endIt;
+
+       if ( boost::filesystem::exists(dirPath) && 
+            boost::filesystem::is_directory(dirPath)) 
+       {
+          for( boost::filesystem::directory_iterator it(dirPath); it != endIt; ++it) {
+             if (boost::filesystem::is_regular_file(it->status()) ) {
+                list.insert({boost::filesystem::last_write_time(it->path()), *it});
+             }
+          }
+       }
+    }
 
 private:
     FileRepository(const std::string& dirName)
@@ -194,6 +216,7 @@ private:
             // make sure error is propagate to factory function
             _directoryName.clear();
         }
+      
     }
 
     std::string _directoryName;
@@ -237,8 +260,21 @@ public:
             return ErrCode::fileRepositoryInitError;
         }
 
+        //tmp...
+        // Get a picture of repository file list
+        _fileRepository->scan(
+              _fileRepository->getDirName(), 
+              _timeOrderedFileListCache);
+
+        for (auto it=list.rbegin(); it != list.rend(); ++it) {
+           std::cerr << it->second << std::endl;
+        }
+        //...tmp
+
         auto & httpSrv = HttpServer::getInstance();
-        httpSrv.setupWebRootPath(_configuration->getWebRootPath());
+
+        // file repository dir name is canonical full path name
+        httpSrv.setupWebRootPath(_fileRepository->getDirName());
         
         if (!httpSrv.bind(_configuration->getHttpServerPort())) {
             return ErrCode::httpSrvBindError;
@@ -273,6 +309,7 @@ private:
     // Parse the command line
     Configuration::Handle _configuration;
     FileRepository::Handle _fileRepository;
+    TimeOrderedFileList _timeOrderedFileListCache;
 };
 
 
