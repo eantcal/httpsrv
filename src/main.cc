@@ -266,7 +266,7 @@ public:
               _fileRepository->getDirName(), 
               _timeOrderedFileListCache);
 
-        for (auto it=list.rbegin(); it != list.rend(); ++it) {
+        for (auto it=_timeOrderedFileListCache.rbegin(); it != _timeOrderedFileListCache.rend(); ++it) {
            std::cerr << it->second << std::endl;
         }
         //...tmp
@@ -309,7 +309,7 @@ private:
     // Parse the command line
     Configuration::Handle _configuration;
     FileRepository::Handle _fileRepository;
-    TimeOrderedFileList _timeOrderedFileListCache;
+    FileRepository::TimeOrderedFileList _timeOrderedFileListCache;
 };
 
 
