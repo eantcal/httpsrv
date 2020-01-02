@@ -128,7 +128,7 @@ protected:
      * @return a handle to tcp socket
      */
     TcpSocket::Handle accept() { 
-       return _tcpServer->accept(); 
+       return _tcpServer ? _tcpServer->accept() : nullptr; 
     }
 };
 

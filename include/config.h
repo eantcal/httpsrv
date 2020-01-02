@@ -19,9 +19,9 @@
 #define __HTTP_CONFIG_H__
 
 #ifdef WIN32
-#define HTTP_SERVER_WROOT "C:/tmp"
+#define HTTP_SERVER_WROOT ".httpsrv"
 #else
-#define HTTP_SERVER_WROOT "/tmp"
+#define HTTP_SERVER_WROOT "~/.httpsrv"
 #endif
 #define HTTP_SERVER_INDEX "index.html"
 #define HTTP_SERVER_PORT 8080

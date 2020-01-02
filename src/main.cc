@@ -179,7 +179,18 @@ public:
 private:
     FileRepository(const std::string& dirName)
     {
-        if (!Tools::touchDir(dirName, _directoryName)) {
+        // Resolve any homedir prefix
+        std::string resPath;
+        if (!dirName.empty()) {
+            size_t prefixSize = dirName.size() > 1 ? 2 : 1;
+            if ((prefixSize >1 && dirName.substr(0,2)=="~/") || dirName=="~") {
+                resPath = Tools::getHomeDir();
+                resPath += "/";
+                resPath += dirName.substr(prefixSize, dirName.size() - prefixSize);
+            }
+        }
+
+        if (!Tools::touchDir(resPath, _directoryName)) {
             // make sure error is propagate to factory function
             _directoryName.clear();
         }
@@ -207,15 +218,7 @@ public:
         httpSrvListenError,
     };
 
-    ErrCode init(int argc, char* argv[]) {
-        const std::string repositoryDir = "./files"; // TODO
-
-        // Creates or validates (if already existant) a file repository
-        _fileRepository = FileRepository::make(repositoryDir);
-        if (!_fileRepository) {
-            return ErrCode::fileRepositoryInitError;
-        }
-
+    ErrCode init(int argc, char* argv[], std::ostream& logger = std::clog) {
         // Initialize any O/S specific libraries
         if (!OsSpecific::initSocketLibrary()) {
             return ErrCode::socketInitiError;
@@ -224,6 +227,14 @@ public:
         _configuration = Configuration::make(argc, argv);
         if (!_configuration || !_configuration->isValid()) {
             return ErrCode::configurationError;
+        }
+
+        auto repositoryDir = _configuration->getWebRootPath();
+
+        // Creates or validates (if already existant) a file repository
+        _fileRepository = FileRepository::make(repositoryDir);
+        if (!_fileRepository) {
+            return ErrCode::fileRepositoryInitError;
         }
 
         auto & httpSrv = HttpServer::getInstance();
@@ -238,7 +249,7 @@ public:
         }
 
         httpSrv.setupLogger(_configuration->verboseModeOn() ? 
-            &std::clog : nullptr);
+            &logger : nullptr);
 
         return ErrCode::success;
     }
@@ -289,6 +300,11 @@ int main(int argc, char* argv[])
         case Application::ErrCode::success:
         default:
             break;
+
+        case Application::ErrCode::fileRepositoryInitError: {
+            std::cerr << "Cannot initialize the file repository" << std::endl;
+            return 1;
+        }
 
         case Application::ErrCode::configurationError: {
             std::cerr << cfg->error() << std::endl;

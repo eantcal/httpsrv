@@ -167,6 +167,16 @@ bool touchDir(const std::string& relativeDirName, std::string& fullPath);
 /* -------------------------------------------------------------------------- */
 
 /**
+ * Returns user's home directory
+ *
+ * @return string containig user home directory path
+ */
+std::string getHomeDir();
+
+
+/* -------------------------------------------------------------------------- */
+
+/**
  * Splits a text line into a vector of tokens.
  *
  * @param line The string to split

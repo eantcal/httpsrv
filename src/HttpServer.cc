@@ -197,7 +197,7 @@ bool HttpServer::run()
     while (true) {
         const TcpSocket::Handle handle = accept();
 
-        // Fatal error: we stop the server
+        // Accept failed for some reason, retry later
         if (!handle) {
             std::this_thread::sleep_for(std::chrono::seconds(1));
             continue;

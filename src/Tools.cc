@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <pwd.h>
 #endif
 
 
@@ -166,6 +167,25 @@ bool Tools::touch(const std::string& fileName)
     }
 
     return !ofs.fail();
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+std::string Tools::getHomeDir() {
+    const char *homedir = nullptr;
+#ifdef WIN32
+    if ((homedir = getenv("USERPROFILE")) == nullptr) {
+        homedir = ".";
+    }
+    return homedir;
+#else
+    if ((homedir = getenv("HOME")) == nullptr) {
+        homedir = getpwuid(getuid())->pw_dir;
+    }
+
+    return homedir ? homedir : ".";
+#endif
 }
 
 
