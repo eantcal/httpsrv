@@ -87,6 +87,10 @@ private:
         const std::string& fileTime,
         const std::string& fileExt,
         const size_t& contentLen);
+public:
+    // Format an positive response
+    static void formatContinueResponse(
+        std::string& response);
 };
 
 

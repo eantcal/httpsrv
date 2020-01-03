@@ -279,3 +279,19 @@ bool Tools::splitLineInTokens(const std::string& line,
 }
 
 
+/* -------------------------------------------------------------------------- */
+
+std::string Tools::trim(const std::string& str)
+{
+    const auto strBegin = str.find_first_not_of(" \t\r\n");
+    if (strBegin == std::string::npos)
+        return ""; // no content
+
+    const auto strEnd = str.find_last_not_of(" \t\r\n");
+    const auto strRange = strEnd - strBegin + 1;
+
+    return str.substr(strBegin, strRange);
+}
+
+/* -------------------------------------------------------------------------- */
+

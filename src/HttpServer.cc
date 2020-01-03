@@ -97,12 +97,19 @@ void HttpServerTask::operator()(Handle task_handle)
     if (verboseModeOn())
         log() << transactionId() << "---- http_server_task +\n\n";
 
+    // Wait for a request from remote peer
+    HttpRequest::Handle httpRequest(new (std::nothrow) HttpRequest);
+
+    // Wait for a request from remote peer
     while (getTcpSocketHandle()) {
         // Create an http socket around a connected tcp socket
         HttpSocket httpSocket(getTcpSocketHandle());
 
-        // Wait for a request from remote peer
-        HttpRequest::Handle httpRequest;
+        if (!httpRequest) {
+            if (verboseModeOn())
+                log() << transactionId() << "FATAL ERROR: no memory?\n\n";
+            break;
+        }
         httpSocket >> httpRequest;
 
         // If an error occoured terminate the task
@@ -121,7 +128,7 @@ void HttpServerTask::operator()(Handle task_handle)
         httpSocket << response;
 
         // If HTTP command line method isn't HEAD then send requested URI
-        if (httpRequest->getMethod() != HttpRequest::Method::HEAD) {
+        if (httpRequest->getMethod() == HttpRequest::Method::GET) {
             if (0 > httpSocket.sendFile(response.getLocalUriPath())) {
                 if (verboseModeOn())
                     log() << transactionId() << "Error sending '"
@@ -132,6 +139,13 @@ void HttpServerTask::operator()(Handle task_handle)
 
         if (verboseModeOn())
             response.dump(log(), transactionId());
+
+        if (!httpRequest->isExpectedContinueResponse()) {
+            httpRequest.reset(new (std::nothrow) HttpRequest);
+        }
+        else {
+            httpRequest->clearExpectedContinueFlag();
+        }
     }
 
     getTcpSocketHandle()->shutdown();

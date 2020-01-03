@@ -26,13 +26,8 @@ HttpSocket& HttpSocket::operator=(TcpSocket::Handle handle)
 
 /* -------------------------------------------------------------------------- */
 
-HttpRequest::Handle HttpSocket::recv()
+bool HttpSocket::recv(HttpRequest::Handle& handle)
 {
-    HttpRequest::Handle handle(new (std::nothrow) HttpRequest);
-
-    if (!handle)
-        return nullptr;
-
     char c = 0;
     int ret = 1;
 
@@ -53,6 +48,7 @@ HttpRequest::Handle HttpSocket::recv()
             s = (c == '\n') ? CrLfSeq::LF2 : CrLfSeq::IDLE;
             break;
         default:
+            s = CrLfSeq::IDLE;
             break;
         }
 
@@ -62,8 +58,8 @@ HttpRequest::Handle HttpSocket::recv()
     std::string line;
     std::string body;
 
-    int content_length = handle->getContentLength();
     bool receivingBody = false;
+    bool timeout = false;
 
     while (ret > 0 && _connUp && _socketHandle) {
         std::chrono::seconds sec(getConnectionTimeout());
@@ -72,14 +68,16 @@ HttpRequest::Handle HttpSocket::recv()
 
         switch (recvEv) {
         case TransportSocket::RecvEvent::RECV_ERROR:
-        case TransportSocket::RecvEvent::TIMEOUT:
             _connUp = false;
+            break;
+        case TransportSocket::RecvEvent::TIMEOUT:
+            timeout = true;
             break;
         default:
             break;
         }
 
-        if (!_connUp)
+        if (!_connUp || timeout)
             break;
 
         ret = _socketHandle->recv(&c, 1);
@@ -94,36 +92,42 @@ HttpRequest::Handle HttpSocket::recv()
             break;
         }
 
-        if (receivingBody && body.size() >= content_length) {
-            _connUp = true;
-            break;
-        }
+        if (receivingBody) {
+            if (receivingBody && body.size() >= handle->getContentLength()) {
+                _connUp = true;
+                break;
+            }
+        } 
+        else {
+            if (crlf(c)) {
+                if (!handle->isExpectedContinueResponse())
+                    receivingBody = true;
+                else
+                    break;
+            }
 
-        if (crlf(c)) {
-            receivingBody = true;
-        }
-
-        if (s == CrLfSeq::LF1 && !receivingBody) {
-            if (!line.empty()) {
-                handle->addHeader(line);
-                line.clear();
+            if (s == CrLfSeq::LF1) {
+                if (!line.empty()) {
+                    handle->parseHeader(line);
+                    line.clear();
+                }
             }
         }
     }
 
     if (ret < 0 || !_socketHandle || handle->get_header().empty()) {
-        return handle;
+        return false;
     }
 
     std::string request = *handle->get_header().cbegin();
     std::vector<std::string> tokens;
 
     if (!Tools::splitLineInTokens(request, tokens, " ")) {
-        return handle;
+        return false;
     }
 
     if (tokens.size() != 3) {
-        return handle;
+        return false;
     }
 
     handle->parseMethod(tokens[0]);
@@ -135,7 +139,7 @@ HttpRequest::Handle HttpSocket::recv()
     if (!body.empty())
         handle->setBody(std::move(body));
 
-    return handle;
+    return true;
 }
 
 

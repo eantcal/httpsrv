@@ -43,7 +43,8 @@ class HttpSocket {
 private:
     TcpSocket::Handle _socketHandle;
     bool _connUp = true;
-    HttpRequest::Handle recv();
+    
+    bool recv(HttpRequest::Handle& handle);
     int _connectionTimeOut = HTTP_CONNECTION_TIMEOUT; // secs
 
 public:
@@ -78,7 +79,7 @@ public:
      * @param the handle of http request object
      */
     HttpSocket& operator>>(HttpRequest::Handle& handle) {
-        handle = recv();
+        recv(handle);
         return *this;
     }
 

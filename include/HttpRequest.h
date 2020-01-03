@@ -102,29 +102,8 @@ public:
      *
      * @param new_header The header content to add to headers fields
      */
-    void addHeader(const std::string& new_header) {
-        if (!new_header.empty() && ::toupper(new_header.c_str()[0])=='C') {
-            std::vector<std::string> tokens;
+    void parseHeader(const std::string& new_header);
 
-            Tools::splitLineInTokens(new_header, tokens, " ");
-
-            transform(
-                tokens[0].begin(), 
-                tokens[0].end(), 
-                tokens[0].begin(), 
-                ::toupper);
-
-            if (tokens.size()>=2 && tokens[0] == "CONTENT-LENGTH:") {
-                try {
-                    _content_length = std::stoi(tokens[1]);
-                }
-                catch (...) {
-                    _content_length = 0;
-                }
-            }
-        }
-        _header.push_back(new_header);
-    }
 
     /**
      * Get the content length field value
@@ -133,6 +112,33 @@ public:
      */
     int getContentLength() const noexcept {
         return _content_length;
+    }
+
+
+    /**
+     * Return true if the request contains "Expect: 100-continue"
+     *
+     * @return true if continue request sent by client, false otherwise
+     */
+    bool isExpectedContinueResponse() const noexcept {
+        return _expected_100_continue;
+    }
+
+
+    /**
+     * Clean "Expect: 100-continue" flag
+     */
+    void clearExpectedContinueFlag() noexcept {
+        _expected_100_continue = false;
+    }
+
+    /**
+     * Get the content-disposition filename attribute content
+     *
+     * @return string containing any file name posted
+     */
+    const std::string& getFileName() const noexcept {
+        return _filename;
     }
 
     /**
@@ -161,6 +167,9 @@ private:
     std::string _uri;
     std::string _body;
     int _content_length = 0;
+    std::string _content_type;
+    std::string _filename;
+    bool _expected_100_continue = false;
 };
 
 

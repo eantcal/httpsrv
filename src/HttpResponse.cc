@@ -23,7 +23,7 @@ void HttpResponse::formatError(
     std::string error_html = "<html><head><title>" + scode + " " + msg
         + "</title></head>" + "<body>Forbidden</body></html>\r\n";
 
-    output = "HTTP/1.1 " + scode + " " + msg + "\r\n";
+    output = HTTP_SERVER_VER " " + scode + " " + msg + "\r\n";
     output += "Date: " + Tools::getLocalTime() + "\r\n";
     output += "Server: " HTTP_SERVER_NAME "\r\n";
     output += "Content-Length: " + std::to_string(error_html.size()) + "\r\n";
@@ -42,7 +42,7 @@ void HttpResponse::formatPositiveResponse(
     const size_t& contentLen)
 {
 
-    response = "HTTP/1.1 200 OK\r\n";
+    response = HTTP_SERVER_VER " 200 OK\r\n";
     response += "Date: " + Tools::getLocalTime() + "\r\n";
     response += "Server: " HTTP_SERVER_NAME "\r\n";
     response += "Content-Length: " + std::to_string(contentLen) + "\r\n";
@@ -58,6 +58,14 @@ void HttpResponse::formatPositiveResponse(
 
     // Close the rensponse header by using the sequence CRFL twice
     response += "\r\n\r\n";
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+void HttpResponse::formatContinueResponse(std::string& response)
+{
+    response = HTTP_SERVER_VER " 100 Continue\r\n\r\n";
 }
 
 
@@ -85,14 +93,19 @@ HttpResponse::HttpResponse(
     size_t contentLen = 0;
 
     if (request.getMethod() == HttpRequest::Method::POST) {
-        std::string bodyToSend = "<html>TODO</html>";
-        formatPositiveResponse(
-            _response, 
-            Tools::getLocalTime(), 
-            std::string(".html"), 
-            bodyToSend.size());
+        if (request.isExpectedContinueResponse()) {
+            formatContinueResponse(_response);
+        }
+        else {
+            std::string bodyToSend = "<html>TODO</html>";
+            formatPositiveResponse(
+                _response,
+                Tools::getLocalTime(),
+                std::string(".html"),
+                bodyToSend.size());
 
-        _response += bodyToSend;
+            _response += bodyToSend;
+        }
     }
     else {
         if (Tools::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {

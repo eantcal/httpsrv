@@ -200,6 +200,34 @@ bool splitLineInTokens(const std::string& line,
     std::vector<std::string>& tokens, const std::string& sep);
 
 
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Eliminates leading and trailing spaces a give string
+ *
+ * @param str string to trim
+ * @return new trimmed string
+ */
+std::string trim(const std::string& str);
+
+
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Convert a give string to uppercase
+ *
+ * @param str string to convert
+ * @return new uppercased string
+ */
+inline static std::string uppercase(const std::string& str) {
+    std::string ret=str;
+    std::transform(ret.begin(), ret.end(), ret.begin(), ::toupper);
+    return ret;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
 } // namespace Tools
 
 
