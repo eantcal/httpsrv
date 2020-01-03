@@ -13,7 +13,6 @@
 #include "Tools.h"
 #include "config.h"
 
-
 /* -------------------------------------------------------------------------- */
 
 void HttpResponse::formatError(
@@ -37,9 +36,10 @@ void HttpResponse::formatError(
 /* -------------------------------------------------------------------------- */
 
 void HttpResponse::formatPositiveResponse(
-    std::string& response, std::string& fileTime,
-    std::string& fileExt,
-    size_t& contentLen)
+    std::string& response, 
+    const std::string& fileTime,
+    const std::string& fileExt,
+    const size_t& contentLen)
 {
 
     response = "HTTP/1.1 200 OK\r\n";
@@ -64,7 +64,8 @@ void HttpResponse::formatPositiveResponse(
 /* -------------------------------------------------------------------------- */
 
 HttpResponse::HttpResponse(
-    const HttpRequest& request, const std::string& webRootPath)
+    const HttpRequest& request,
+    const std::string& webRootPath)
 {
     if (request.getMethod() == HttpRequest::Method::UNKNOWN) {
         formatError(_response, 403, "Forbidden");
@@ -83,11 +84,25 @@ HttpResponse::HttpResponse(
     std::string fileTime, fileExt;
     size_t contentLen = 0;
 
-    if (Tools::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
-        formatPositiveResponse(_response, fileTime, fileExt, contentLen);
-    } 
+    if (request.getMethod() == HttpRequest::Method::POST) {
+        std::string bodyToSend = "<html>TODO</html>";
+        formatPositiveResponse(
+            _response, 
+            Tools::getLocalTime(), 
+            std::string(".html"), 
+            bodyToSend.size());
+
+        _response += bodyToSend;
+
+        //std::cerr << "Response:" << _response << std::endl;
+    }
     else {
-        formatError(_response, 404, "Not Found");
+        if (Tools::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
+            formatPositiveResponse(_response, fileTime, fileExt, contentLen);
+        }
+        else {
+            formatError(_response, 404, "Not Found");
+        }
     }
 }
 
@@ -107,7 +122,7 @@ std::ostream& HttpResponse::dump(std::ostream& os, const std::string& id)
 
 /* -------------------------------------------------------------------------- */
 
-std::map<std::string, std::string> HttpResponse::_mimeTbl = {
+std::unordered_map<std::string, std::string> HttpResponse::_mimeTbl = {
     { ".3dm", "x-world/x-3dmf" }, { ".3dmf", "x-world/x-3dmf" },
     { ".a", "application/octet-stream" },
     { ".aab", "application/x-authorware-bin" },

@@ -89,6 +89,16 @@ bool Tools::fileStat(
 
 /* -------------------------------------------------------------------------- */
 
+std::string Tools::hashCode(const std::string& src)
+{
+    std::string id;
+    picosha2::hash256_hex_string(src, id);
+    return id;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
 bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
 {
     struct stat rstat = { 0 };
@@ -111,9 +121,6 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
     ossTS << std::put_time(&bt, "%Y-%m-%dT%H:%M:%S");
     ossTS << '.' << std::setfill('0') << std::setw(6) << microsec << "Z";
 
-    std::string id;
-    picosha2::hash256_hex_string(fileName, id);
-
     /*
     Example of JSON output
 
@@ -127,7 +134,7 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
 
     std::stringstream oss;
     oss << "{" << std::endl;
-    oss << "  \"id\": \"" << id << "\"," << std::endl;
+    oss << "  \"id\": \"" << hashCode(fileName) << "\"," << std::endl;
     oss << "  \"name\": \"" << fileName << "\"," << std::endl;
     oss << "  \"size\": " << rstat.st_size << "," << std::endl;
     oss << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;

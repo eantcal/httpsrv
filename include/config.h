@@ -19,7 +19,7 @@
 #define __HTTP_CONFIG_H__
 
 #ifdef WIN32
-#define HTTP_SERVER_WROOT ".httpsrv"
+#define HTTP_SERVER_WROOT "~/httpsrv"
 #else
 #define HTTP_SERVER_WROOT "~/.httpsrv"
 #endif
@@ -30,7 +30,7 @@
 #define HTTP_SERVER_MIN_V 0
 #define HTTP_SERVER_TX_BUF_SIZE 0x100000
 #define HTTP_SERVER_BACKLOG SOMAXCONN
-#define HTTP_CONNECTION_TIMEOUT 120 //secs
+#define HTTP_CONNECTION_TIMEOUT 3 //secs
 
 #endif // __HTTP_CONFIG_H__
 

@@ -28,7 +28,10 @@ HttpSocket& HttpSocket::operator=(TcpSocket::Handle handle)
 
 HttpRequest::Handle HttpSocket::recv()
 {
-    HttpRequest::Handle handle(new HttpRequest);
+    HttpRequest::Handle handle(new (std::nothrow) HttpRequest);
+
+    if (!handle)
+        return nullptr;
 
     char c = 0;
     int ret = 1;
@@ -57,6 +60,10 @@ HttpRequest::Handle HttpSocket::recv()
     };
 
     std::string line;
+    std::string body;
+
+    int content_length = handle->getContentLength();
+    bool receivingBody = false;
 
     while (ret > 0 && _connUp && _socketHandle) {
         std::chrono::seconds sec(getConnectionTimeout());
@@ -78,17 +85,25 @@ HttpRequest::Handle HttpSocket::recv()
         ret = _socketHandle->recv(&c, 1);
 
         if (ret > 0) {
-            line += c;
+            if (receivingBody) 
+                body += c;
+            else
+                line += c;
         } else if (ret <= 0) {
             _connUp = false;
             break;
         }
 
-        if (crlf(c)) {
+        if (receivingBody && body.size() >= content_length) {
+            _connUp = true;
             break;
         }
 
-        if (s == CrLfSeq::LF1) {
+        if (crlf(c)) {
+            receivingBody = true;
+        }
+
+        if (s == CrLfSeq::LF1 && !receivingBody) {
             if (!line.empty()) {
                 handle->addHeader(line);
                 line.clear();
@@ -114,6 +129,11 @@ HttpRequest::Handle HttpSocket::recv()
     handle->parseMethod(tokens[0]);
     handle->parseUri(tokens[1]);
     handle->parseVersion(tokens[2]);
+
+    std::cerr << "BODY:\n" << body << std::endl;
+
+    if (!body.empty())
+        handle->setBody(std::move(body));
 
     return handle;
 }

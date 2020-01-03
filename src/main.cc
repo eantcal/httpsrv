@@ -19,6 +19,8 @@
 
 #include <boost/filesystem.hpp>
 
+namespace fs = boost::filesystem;
+
 /* -------------------------------------------------------------------------- */
 
 class Configuration {
@@ -168,8 +170,8 @@ private:
 
 class FileRepository {
 public:
-    using TimeOrderedFileList = std::multimap<std::time_t, boost::filesystem::path>;
-    using IdFileNameCache = std::unordered_map<std::string, boost::filesystem::path>;
+    using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
+    using IdFileNameCache = std::unordered_map<std::string, fs::path>;
 
     using Handle = std::shared_ptr<FileRepository>;
 
@@ -182,20 +184,35 @@ public:
         return _directoryName;
     }
 
-    void scan(const std::string& path, TimeOrderedFileList& list)
+    bool scan(
+        const std::string& path, 
+        TimeOrderedFileList& list,
+        IdFileNameCache& idNameMap,
+        int maxN=0)
     {
-       boost::filesystem::path dirPath(path);
-       boost::filesystem::directory_iterator endIt;
+       fs::path dirPath(path);
+       fs::directory_iterator endIt;
+       bool unlimited = maxN <= 0;
 
-       if ( boost::filesystem::exists(dirPath) && 
-            boost::filesystem::is_directory(dirPath)) 
+       if ( fs::exists(dirPath) && 
+            fs::is_directory(dirPath)) 
        {
-          for( boost::filesystem::directory_iterator it(dirPath); it != endIt; ++it) {
-             if (boost::filesystem::is_regular_file(it->status()) ) {
-                list.insert({boost::filesystem::last_write_time(it->path()), *it});
+          list.clear();
+          for( fs::directory_iterator it(dirPath); it != endIt; ++it) {
+             if (fs::is_regular_file(it->status())) {
+                list.insert({fs::last_write_time(it->path()), *it});
+                
+                auto fName = it->path().filename().string();
+                idNameMap[Tools::hashCode(fName)] = fName;
+                std::cerr << Tools::hashCode(fName) << "=" << fName << std::endl;
+                if (!unlimited && list.size() >= maxN)
+                    break;
              }
           }
+          return true;
        }
+
+       return false;
     }
 
 private:
@@ -264,9 +281,12 @@ public:
         // Get a picture of repository file list
         _fileRepository->scan(
               _fileRepository->getDirName(), 
-              _timeOrderedFileListCache);
+              _timeOrderedFileListCache,
+              _idFileNameCache);
 
-        for (auto it=_timeOrderedFileListCache.rbegin(); it != _timeOrderedFileListCache.rend(); ++it) {
+        for (auto it=_timeOrderedFileListCache.rbegin(); 
+            it != _timeOrderedFileListCache.rend(); ++it) 
+        {
            std::cerr << it->second << std::endl;
         }
         //...tmp
@@ -310,6 +330,7 @@ private:
     Configuration::Handle _configuration;
     FileRepository::Handle _fileRepository;
     FileRepository::TimeOrderedFileList _timeOrderedFileListCache;
+    FileRepository::IdFileNameCache _idFileNameCache;
 };
 
 

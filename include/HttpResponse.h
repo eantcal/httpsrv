@@ -16,7 +16,7 @@
 
 #include "HttpRequest.h"
 
-#include <map>
+#include <unordered_map>
 #include <string>
 
 
@@ -39,7 +39,9 @@ public:
      * @param request an http request
      * @param webRootPath local working directory of the web server
      */
-    HttpResponse(const HttpRequest& request, const std::string& webRootPath);
+    HttpResponse(
+        const HttpRequest& request, 
+        const std::string& webRootPath);
 
 
     /**
@@ -68,7 +70,7 @@ public:
     std::ostream& dump(std::ostream& os, const std::string& id = "");
 
 private:
-    static std::map<std::string, std::string> _mimeTbl;
+    static std::unordered_map<std::string, std::string> _mimeTbl;
 
     std::string _response;
     std::string _localUriPath;
@@ -82,9 +84,9 @@ private:
     // Format an positive response
     static void formatPositiveResponse(
         std::string& response, 
-        std::string& fileTime,
-        std::string& fileExt,
-        size_t& contentLen);
+        const std::string& fileTime,
+        const std::string& fileExt,
+        const size_t& contentLen);
 };
 
 

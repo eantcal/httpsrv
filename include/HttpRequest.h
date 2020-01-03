@@ -13,11 +13,13 @@
 
 
 /* -------------------------------------------------------------------------- */
+#include "Tools.h"
 
 #include <iostream>
 #include <list>
 #include <memory>
 #include <string>
+#include <vector>
 
 
 /* -------------------------------------------------------------------------- */
@@ -101,9 +103,46 @@ public:
      * @param new_header The header content to add to headers fields
      */
     void addHeader(const std::string& new_header) {
+        if (!new_header.empty() && ::toupper(new_header.c_str()[0])=='C') {
+            std::vector<std::string> tokens;
+
+            Tools::splitLineInTokens(new_header, tokens, " ");
+
+            transform(
+                tokens[0].begin(), 
+                tokens[0].end(), 
+                tokens[0].begin(), 
+                ::toupper);
+
+            if (tokens.size()>=2 && tokens[0] == "CONTENT-LENGTH:") {
+                try {
+                    _content_length = std::stoi(tokens[1]);
+                }
+                catch (...) {
+                    _content_length = 0;
+                }
+            }
+        }
         _header.push_back(new_header);
     }
 
+    /**
+     * Get the content length field value
+     *
+     * @return content length in bytes
+     */
+    int getContentLength() const noexcept {
+        return _content_length;
+    }
+
+    /**
+     * Set a body to request
+     *
+     * @param new_header The header content to add to headers fields
+     */
+    void setBody(std::string&& body) {
+        _body = std::move(body);
+    }
 
     /**
      * Prints the request.
@@ -120,6 +159,8 @@ private:
     Method _method = Method::UNKNOWN;
     Version _version = Version::UNKNOWN;
     std::string _uri;
+    std::string _body;
+    int _content_length = 0;
 };
 
 

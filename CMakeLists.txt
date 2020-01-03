@@ -11,7 +11,7 @@ include_directories(. include PicoSHA2 ${Boost_INCLUDE_DIR})
 
 file(GLOB SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
 
-set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++14" )
+set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++17" )
 
 add_executable(httpsrv ${SOURCES})
 

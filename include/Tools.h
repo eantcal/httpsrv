@@ -103,6 +103,17 @@ bool fileStat(const std::string& fileName, std::string& dateTime,
 /* -------------------------------------------------------------------------- */
 
 /**
+ * Create an unique id from a given string
+ *
+ * @param src Source string
+ * @return id
+ */
+std::string hashCode(const std::string& src);
+
+
+/* -------------------------------------------------------------------------- */
+
+/**
  * Returns file attributes of fileName formatted using a JSON record of
  * id, name, size, timestame, where id is sha256 of fileName,
  * name is the fileName, size is the size in bytes of file, 
