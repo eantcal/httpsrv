@@ -107,7 +107,6 @@ void HttpServerTask::operator()(Handle task_handle)
 
         // If an error occoured terminate the task
         if (!httpSocket) {
-            std::cerr << "httpSocket error" << std::endl;
             break;
         }
 
@@ -118,8 +117,6 @@ void HttpServerTask::operator()(Handle task_handle)
         // Build a response to previous HTTP request
         HttpResponse response(*httpRequest, getWebRootPath());
 
-        std::cerr << "Sending a response" << std::endl;
-        
         // Send the response to remote peer
         httpSocket << response;
 

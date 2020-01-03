@@ -93,8 +93,6 @@ HttpResponse::HttpResponse(
             bodyToSend.size());
 
         _response += bodyToSend;
-
-        //std::cerr << "Response:" << _response << std::endl;
     }
     else {
         if (Tools::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {

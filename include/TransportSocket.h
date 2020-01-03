@@ -23,8 +23,6 @@
 #include <cstdint>
 #include <fstream>
 
-#include <iostream>
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -146,7 +144,6 @@ public:
      *              can be retrieved by errno
      */
     int send(const std::string& text) noexcept {
-        std::cerr << "****\n" << text << "\n*******\n"<< std::endl;
         return send(text.c_str(), int(text.size()));
     }
 
