@@ -13,11 +13,11 @@ set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and
 set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
-find_package( Boost 1.67 COMPONENTS program_options date_time filesystem system REQUIRED )
+find_package( Boost 1.67 COMPONENTS filesystem REQUIRED )
 
-include_directories(. include PicoSHA2 ${Boost_INCLUDE_DIR})
+include_directories(. include PicoSHA2 zip/src ${Boost_INCLUDE_DIR})
 
-file(GLOB SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc")
+file(GLOB SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc" "${CMAKE_CURRENT_SOURCE_DIR}/zip/src/*.c" )
 
 set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++17" )
 

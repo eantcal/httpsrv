@@ -142,7 +142,7 @@ public:
             case State::PORT:
                 try {
                     _http_server_port = std::stoi(sarg);
-                    if (_http_server_port < 1 || _http_server_port>65535)
+                    if (_http_server_port < 1)
                         throw 0;
                 }
                 catch (...) {
