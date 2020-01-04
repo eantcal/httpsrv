@@ -16,24 +16,24 @@
 
 TcpSocket& TcpSocket::operator<<(const std::string& text)
 {
-    send(text);
-    return *this;
+   send(text);
+   return *this;
 }
 
 
 /* -------------------------------------------------------------------------- */
 
 TcpSocket::TcpSocket(const SocketFd& sd, const sockaddr* local_sa,
-    const sockaddr* remote_sa)
-    : TransportSocket(sd)
+   const sockaddr* remote_sa)
+   : TransportSocket(sd)
 {
-    auto conv = [](TranspPort& port, std::string& ip, const sockaddr* sa) {
-        port = htons(reinterpret_cast<const sockaddr_in*>(sa)->sin_port);
-        ip = std::string(
-            inet_ntoa(reinterpret_cast<const sockaddr_in*>(sa)->sin_addr));
-    };
+   auto conv = [](TranspPort& port, std::string& ip, const sockaddr* sa) {
+      port = htons(reinterpret_cast<const sockaddr_in*>(sa)->sin_port);
+      ip = std::string(
+         inet_ntoa(reinterpret_cast<const sockaddr_in*>(sa)->sin_addr));
+   };
 
-    conv(_localPort, _localIpAddress, local_sa);
-    conv(_remotePort, _remoteIpAddress, remote_sa);
+   conv(_localPort, _localIpAddress, local_sa);
+   conv(_remotePort, _remoteIpAddress, remote_sa);
 }
 

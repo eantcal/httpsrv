@@ -32,87 +32,87 @@
  */
 class TcpListener : public TransportSocket {
 public:
-    using TranspPort = TcpSocket::TranspPort;
-    using Handle = std::unique_ptr<TcpListener>;
+   using TranspPort = TcpSocket::TranspPort;
+   using Handle = std::unique_ptr<TcpListener>;
 
-    enum class Status { INVALID, VALID };
-
-
-    /**
-     * Returns the current state of this connection.
-     *
-     * @return State::VALID if connection is valid,
-     *         State::INVALID otherwise
-     */
-    Status getStatus() const {
-        return _status;
-    }
+   enum class Status { INVALID, VALID };
 
 
-    /**
-     * Returns the current state of this connection.
-     * @return true if connection is valid,
-     *         false otherwise
-     */
-    operator bool() const {
-        return getStatus() != Status::INVALID;
-    }
+   /**
+    * Returns the current state of this connection.
+    *
+    * @return State::VALID if connection is valid,
+    *         State::INVALID otherwise
+    */
+   Status getStatus() const {
+      return _status;
+   }
 
 
-    /**
-     * Returns a handle to a new listener object.
-     *
-     * @return the handle to a new listenr object instance
-     */
-    static Handle create() {
-        return Handle(new TcpListener());
-    }
+   /**
+    * Returns the current state of this connection.
+    * @return true if connection is valid,
+    *         false otherwise
+    */
+   operator bool() const {
+      return getStatus() != Status::INVALID;
+   }
 
 
-    /**
-     * Associates a local IPv4 address and TCP port with this
-     * connection.
-     *
-     * @param ip The IPv4 address of local interface to bind to
-     * @param port The port to bind to
-     * @return false if operation fails, true otherwise
-     */
-    bool bind(const std::string& ip, const TranspPort& port);
+   /**
+    * Returns a handle to a new listener object.
+    *
+    * @return the handle to a new listenr object instance
+    */
+   static Handle create() {
+      return Handle(new TcpListener());
+   }
 
 
-    /**
-     * Associates a local TCP port with this connection.
-     *
-     * @param port The port to bind to
-     * @return false if operation fails, true otherwise
-     */
-    bool bind(const TranspPort& port) {
-        return bind("", port);
-    }
+   /**
+    * Associates a local IPv4 address and TCP port with this
+    * connection.
+    *
+    * @param ip The IPv4 address of local interface to bind to
+    * @param port The port to bind to
+    * @return false if operation fails, true otherwise
+    */
+   bool bind(const std::string& ip, const TranspPort& port);
 
-    /**
-     * Enables the listening mode, to listen for incoming
-     * connection attempts.
-     *
-     * @param backlog The maximum length of the pending connections queue.
-     * @return true if operation successfully completed, false otherwise
-     */
-    bool listen(int backlog = SOMAXCONN) {
-        return ::listen(getSocketFd(), backlog) == 0;
-    }
 
-    /**
-     * Extracts the first connection on the queue of pending connections,
-     * and creates a new tcp connection handle
-     *
-     * @return an handle to a new tcp connection
-     */
-    TcpSocket::Handle accept();
+   /**
+    * Associates a local TCP port with this connection.
+    *
+    * @param port The port to bind to
+    * @return false if operation fails, true otherwise
+    */
+   bool bind(const TranspPort& port) {
+      return bind("", port);
+   }
+
+   /**
+    * Enables the listening mode, to listen for incoming
+    * connection attempts.
+    *
+    * @param backlog The maximum length of the pending connections queue.
+    * @return true if operation successfully completed, false otherwise
+    */
+   bool listen(int backlog = SOMAXCONN) {
+      return ::listen(getSocketFd(), backlog) == 0;
+   }
+
+   /**
+    * Extracts the first connection on the queue of pending connections,
+    * and creates a new tcp connection handle
+    *
+    * @return an handle to a new tcp connection
+    */
+   TcpSocket::Handle accept();
 
 private:
-    std::atomic<Status> _status;
-    sockaddr_in _local_ip_port_sa_in;
-    TcpListener();
+   std::atomic<Status> _status;
+   sockaddr_in _local_ip_port_sa_in;
+   TcpListener();
 };
 
 

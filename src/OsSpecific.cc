@@ -29,18 +29,18 @@
 
 bool OsSpecific::initSocketLibrary()
 {
-    // Socket library initialization
-    WORD wVersionRequested = WINSOCK_VERSION;
-    WSADATA wsaData = { 0 };
+   // Socket library initialization
+   WORD wVersionRequested = WINSOCK_VERSION;
+   WSADATA wsaData = { 0 };
 
-    return 0 == WSAStartup(wVersionRequested, &wsaData);
+   return 0 == WSAStartup(wVersionRequested, &wsaData);
 }
 
 
 /* -------------------------------------------------------------------------- */
 
-int OsSpecific::closeSocketFd(int sd) { 
-    return ::closesocket(sd); 
+int OsSpecific::closeSocketFd(int sd) {
+   return ::closesocket(sd);
 }
 
 
@@ -56,16 +56,16 @@ int OsSpecific::closeSocketFd(int sd) {
 
 /* -------------------------------------------------------------------------- */
 
-bool OsSpecific::initSocketLibrary() { 
-    signal(SIGPIPE, SIG_IGN);
-    return true; 
+bool OsSpecific::initSocketLibrary() {
+   signal(SIGPIPE, SIG_IGN);
+   return true;
 }
 
 
 /* -------------------------------------------------------------------------- */
 
-int OsSpecific::closeSocketFd(int sd) { 
-    return ::close(sd); 
+int OsSpecific::closeSocketFd(int sd) {
+   return ::close(sd);
 }
 
 

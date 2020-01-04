@@ -25,29 +25,29 @@
 namespace OsSpecific {
 
 
-/* -------------------------------------------------------------------------- */
+   /* -------------------------------------------------------------------------- */
 
-/**
- * Initializes O/S Libraries. In case of failure
- * the function returns false
- *
- * @return true if operation is sucessfully completed,
- * false otherwise
- */
-bool initSocketLibrary();
-
-
-/* -------------------------------------------------------------------------- */
-
-/**
- * Closes a socket descriptor.
- *
- * @return zero on success. On error, -1 is returned
- */
-int closeSocketFd(int sd);
+   /**
+    * Initializes O/S Libraries. In case of failure
+    * the function returns false
+    *
+    * @return true if operation is sucessfully completed,
+    * false otherwise
+    */
+   bool initSocketLibrary();
 
 
-/* -------------------------------------------------------------------------- */
+   /* -------------------------------------------------------------------------- */
+
+   /**
+    * Closes a socket descriptor.
+    *
+    * @return zero on success. On error, -1 is returned
+    */
+   int closeSocketFd(int sd);
+
+
+   /* -------------------------------------------------------------------------- */
 
 }
 
@@ -68,7 +68,7 @@ int closeSocketFd(int sd);
 #define stat _stat
 
 #define mkdir(__dir, __ignored) _mkdir(__dir)
-enum { S_IRWXU , S_IRWXG , S_IROTH , S_IXOTH };
+enum { S_IRWXU, S_IRWXG, S_IROTH, S_IXOTH };
 
 inline bool S_ISDIR(int mask) noexcept { return (mask & S_IFDIR) == S_IFDIR; }
 

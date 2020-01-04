@@ -27,77 +27,77 @@
  * This class represents a TCP connection between a client and a server
  */
 class TcpSocket : public TransportSocket {
-    friend class TcpListener;
+   friend class TcpListener;
 
 public:
-    enum class shutdown_mode_t : int {
-        DISABLE_RECV,
-        DISABLE_SEND,
-        DISABLE_SEND_RECV
-    };
+   enum class shutdown_mode_t : int {
+      DISABLE_RECV,
+      DISABLE_SEND,
+      DISABLE_SEND_RECV
+   };
 
-    TcpSocket(const TcpSocket&) = delete;
-    TcpSocket& operator=(const TcpSocket&) = delete;
-    ~TcpSocket() = default;
+   TcpSocket(const TcpSocket&) = delete;
+   TcpSocket& operator=(const TcpSocket&) = delete;
+   ~TcpSocket() = default;
 
-    using Handle = std::shared_ptr<TcpSocket>;
+   using Handle = std::shared_ptr<TcpSocket>;
 
-    /**
-     * Returns the local peer's ipv4 address.
-     */
-    const std::string& getLocalIpAddress() const {
-        return _localIpAddress;
-    }
+   /**
+    * Returns the local peer's ipv4 address.
+    */
+   const std::string& getLocalIpAddress() const {
+      return _localIpAddress;
+   }
 
-    /**
-     * Returns the local peer's tcp port number
-     */
-    const TranspPort& getLocalPort() const {
-        return _localPort;
-    }
+   /**
+    * Returns the local peer's tcp port number
+    */
+   const TranspPort& getLocalPort() const {
+      return _localPort;
+   }
 
-    /**
-     * Returns the remote peer's ipv4 address.
-     */
-    const std::string& getRemoteIpAddress() const {
-        return _remoteIpAddress;
-    }
+   /**
+    * Returns the remote peer's ipv4 address.
+    */
+   const std::string& getRemoteIpAddress() const {
+      return _remoteIpAddress;
+   }
 
-    /**
-     * Returns the remote peer's tcp port number
-     */
-    const TranspPort& getRemotePort() const {
-        return _remotePort;
-    }
+   /**
+    * Returns the remote peer's tcp port number
+    */
+   const TranspPort& getRemotePort() const {
+      return _remotePort;
+   }
 
-    /**
-     * Disables sends or receives on this socket
-     *
-     * @param how can be DISABLE_RECV to disable receive operation,
-     * DISABLE_SEND to disable send operations, DISABLE_SEND_RECV
-     * for both send and receive operation
-     *
-     * @return zero If no error occurs, -1 otherwise.
-     */
-    int shutdown(shutdown_mode_t how = shutdown_mode_t::DISABLE_SEND_RECV) {
-        return ::shutdown(getSocketFd(), static_cast<int>(how));
-    }
+   /**
+    * Disables sends or receives on this socket
+    *
+    * @param how can be DISABLE_RECV to disable receive operation,
+    * DISABLE_SEND to disable send operations, DISABLE_SEND_RECV
+    * for both send and receive operation
+    *
+    * @return zero If no error occurs, -1 otherwise.
+    */
+   int shutdown(shutdown_mode_t how = shutdown_mode_t::DISABLE_SEND_RECV) {
+      return ::shutdown(getSocketFd(), static_cast<int>(how));
+   }
 
-    /**
-     * Sends text on this socket
-     */
-    TcpSocket& operator<<(const std::string& text);
+   /**
+    * Sends text on this socket
+    */
+   TcpSocket& operator<<(const std::string& text);
 
-    TcpSocket() = delete;
+   TcpSocket() = delete;
 
 private:
-    std::string _localIpAddress;
-    TranspPort _localPort = 0;
-    std::string _remoteIpAddress;
-    TranspPort _remotePort = 0;
+   std::string _localIpAddress;
+   TranspPort _localPort = 0;
+   std::string _remoteIpAddress;
+   TranspPort _remotePort = 0;
 
-    TcpSocket(const SocketFd& sd, const sockaddr* local_sa,
-        const sockaddr* remote_sa);
+   TcpSocket(const SocketFd& sd, const sockaddr* local_sa,
+      const sockaddr* remote_sa);
 };
 
 

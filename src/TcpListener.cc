@@ -19,10 +19,10 @@
 /* -------------------------------------------------------------------------- */
 
 TcpListener::TcpListener()
-    : TransportSocket(int(::socket(AF_INET, SOCK_STREAM, 0)))
-    , _status(isValid() ? Status::VALID : Status::INVALID)
+   : TransportSocket(int(::socket(AF_INET, SOCK_STREAM, 0)))
+   , _status(isValid() ? Status::VALID : Status::INVALID)
 {
-    memset(&_local_ip_port_sa_in, 0, sizeof(_local_ip_port_sa_in));
+   memset(&_local_ip_port_sa_in, 0, sizeof(_local_ip_port_sa_in));
 }
 
 
@@ -30,17 +30,17 @@ TcpListener::TcpListener()
 
 bool TcpListener::bind(const std::string& ip, const TranspPort& port)
 {
-    if (getSocketFd() <= 0)
-        return false;
+   if (getSocketFd() <= 0)
+      return false;
 
-    sockaddr_in& sin = _local_ip_port_sa_in;
+   sockaddr_in& sin = _local_ip_port_sa_in;
 
-    sin.sin_family = AF_INET;
-    sin.sin_addr.s_addr = ip.empty() ? INADDR_ANY : inet_addr(ip.c_str());
-    sin.sin_port = htons(port);
+   sin.sin_family = AF_INET;
+   sin.sin_addr.s_addr = ip.empty() ? INADDR_ANY : inet_addr(ip.c_str());
+   sin.sin_port = htons(port);
 
-    return 0 == 
-        ::bind(getSocketFd(), reinterpret_cast<const sockaddr*>(&sin), sizeof(sin));
+   return 0 ==
+      ::bind(getSocketFd(), reinterpret_cast<const sockaddr*>(&sin), sizeof(sin));
 }
 
 
@@ -48,22 +48,22 @@ bool TcpListener::bind(const std::string& ip, const TranspPort& port)
 
 TcpSocket::Handle TcpListener::accept()
 {
-    if (getStatus() != Status::VALID)
-        return TcpSocket::Handle();
+   if (getStatus() != Status::VALID)
+      return TcpSocket::Handle();
 
-    sockaddr remote_sockaddr = { 0 };
+   sockaddr remote_sockaddr = { 0 };
 
-    struct sockaddr* local_sockaddr
-        = reinterpret_cast<struct sockaddr*>(&_local_ip_port_sa_in);
+   struct sockaddr* local_sockaddr
+      = reinterpret_cast<struct sockaddr*>(&_local_ip_port_sa_in);
 
-    socklen_t sockaddrlen = sizeof(struct sockaddr);
+   socklen_t sockaddrlen = sizeof(struct sockaddr);
 
-    SocketFd sd = int(::accept(getSocketFd(), &remote_sockaddr, &sockaddrlen));
+   SocketFd sd = int(::accept(getSocketFd(), &remote_sockaddr, &sockaddrlen));
 
-    TcpSocket::Handle handle = TcpSocket::Handle(sd > 0
-            ? new TcpSocket(sd, local_sockaddr, &remote_sockaddr)
-            : nullptr);
+   TcpSocket::Handle handle = TcpSocket::Handle(sd > 0
+      ? new TcpSocket(sd, local_sockaddr, &remote_sockaddr)
+      : nullptr);
 
-    return handle;
+   return handle;
 }
 
