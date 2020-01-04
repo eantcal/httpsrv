@@ -87,7 +87,7 @@ public:
      * @param uri The input string to parse
      */
     void parseUri(const std::string& uri) {
-        _uri = uri == "/" ? "index.html" : uri;
+        _uri = uri; // == "/" ? "index.html" : uri;
     }
 
 

@@ -23,7 +23,6 @@
 #else
 #define HTTP_SERVER_WROOT "~/.httpsrv"
 #endif
-#define HTTP_SERVER_INDEX "index.html"
 #define HTTP_SERVER_PORT 8080
 #define HTTP_SERVER_NAME "httpsrv"
 #define HTTP_SERVER_MAJ_V 1
@@ -32,6 +31,12 @@
 #define HTTP_SERVER_BACKLOG SOMAXCONN
 #define HTTP_CONNECTION_TIMEOUT_MS 10
 #define HTTP_SERVER_VER "HTTP/1.1"
+
+#define HTTP_SERVER_POST_STORE       "/store"
+#define HTTP_SERVER_GET_FILES        "/files"
+#define HTTP_SERVER_GET_MRUFILES     "/mrufiles"
+#define HTTP_SERVER_GET_MRUFILES_ZIP "/mrufiles/zip"
+
 
 #endif // __HTTP_CONFIG_H__
 

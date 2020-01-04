@@ -100,7 +100,10 @@ HttpResponse::HttpResponse(
             formatContinueResponse(_response);
         }
         else {
-            if (body.empty()) {
+            if (request.getUri() != HTTP_SERVER_POST_STORE) {
+                formatError(_response, 400, "Bad Request Error");
+            }
+            else if (body.empty()) {
                 formatError(_response, 500, "Internal Server Error");
             }
             else {

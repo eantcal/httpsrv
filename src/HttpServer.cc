@@ -127,6 +127,7 @@ void HttpServerTask::operator()(Handle task_handle)
         std::string responseBody;
 
         if (httpRequest->getMethod() == HttpRequest::Method::POST
+            && httpRequest->getUri() == HTTP_SERVER_POST_STORE
             && !httpRequest->isExpectedContinueResponse()
             && !fileName.empty())
         {
