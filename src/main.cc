@@ -140,7 +140,16 @@ public:
                 break;
 
             case State::PORT:
-                _http_server_port = std::stoi(sarg);
+                try {
+                    _http_server_port = std::stoi(sarg);
+                    if (_http_server_port < 1 || _http_server_port>65535)
+                        throw 0;
+                }
+                catch (...) {
+                    _err_msg = "Invalid port number";
+                    _error = true;
+                    return;
+                }
                 state = State::OPTION;
                 break;
             }

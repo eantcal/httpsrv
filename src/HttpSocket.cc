@@ -61,9 +61,9 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
     bool timeout = false;
 
     while (ret > 0 && _connUp && _socketHandle) {
-        std::chrono::seconds sec(getConnectionTimeout());
+        std::chrono::milliseconds msec(getConnectionTimeout());
 
-        auto recvEv = _socketHandle->waitForRecvEvent(sec);
+        auto recvEv = _socketHandle->waitForRecvEvent(msec);
 
         switch (recvEv) {
         case TransportSocket::RecvEvent::RECV_ERROR:

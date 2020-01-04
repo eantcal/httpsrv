@@ -45,10 +45,10 @@ private:
     bool _connUp = true;
     
     bool recv(HttpRequest::Handle& handle);
-    int _connectionTimeOut = HTTP_CONNECTION_TIMEOUT; // secs
+    int _connectionTimeOut;
 
 public:
-    HttpSocket(int connectionTimeout = HTTP_CONNECTION_TIMEOUT) noexcept :
+    HttpSocket(int connectionTimeout = HTTP_CONNECTION_TIMEOUT_MS) noexcept :
         _connectionTimeOut(connectionTimeout) 
     {}
 
@@ -107,7 +107,7 @@ public:
     }
 
     /*
-     * Return connection timeout interval in seconds
+     * Return connection timeout interval in milliseconds
      */
     const int& getConnectionTimeout() const noexcept {
         return _connectionTimeOut;

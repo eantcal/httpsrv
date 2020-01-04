@@ -29,7 +29,7 @@ TransportSocket::~TransportSocket()
 TransportSocket::RecvEvent TransportSocket::waitForRecvEvent(
     const TransportSocket::TimeoutInterval& timeout)
 {
-    struct timeval tv_timeout = { 0 };
+    struct timeval tv_timeout = { 0, 0 };
     Tools::convertDurationInTimeval(timeout, tv_timeout);
 
     fd_set rd_mask;
