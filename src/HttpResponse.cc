@@ -27,7 +27,7 @@ void HttpResponse::formatError(
     output += "Date: " + Tools::getLocalTime() + "\r\n";
     output += "Server: " HTTP_SERVER_NAME "\r\n";
     output += "Content-Length: " + std::to_string(error_html.size()) + "\r\n";
-    output += "Connection: Keep-Alive\r\n";
+    // output += "Connection: Keep-Alive\r\n";
     output += "Content-Type: text/html\r\n\r\n";
     output += error_html;
 }
@@ -46,7 +46,7 @@ void HttpResponse::formatPositiveResponse(
     response += "Date: " + Tools::getLocalTime() + "\r\n";
     response += "Server: " HTTP_SERVER_NAME "\r\n";
     response += "Content-Length: " + std::to_string(contentLen) + "\r\n";
-    response += "Connection: Keep-Alive\r\n";
+    // response += "Connection: Keep-Alive\r\n";
     response += "Last Modified: " + fileTime + "\r\n";
     response += "Content-Type: ";
 

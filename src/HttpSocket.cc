@@ -60,9 +60,6 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
     bool boundary_maker = false;
     bool timeout = false;
 
-    size_t body_first_line = 0;
-    size_t body_last_line = 0;
-
     while (ret > 0 && _connUp && _socketHandle) {
         std::chrono::seconds sec(getConnectionTimeout());
 

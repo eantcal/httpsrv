@@ -111,10 +111,7 @@ public:
 
 private:
     std::atomic<Status> _status;
-
-    TranspPort _port = 0;
     sockaddr_in _local_ip_port_sa_in;
-
     TcpListener();
 };
 

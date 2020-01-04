@@ -205,7 +205,7 @@ public:
                 auto fName = it->path().filename().string();
                 idNameMap[Tools::hashCode(fName)] = fName;
                 // std::cerr << Tools::hashCode(fName) << "=" << fName << std::endl;
-                if (!unlimited && list.size() >= maxN)
+                if (!unlimited && int(list.size()) >= maxN)
                     break;
              }
           }

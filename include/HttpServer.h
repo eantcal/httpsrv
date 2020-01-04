@@ -91,7 +91,7 @@ public:
      *
      * @return the port number
      */
-    const TranspPort getLocalPort() const { 
+    TranspPort getLocalPort() const { 
        return _serverPort; 
     }
 

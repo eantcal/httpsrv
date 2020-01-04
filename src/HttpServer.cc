@@ -25,9 +25,28 @@
 /* -------------------------------------------------------------------------- */
 
 class HttpServerTask {
+public:
+    using Handle = std::shared_ptr<HttpServerTask>;
+
+    inline static Handle create(
+        bool verboseModeOn,
+        std::ostream& loggerOStream,
+        TcpSocket::Handle socketHandle,
+        const std::string& webRootPath)
+    {
+        return Handle(new HttpServerTask(
+            verboseModeOn,
+            loggerOStream,
+            socketHandle,
+            webRootPath));
+    }
+
+    HttpServerTask() = delete;
+    void operator()(Handle task_handle);
+
 private:
-    std::ostream& _logger;
     bool _verboseModeOn = true;
+    std::ostream& _logger;
     TcpSocket::Handle _tcpSocketHandle;
     std::string _webRootPath;
 
@@ -56,24 +75,6 @@ private:
     {
     }
 
-public:
-    using Handle = std::shared_ptr<HttpServerTask>;
-
-    inline static Handle create(
-        bool verboseModeOn, 
-        std::ostream& loggerOStream,
-        TcpSocket::Handle socketHandle, 
-        const std::string& webRootPath)
-    {
-        return Handle(new HttpServerTask(
-            verboseModeOn, 
-            loggerOStream, 
-            socketHandle, 
-            webRootPath));
-    }
-
-    HttpServerTask() = delete;
-    void operator()(Handle task_handle);
 };
 
 
