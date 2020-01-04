@@ -91,8 +91,8 @@ void HttpServerTask::operator()(Handle task_handle)
 
     // Generates an identifier for recognizing the transaction
     auto transactionId = [sd]() {
-        return "[" + std::to_string(sd) + "] " + "["
-            + Tools::getLocalTime() + "]";
+        return "[" + std::to_string(sd) + "] " 
+             + "[" + Tools::getLocalTime() + "] ";
     };
 
     if (verboseModeOn())
@@ -111,6 +111,7 @@ void HttpServerTask::operator()(Handle task_handle)
                 log() << transactionId() << "FATAL ERROR: no memory?\n\n";
             break;
         }
+
         httpSocket >> httpRequest;
 
         // If an error occoured terminate the task
@@ -121,9 +122,42 @@ void HttpServerTask::operator()(Handle task_handle)
         // Log the request
         if (verboseModeOn())
             httpRequest->dump(log(), transactionId());
+        
+        const auto& filename = httpRequest->getFileName();
+        std::string responseBody;
+
+        if (httpRequest->getMethod() == HttpRequest::Method::POST
+            && !httpRequest->isExpectedContinueResponse()
+            && !filename.empty())
+        {
+            std::string filePath = getWebRootPath() + "/" + filename;
+
+            log() << transactionId() << "Saving body content into '"
+                << filePath << "'\n\n";
+
+            std::ofstream os(filePath, std::ofstream::binary);
+
+            const auto& requestBody = httpRequest->getBody();
+            os.write(requestBody.data(), requestBody.size());
+
+            if (!os.fail()) {
+                os.close();
+                if (!Tools::jsonStat(filePath, responseBody)) {
+                    responseBody.clear(); // will create a 500 error response
+                }
+            }
+            else if (verboseModeOn()) {
+                log() << transactionId() << "Error saving file '"
+                << filePath << "'\n\n";
+            }
+        }
 
         // Build a response to previous HTTP request
-        HttpResponse response(*httpRequest, getWebRootPath());
+        HttpResponse response(
+            *httpRequest, 
+            getWebRootPath(),
+            responseBody,
+            responseBody.empty() ? "" : ".json");
 
         // Send the response to remote peer
         httpSocket << response;
@@ -135,21 +169,6 @@ void HttpServerTask::operator()(Handle task_handle)
                     log() << transactionId() << "Error sending '"
                           << response.getLocalUriPath() << "'\n\n";
                 break;
-            }
-        }
-        else if (httpRequest->getMethod() == HttpRequest::Method::POST) {
-            const auto& filename = httpRequest->getFileName();
-            const auto& body = httpRequest->getBody();
-            
-            if (!filename.empty()) {
-                std::string destPath =
-                    response.getLocalRepositoryPath() + "/" + filename;
-
-                log() << transactionId() << "Saving body content into '"
-                    << destPath << "'\n\n";
-                
-                std::ofstream os(destPath, std::ofstream::binary);
-                os.write(body.data(), body.size());
             }
         }
 

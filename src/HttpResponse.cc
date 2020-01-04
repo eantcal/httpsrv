@@ -21,13 +21,12 @@ void HttpResponse::formatError(
     std::string scode = std::to_string(code);
 
     std::string error_html = "<html><head><title>" + scode + " " + msg
-        + "</title></head>" + "<body>Forbidden</body></html>\r\n";
+        + "</title></head>" + "<body>Sorry, I can't do that</body></html>\r\n";
 
     output = HTTP_SERVER_VER " " + scode + " " + msg + "\r\n";
     output += "Date: " + Tools::getLocalTime() + "\r\n";
     output += "Server: " HTTP_SERVER_NAME "\r\n";
     output += "Content-Length: " + std::to_string(error_html.size()) + "\r\n";
-    // output += "Connection: Keep-Alive\r\n";
     output += "Content-Type: text/html\r\n\r\n";
     output += error_html;
 }
@@ -73,7 +72,9 @@ void HttpResponse::formatContinueResponse(std::string& response)
 
 HttpResponse::HttpResponse(
     const HttpRequest& request,
-    const std::string& webRootPath)
+    const std::string& webRootPath,
+    const std::string& body,
+    const std::string& bodyFormat)
 {
     if (request.getMethod() == HttpRequest::Method::UNKNOWN) {
         formatError(_response, 403, "Forbidden");
@@ -99,17 +100,21 @@ HttpResponse::HttpResponse(
             formatContinueResponse(_response);
         }
         else {
-            std::string bodyToSend = "<html>TODO</html>";
-            formatPositiveResponse(
-                _response,
-                Tools::getLocalTime(),
-                std::string(".html"),
-                bodyToSend.size());
+            if (body.empty()) {
+                formatError(_response, 500, "Internal Server Error");
+            }
+            else {
+                formatPositiveResponse(
+                    _response,
+                    Tools::getLocalTime(),
+                    std::string(bodyFormat),
+                    body.size());
 
-            _response += bodyToSend;
+                _response += body;
+            }
         }
     }
-    else {
+    else { // GET/HEAD
         if (Tools::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
             formatPositiveResponse(_response, fileTime, fileExt, contentLen);
         }

@@ -32,16 +32,20 @@ public:
     HttpResponse(const HttpResponse&) = default;
     HttpResponse& operator=(const HttpResponse&) = default;
 
+    using Handle = std::unique_ptr<HttpResponse>;
 
     /**
      * Constructs a response to a request.
      *
      * @param request an http request
      * @param webRootPath local working directory of the web server
+     * @param body optional body field
      */
     HttpResponse(
         const HttpRequest& request, 
-        const std::string& webRootPath);
+        const std::string& webRootPath,
+        const std::string& body="",
+        const std::string& bodyFormat="");
 
 
     /**
