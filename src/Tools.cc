@@ -99,10 +99,13 @@ std::string Tools::hashCode(const std::string& src)
 
 /* -------------------------------------------------------------------------- */
 
-bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
+bool Tools::jsonStat(
+    const std::string filePath,  // actual file path (including name)
+    const std::string& fileName, // filen name for JSON outout
+    std::string& jsonOutput)
 {
     struct stat rstat = { 0 };
-    const int ret = stat(fileName.c_str(), &rstat);
+    const int ret = stat(filePath.c_str(), &rstat);
     
     if (ret < 0)
         return false;
@@ -138,7 +141,7 @@ bool Tools::jsonStat(const std::string& fileName, std::string& jsonOutput)
     oss << "  \"name\": \"" << fileName << "\"," << std::endl;
     oss << "  \"size\": " << rstat.st_size << "," << std::endl;
     oss << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
-    oss << "}";
+    oss << "}" << std::endl;
     jsonOutput = oss.str();
 
     return true;

@@ -119,11 +119,15 @@ std::string hashCode(const std::string& src);
  * name is the fileName, size is the size in bytes of file, 
  * timestamp is a unix access timestamp of file
  *
- * @param fileName String containing the path of existing file
+ * @param filePath String containing complete file path and name
+ * @param fileName String containing the name to generate JSON output
  * @param jsonOutput output JSON string
  * @return true if operation successfully completed, false otherwise
  */
-bool jsonStat(const std::string& fileName, std::string& jsonOutput);
+bool jsonStat(
+    const std::string filePath,
+    const std::string& fileName,
+    std::string& jsonOutput);
 
 
 /* -------------------------------------------------------------------------- */

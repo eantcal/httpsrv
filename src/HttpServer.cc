@@ -123,17 +123,18 @@ void HttpServerTask::operator()(Handle task_handle)
         if (verboseModeOn())
             httpRequest->dump(log(), transactionId());
         
-        const auto& filename = httpRequest->getFileName();
+        const auto& fileName = httpRequest->getFileName();
         std::string responseBody;
 
         if (httpRequest->getMethod() == HttpRequest::Method::POST
             && !httpRequest->isExpectedContinueResponse()
-            && !filename.empty())
+            && !fileName.empty())
         {
-            std::string filePath = getWebRootPath() + "/" + filename;
+            std::string filePath = getWebRootPath() + "/" + fileName;
 
-            log() << transactionId() << "Saving body content into '"
-                << filePath << "'\n\n";
+            if (verboseModeOn())
+                log() << transactionId() << "Saving body content into '"
+                    << filePath << "'\n\n";
 
             std::ofstream os(filePath, std::ofstream::binary);
 
@@ -142,7 +143,7 @@ void HttpServerTask::operator()(Handle task_handle)
 
             if (!os.fail()) {
                 os.close();
-                if (!Tools::jsonStat(filePath, responseBody)) {
+                if (!Tools::jsonStat(filePath, fileName, responseBody)) {
                     responseBody.clear(); // will create a 500 error response
                 }
             }
