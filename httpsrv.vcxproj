@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_USE_REGEX_;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include; src; PicoSHA2</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include; src; PicoSHA2; zip/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -108,7 +108,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_USE_REGEX_;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include; src; PicoSHA2</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include; src; PicoSHA2; zip/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -127,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_USE_REGEX_;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include; src; PicoSHA2</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include; src; PicoSHA2; zip/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -148,7 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_USE_REGEX_;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include; src; PicoSHA2</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include; src; PicoSHA2; zip/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -173,6 +173,7 @@
     <ClInclude Include="include\HttpServer.h" />
     <ClInclude Include="include\OsSpecific.h" />
     <ClInclude Include="PicoSHA2\picosha2.h" />
+    <ClInclude Include="zip\src\zip.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\HttpRequest.cc" />
@@ -185,6 +186,7 @@
     <ClCompile Include="src\OsSpecific.cc" />
     <ClCompile Include="src\TcpListener.cc" />
     <ClCompile Include="src\main.cc" />
+    <ClCompile Include="zip\src\zip.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
