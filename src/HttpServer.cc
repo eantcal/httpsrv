@@ -136,6 +136,21 @@ void HttpServerTask::operator()(Handle task_handle)
                 break;
             }
         }
+        else if (httpRequest->getMethod() == HttpRequest::Method::POST) {
+            const auto& filename = httpRequest->getFileName();
+            const auto& body = httpRequest->getBody();
+            
+            if (!filename.empty()) {
+                std::string destPath =
+                    response.getLocalRepositoryPath() + "/" + filename;
+
+                log() << transactionId() << "Saving body content into '"
+                    << destPath << "'\n\n";
+                
+                std::ofstream os(destPath, std::ofstream::binary);
+                os.write(body.data(), body.size());
+            }
+        }
 
         if (verboseModeOn())
             response.dump(log(), transactionId());

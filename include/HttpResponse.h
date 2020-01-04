@@ -61,6 +61,14 @@ public:
 
 
     /**
+     * Returns the content of local resource repository root path
+     */
+    const std::string& getLocalRepositoryPath() const {
+        return _localRepositoryPath;
+    }
+
+
+    /**
      * Prints the response out to os stream.
      *
      * @param os The output stream
@@ -74,6 +82,7 @@ private:
 
     std::string _response;
     std::string _localUriPath;
+    std::string _localRepositoryPath;
 
     // Format an error response
     static void formatError(

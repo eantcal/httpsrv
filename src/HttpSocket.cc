@@ -31,35 +31,37 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
     char c = 0;
     int ret = 1;
 
-    enum class CrLfSeq { CR1, LF1, CR2, LF2, IDLE } s = CrLfSeq::IDLE;
+    enum class CrLfSeq { CR1, LF1, CR2, LF2, IDLE } crlf_st = CrLfSeq::IDLE;
 
-    auto crlf = [&s](char c) -> bool {
-        switch (s) {
+    auto feed_crlf_fsm = [&crlf_st](char c) {
+        switch (crlf_st) {
         case CrLfSeq::IDLE:
-            s = (c == '\r') ? CrLfSeq::CR1 : CrLfSeq::IDLE;
+            crlf_st = (c == '\r') ? CrLfSeq::CR1 : CrLfSeq::IDLE;
             break;
         case CrLfSeq::CR1:
-            s = (c == '\n') ? CrLfSeq::LF1 : CrLfSeq::IDLE;
+            crlf_st = (c == '\n') ? CrLfSeq::LF1 : CrLfSeq::IDLE;
             break;
         case CrLfSeq::LF1:
-            s = (c == '\r') ? CrLfSeq::CR2 : CrLfSeq::IDLE;
+            crlf_st = (c == '\r') ? CrLfSeq::CR2 : CrLfSeq::IDLE;
             break;
         case CrLfSeq::CR2:
-            s = (c == '\n') ? CrLfSeq::LF2 : CrLfSeq::IDLE;
+            crlf_st = (c == '\n') ? CrLfSeq::LF2 : CrLfSeq::IDLE;
             break;
         default:
-            s = CrLfSeq::IDLE;
+            crlf_st = CrLfSeq::IDLE;
             break;
         }
-
-        return s == CrLfSeq::LF2;
     };
 
     std::string line;
     std::string body;
 
     bool receivingBody = false;
+    bool boundary_maker = false;
     bool timeout = false;
+
+    size_t body_first_line = 0;
+    size_t body_last_line = 0;
 
     while (ret > 0 && _connUp && _socketHandle) {
         std::chrono::seconds sec(getConnectionTimeout());
@@ -83,43 +85,61 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
         ret = _socketHandle->recv(&c, 1);
 
         if (ret > 0) {
-            if (receivingBody) 
-                body += c;
-            else
-                line += c;
-        } else if (ret <= 0) {
+            line += c;
+        }
+        else if (ret <= 0) {
             _connUp = false;
             break;
         }
 
-        if (receivingBody) {
-            if (receivingBody && body.size() >= handle->getContentLength()) {
-                _connUp = true;
-                break;
-            }
-        } 
-        else {
-            if (crlf(c)) {
-                if (!handle->isExpectedContinueResponse())
-                    receivingBody = true;
-                else
-                    break;
-            }
+        feed_crlf_fsm(c);
 
-            if (s == CrLfSeq::LF1) {
-                if (!line.empty()) {
-                    handle->parseHeader(line);
-                    line.clear();
-                }
+        if (!receivingBody && crlf_st == CrLfSeq::LF2) {
+            if (line == "\r\n")
+                line.clear();
+
+            if (!handle->isExpectedContinueResponse()) {
+                receivingBody = handle->getBoundary().empty() || boundary_maker;
             }
+            else
+                break;
         }
+
+		if ((crlf_st == CrLfSeq::LF1 || crlf_st == CrLfSeq::LF2) && !line.empty()) {
+			if (!handle->getBoundary().empty()) {
+                const std::string boundary_begin = "--" + handle->getBoundary();
+                const std::string boundary_end = "--" + handle->getBoundary() + "--";
+
+				const std::string trimmedLine = Tools::trim(line);
+				
+                if (!receivingBody && !boundary_maker && trimmedLine == boundary_begin) {
+					boundary_maker = true;
+				}
+				else if (receivingBody && boundary_maker && trimmedLine == boundary_end) {
+					receivingBody = false;
+                    line.clear();
+				}
+			}
+
+            if (!line.empty()) {
+                if (!receivingBody) {
+                    handle->parseHeader(line);
+                    handle->addLine(line);
+                }
+                else {
+                    body += line;
+                }
+
+                line.clear();
+            }
+		}
     }
 
-    if (ret < 0 || !_socketHandle || handle->get_header().empty()) {
+    if (ret < 0 || !_socketHandle || handle->getHeaderList().empty()) {
         return false;
     }
 
-    std::string request = *handle->get_header().cbegin();
+    std::string request = *handle->getHeaderList().cbegin();
     std::vector<std::string> tokens;
 
     if (!Tools::splitLineInTokens(request, tokens, " ")) {
@@ -134,7 +154,11 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
     handle->parseUri(tokens[1]);
     handle->parseVersion(tokens[2]);
 
-    std::cerr << "BODY:\n" << body << std::endl;
+    //in case the body is encapsulated in boundary markers a prior CRLF sequence
+    //that was already added to the body should be still considered part of the
+    //boundary marker itself rather than part of body. Such CRLF must be removed
+    if (boundary_maker && body.size() > 2)
+        body.resize(body.size() - 2);
 
     if (!body.empty())
         handle->setBody(std::move(body));

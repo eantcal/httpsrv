@@ -51,7 +51,7 @@ std::ostream& HttpRequest::dump(std::ostream& os, const std::string& id)
     
     ss = ">>> REQUEST " + id + "\n";
 
-    for (auto e : get_header())
+    for (auto e : getHeaderList())
         ss += e;
     
     os << ss << "\n";
@@ -62,17 +62,14 @@ std::ostream& HttpRequest::dump(std::ostream& os, const std::string& id)
 
 /* -------------------------------------------------------------------------- */
 
-void HttpRequest::parseHeader(const std::string& new_header) 
+void HttpRequest::parseHeader(const std::string& header) 
 {
-    if (new_header.empty())
-        return;
-
-    const auto prefix = ::toupper(new_header.c_str()[0]);
+    const auto prefix = ::toupper(header.c_str()[0]);
 
     if (prefix == 'C' || prefix == 'E') {
         std::vector<std::string> tokens;
 
-        Tools::splitLineInTokens(new_header, tokens, " ");
+        Tools::splitLineInTokens(header, tokens, " ");
 
         const auto headerName = Tools::uppercase(tokens[0]);
 
@@ -88,24 +85,40 @@ void HttpRequest::parseHeader(const std::string& new_header)
                 }
                 else if (headerName == "CONTENT-TYPE:") {
                     _content_type = tokens[1];
+                    std::vector<std::string> content_type;
+                    Tools::splitLineInTokens(header, content_type, ";");
+                    if (!content_type.empty()) {
+                        const std::string searched_prefix = "boundary=";
 
-                    std::cerr << "Content-type:" << _content_type << std::endl;
+                        for (const auto& item : content_type) {
+                            auto field = Tools::trim(item);
+                            if (field.size() > searched_prefix.size() &&
+                                field.substr(0, searched_prefix.size()) == searched_prefix)
+                            {
+                                _boundary = field.substr(
+                                    searched_prefix.size(), field.size() - searched_prefix.size());
+                                break;
+                            }
+                        }
+                    }
                 }
                 else if (headerName == "CONTENT-DISPOSITION:") {
                     std::vector<std::string> htoken;
-                    Tools::splitLineInTokens(new_header, htoken, ";");
+                    Tools::splitLineInTokens(header, htoken, ";");
 
                     if (!htoken.empty()) {
                         const std::string searched_prefix = "filename=\"";
 
                         for (const auto& item : htoken) {
-                            if (item.size() > searched_prefix.size() &&
-                                item.substr(0, searched_prefix.size()) == searched_prefix)
+                            auto field = Tools::trim(item);
+                            if (field.size() > searched_prefix.size() &&
+                                field.substr(0, searched_prefix.size()) == searched_prefix)
                             {
-                                for (auto i = searched_prefix.size(); i < item.size(); ++i) {
-                                    if (item[i] == '\"')
+                                _filename.clear();
+                                for (auto i = searched_prefix.size(); i < field.size(); ++i) {
+                                    if (field[i] == '\"')
                                         break;
-                                    _filename += item[i];
+                                    _filename += field[i];
                                 }
                                 break;
                             }
@@ -117,11 +130,8 @@ void HttpRequest::parseHeader(const std::string& new_header)
                 if (headerName == "EXPECT:" && tokens[1][0]=='1') {
                     const auto value = Tools::uppercase(Tools::trim(tokens[1]));
                     _expected_100_continue = value == "100-CONTINUE";
-
-                    std::cerr << "*********** 100 **********\n";
                 }
             }
         }
     }
-    _header.push_back(new_header);
 }

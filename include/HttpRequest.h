@@ -38,12 +38,14 @@ public:
     HttpRequest() = default;
     HttpRequest(const HttpRequest&) = default;
 
+    using HeaderList = std::list<std::string>;
+
 
     /**
      * Returns the request headers
      */
-    const std::list<std::string>& get_header() const { 
-       return _header; 
+    const HeaderList& getHeaderList() const { 
+       return _headerList; 
     }
 
 
@@ -98,11 +100,21 @@ public:
 
 
     /**
-     * Adds a new header to request
+     * Parse line as part of request header
      *
-     * @param new_header The header content to add to headers fields
+     * @param header The header content to add to headers fields
      */
-    void parseHeader(const std::string& new_header);
+    void parseHeader(const std::string& header);
+
+
+    /**
+     * Adds a new line to request data
+     *
+     * @param line to add
+     */
+    void addLine(const std::string& line) {
+        _headerList.push_back(line);
+    }
 
 
     /**
@@ -132,6 +144,7 @@ public:
         _expected_100_continue = false;
     }
 
+
     /**
      * Get the content-disposition filename attribute content
      *
@@ -141,14 +154,34 @@ public:
         return _filename;
     }
 
+
+    /**
+     * Get the content-type multipart boundary
+     *
+     * @return string containing any boundary string
+     */
+    const std::string& getBoundary() const noexcept {
+        return _boundary;
+    }
+
+
     /**
      * Set a body to request
      *
-     * @param new_header The header content to add to headers fields
+     * @param body is body content
      */
     void setBody(std::string&& body) {
         _body = std::move(body);
     }
+
+    /**
+     * Get any body
+     * @param body is body content
+     */
+    const std::string& getBody() const noexcept {
+        return _body;
+    }
+
 
     /**
      * Prints the request.
@@ -161,7 +194,7 @@ public:
 
 
 private:
-    std::list<std::string> _header;
+    HeaderList _headerList;
     Method _method = Method::UNKNOWN;
     Version _version = Version::UNKNOWN;
     std::string _uri;
@@ -169,6 +202,7 @@ private:
     int _content_length = 0;
     std::string _content_type;
     std::string _filename;
+    std::string _boundary;
     bool _expected_100_continue = false;
 };
 

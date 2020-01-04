@@ -85,6 +85,8 @@ HttpResponse::HttpResponse(
             s = "/" + s;
     };
 
+    _localRepositoryPath = webRootPath;
+
     _localUriPath = request.getUri();
     rpath(_localUriPath);
     _localUriPath = webRootPath + _localUriPath;
