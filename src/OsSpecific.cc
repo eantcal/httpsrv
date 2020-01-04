@@ -48,6 +48,7 @@ int OsSpecific::closeSocketFd(int sd) {
 
 #else
 
+#include <signal.h>
 
 /* -------------------------------------------------------------------------- */
 // Other C++ platform
@@ -56,6 +57,7 @@ int OsSpecific::closeSocketFd(int sd) {
 /* -------------------------------------------------------------------------- */
 
 bool OsSpecific::initSocketLibrary() { 
+    signal(SIGPIPE, SIG_IGN);
     return true; 
 }
 
