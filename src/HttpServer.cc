@@ -56,23 +56,19 @@ private:
    bool _verboseModeOn = true;
    std::ostream& _logger;
    TcpSocket::Handle _tcpSocketHandle;
-   std::string _webRootPath;
+   std::string _localStorePath;
    IdFileNameCache::Handle _idFileNameCache;
 
    std::ostream& log() {
       return _logger;
    }
 
-   bool verboseModeOn() const {
-      return _verboseModeOn;
-   }
-
    TcpSocket::Handle& getTcpSocketHandle() {
       return _tcpSocketHandle;
    }
 
-   const std::string& getWebRootPath() const {
-      return _webRootPath;
+   const std::string& getLocalStorePath() const {
+      return _localStorePath;
    }
 
    HttpServerTask(
@@ -84,7 +80,7 @@ private:
       : _verboseModeOn(verboseModeOn)
       , _logger(loggerOStream)
       , _tcpSocketHandle(socketHandle)
-      , _webRootPath(webRootPath)
+      , _localStorePath(webRootPath)
       , _idFileNameCache(idFileNameCache)
    {
    }
@@ -94,7 +90,7 @@ private:
       const std::string& fileContent, 
       std::string& json)
    {
-      std::string filePath = getWebRootPath() + "/" + fileName;
+      std::string filePath = getLocalStorePath() + "/" + fileName;
 
       std::ofstream os(filePath, std::ofstream::binary);
 
@@ -129,7 +125,7 @@ private:
    {
       if (httpRequest.getUri() == HTTP_SERVER_GET_FILES) {
          if (FileUtils::refreshIdFilenameCache(
-            getWebRootPath(),
+            getLocalStorePath(),
             *_idFileNameCache,
             json))
          {
@@ -160,7 +156,7 @@ void HttpServerTask::operator()(Handle task_handle)
          + "[" + SysUtils::getLocalTime() + "] ";
    };
 
-   if (verboseModeOn())
+   if (_verboseModeOn)
       log() << transactionId() << "---- http_server_task +\n\n";
 
    // Wait for a request from remote peer
@@ -172,7 +168,7 @@ void HttpServerTask::operator()(Handle task_handle)
       HttpSocket httpSocket(getTcpSocketHandle());
 
       if (!httpRequest) {
-         if (verboseModeOn())
+         if (_verboseModeOn)
             log() << transactionId() << "FATAL ERROR: no memory?\n\n";
          break;
       }
@@ -185,7 +181,7 @@ void HttpServerTask::operator()(Handle task_handle)
       }
 
       // Log the request
-      if (verboseModeOn())
+      if (_verboseModeOn)
          httpRequest->dump(log(), transactionId());
 
       const auto& fileName = httpRequest->getFileName();
@@ -197,11 +193,11 @@ void HttpServerTask::operator()(Handle task_handle)
          && !httpRequest->isExpectedContinueResponse()
          && !fileName.empty())
       {
-         if (verboseModeOn())
+         if (_verboseModeOn)
             log() << transactionId() << "Writing '" << fileName << "'" << std::endl;
 
          if (!writePostedFile(fileName, httpRequest->getBody(), jsonResponse)) {
-            if (verboseModeOn()) {
+            if (_verboseModeOn) {
                log() << transactionId() << "Error writing '"
                   << fileName << "'" << std::endl;
             }
@@ -214,7 +210,7 @@ void HttpServerTask::operator()(Handle task_handle)
       // Format a response to previous HTTP request
       HttpResponse response(
          *httpRequest,
-         getWebRootPath(),
+         getLocalStorePath(),
          jsonResponse,
          jsonResponse.empty() ? "" : ".json");
 
@@ -226,7 +222,7 @@ void HttpServerTask::operator()(Handle task_handle)
           httpRequest->getMethod() == HttpRequest::Method::GET) 
       {
          if (0 > httpSocket.sendFile(response.getLocalUriPath())) {
-            if (verboseModeOn())
+            if (_verboseModeOn)
                log() << transactionId() << "Error sending '"
                << response.getLocalUriPath() << "'\n\n";
             break;
@@ -234,7 +230,7 @@ void HttpServerTask::operator()(Handle task_handle)
       }
      
 
-      if (verboseModeOn())
+      if (_verboseModeOn)
          response.dump(log(), transactionId());
 
       if (!httpRequest->isExpectedContinueResponse()) {
@@ -247,7 +243,7 @@ void HttpServerTask::operator()(Handle task_handle)
 
    getTcpSocketHandle()->shutdown();
 
-   if (verboseModeOn()) {
+   if (_verboseModeOn) {
       log() << transactionId() << "---- http_server_task -\n\n";
       log().flush();
    }
@@ -321,7 +317,7 @@ bool HttpServer::run()
          _verboseModeOn,
          *_loggerOStreamPtr,
          handle,
-         getWebRootPath(),
+         getLocalStorePath(),
          _idFileNameCache);
 
       // Coping the http_server_task handle (shared_ptr) the reference

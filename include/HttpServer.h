@@ -33,18 +33,6 @@
 class HttpServer {
 public:
    using TranspPort = TcpListener::TranspPort;
-   enum { DEFAULT_PORT = HTTP_SERVER_PORT };
-
-private:
-   std::ostream* _loggerOStreamPtr = &std::clog;
-   static HttpServer* _instance;
-   TranspPort _serverPort = DEFAULT_PORT;
-   TcpListener::Handle _tcpServer;
-   std::string _webRootPath = "/tmp";
-   bool _verboseModeOn = true;
-   IdFileNameCache::Handle _idFileNameCache;
-
-   HttpServer() = default;
 
 public:
    HttpServer(const HttpServer&) = delete;
@@ -74,6 +62,13 @@ public:
    }
 
    /**
+    * Sets mrufiles number
+    */
+   void setMruFilesNumber(int mrufilesN) noexcept {
+      _mrufilesN = mrufilesN;
+   }
+
+   /**
     * Gets HttpServer object instance reference.
     * This class is a singleton. First time this function is called,
     * the HttpServer object is initialized.
@@ -85,15 +80,15 @@ public:
    /**
     * Gets current server working directory
     */
-   const std::string& getWebRootPath() const noexcept {
-      return _webRootPath;
+   const std::string& getLocalStorePath() const noexcept {
+      return _localStorePath;
    }
 
    /**
     * Sets the server working directory
     */
-   void setupWebRootPath(const std::string& webRootPath) {
-      _webRootPath = webRootPath;
+   void setLocalStorePath(const std::string& path) {
+      _localStorePath = path;
    }
 
    /**
@@ -111,7 +106,7 @@ public:
     * @param port listening port
     * @return true if operation is successfully completed, false otherwise
     */
-   bool bind(TranspPort port = DEFAULT_PORT);
+   bool bind(TranspPort port);
 
    /**
     * Sets the server in listening mode
@@ -140,6 +135,19 @@ protected:
    TcpSocket::Handle accept() {
       return _tcpServer ? _tcpServer->accept() : nullptr;
    }
+
+private:
+   std::ostream* _loggerOStreamPtr = &std::clog;
+   static HttpServer* _instance;
+   TranspPort _serverPort = HTTP_SERVER_PORT;
+   TcpListener::Handle _tcpServer;
+   std::string _localStorePath = "/tmp";
+   bool _verboseModeOn = true;
+   IdFileNameCache::Handle _idFileNameCache;
+   int _mrufilesN = MRUFILES_DEF_N;
+
+   HttpServer() = default;
+
 };
 
 

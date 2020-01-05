@@ -167,7 +167,7 @@
     <ClInclude Include="include\HttpRequest.h" />
     <ClInclude Include="include\HttpResponse.h" />
     <ClInclude Include="include\IdFileNameCache.h" />
-    <ClInclude Include="include\ProgOpt.h" />
+    <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\TcpListener.h" />
     <ClInclude Include="include\TcpSocket.h" />
     <ClInclude Include="include\TransportSocket.h" />
@@ -183,7 +183,7 @@
     <ClCompile Include="src\HttpResponse.cc" />
     <ClCompile Include="src\HttpSocket.cc" />
     <ClCompile Include="src\FileUtils.cc" />
-    <ClCompile Include="src\ProgOpt.cc" />
+    <ClCompile Include="src\Application.cc" />
     <ClCompile Include="src\TcpSocket.cc" />
     <ClCompile Include="src\TransportSocket.cc" />
     <ClCompile Include="src\StrUtils.cc" />

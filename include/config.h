@@ -19,9 +19,9 @@
 #define __HTTP_CONFIG_H__
 
 #ifdef WIN32
-#define HTTP_SERVER_WROOT             "~/httpsrv"
+#define HTTP_SERVER_LOCAL_STORE_PATH  "~/httpsrv"
 #else
-#define HTTP_SERVER_WROOT             "~/.httpsrv"
+#define HTTP_SERVER_LOCAL_STORE_PATH  "~/.httpsrv"
 #endif
 #define HTTP_SERVER_PORT              8080
 #define HTTP_SERVER_NAME              "httpsrv"
@@ -36,6 +36,9 @@
 #define HTTP_SERVER_GET_FILES        "/files"
 #define HTTP_SERVER_GET_MRUFILES     "/mrufiles"
 #define HTTP_SERVER_GET_MRUFILES_ZIP "/mrufiles/zip"
+
+#define MRUFILES_DEF_N                3
+#define MRUFILES_MAX_N                1000
 
 
 /* -------------------------------------------------------------------------- */
