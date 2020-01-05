@@ -70,16 +70,18 @@ bool FileUtils::refreshIdFilenameCache(
             std::string jsonEntry;
             auto fName = it->path().filename().string();
             auto id = FileUtils::hashCode(fName);
-            if (jsonStat(it->path().string(), fName, id, jsonEntry, ",\n")) {
+            if (jsonStat(it->path().string(), fName, id, jsonEntry, "  ", ",\n")) {
                newCache.insert(id, fName);
                json += jsonEntry;
             }
          }
       }
       idFileNameCache.locked_replace(newCache);
+      json += "]\n";
       return true;
    }
 
+   json.clear();
    return false;
 }
 
@@ -162,6 +164,7 @@ bool FileUtils::jsonStat(
    const std::string& fileName,  // filename field of JSON output
    const std::string& id,        // id field of JSON output
    std::string& jsonOutput,
+   const std::string& beginl,
    const std::string& endl)
 {
    struct stat rstat = { 0 };
@@ -196,12 +199,12 @@ bool FileUtils::jsonStat(
    */
 
    std::stringstream oss;
-   oss << "{" << std::endl;
-   oss << "  \"id\": \"" << id << "\"," << std::endl;
-   oss << "  \"name\": \"" << fileName << "\"," << std::endl;
-   oss << "  \"size\": " << rstat.st_size << "," << std::endl;
-   oss << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
-   oss << "}" << endl;
+   oss << beginl << "{" << std::endl;
+   oss << beginl << "  \"id\": \"" << id << "\"," << std::endl;
+   oss << beginl << "  \"name\": \"" << fileName << "\"," << std::endl;
+   oss << beginl << "  \"size\": " << rstat.st_size << "," << std::endl;
+   oss << beginl << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
+   oss << beginl << "}" << endl;
    jsonOutput = oss.str();
 
    return true;

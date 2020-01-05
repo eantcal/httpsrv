@@ -90,6 +90,7 @@ namespace FileUtils {
       const std::string& fileName,
       const std::string& id,
       std::string& jsonOutput,
+      const std::string& beginl="",
       const std::string& endl="\n");
 
    /**
