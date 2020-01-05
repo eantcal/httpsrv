@@ -10,8 +10,13 @@
 /* -------------------------------------------------------------------------- */
 
 #include "HttpResponse.h"
-#include "Tools.h"
+
+#include "StrUtils.h"
+#include "FileUtils.h"
+#include "SysUtils.h"
+
 #include "config.h"
+
 
 /* -------------------------------------------------------------------------- */
 
@@ -24,7 +29,7 @@ void HttpResponse::formatError(
       + "</title></head>" + "<body>Sorry, I can't do that</body></html>\r\n";
 
    output = HTTP_SERVER_VER " " + scode + " " + msg + "\r\n";
-   output += "Date: " + Tools::getLocalTime() + "\r\n";
+   output += "Date: " + SysUtils::getLocalTime() + "\r\n";
    output += "Server: " HTTP_SERVER_NAME "\r\n";
    output += "Content-Length: " + std::to_string(error_html.size()) + "\r\n";
    output += "Content-Type: text/html\r\n\r\n";
@@ -42,7 +47,7 @@ void HttpResponse::formatPositiveResponse(
 {
 
    response = HTTP_SERVER_VER " 200 OK\r\n";
-   response += "Date: " + Tools::getLocalTime() + "\r\n";
+   response += "Date: " + SysUtils::getLocalTime() + "\r\n";
    response += "Server: " HTTP_SERVER_NAME "\r\n";
    response += "Content-Length: " + std::to_string(contentLen) + "\r\n";
    // response += "Connection: Keep-Alive\r\n";
@@ -109,7 +114,7 @@ HttpResponse::HttpResponse(
          else {
             formatPositiveResponse(
                _response,
-               Tools::getLocalTime(),
+               SysUtils::getLocalTime(),
                std::string(bodyFormat),
                body.size());
 
@@ -118,7 +123,7 @@ HttpResponse::HttpResponse(
       }
    }
    else { // GET/HEAD
-      if (Tools::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
+      if (FileUtils::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
          formatPositiveResponse(_response, fileTime, fileExt, contentLen);
       }
       else {

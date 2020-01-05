@@ -163,16 +163,17 @@
     <Text Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\FileUtils.h" />
     <ClInclude Include="include\HttpRequest.h" />
     <ClInclude Include="include\HttpResponse.h" />
     <ClInclude Include="include\IdFileNameCache.h" />
     <ClInclude Include="include\TcpListener.h" />
     <ClInclude Include="include\TcpSocket.h" />
     <ClInclude Include="include\TransportSocket.h" />
-    <ClInclude Include="include\Tools.h" />
+    <ClInclude Include="include\StrUtils.h" />
     <ClInclude Include="include\config.h" />
     <ClInclude Include="include\HttpServer.h" />
-    <ClInclude Include="include\OsSpecific.h" />
+    <ClInclude Include="include\SysUtils.h" />
     <ClInclude Include="PicoSHA2\picosha2.h" />
     <ClInclude Include="zip\src\zip.h" />
   </ItemGroup>
@@ -180,11 +181,12 @@
     <ClCompile Include="src\HttpRequest.cc" />
     <ClCompile Include="src\HttpResponse.cc" />
     <ClCompile Include="src\HttpSocket.cc" />
+    <ClCompile Include="src\FileUtils.cc" />
     <ClCompile Include="src\TcpSocket.cc" />
     <ClCompile Include="src\TransportSocket.cc" />
-    <ClCompile Include="src\Tools.cc" />
+    <ClCompile Include="src\StrUtils.cc" />
     <ClCompile Include="src\HttpServer.cc" />
-    <ClCompile Include="src\OsSpecific.cc" />
+    <ClCompile Include="src\SysUtils.cc" />
     <ClCompile Include="src\TcpListener.cc" />
     <ClCompile Include="src\main.cc" />
     <ClCompile Include="zip\src\zip.c" />

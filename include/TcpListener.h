@@ -16,7 +16,7 @@
 /* -------------------------------------------------------------------------- */
 
 #include "TcpSocket.h"
-#include "OsSpecific.h"
+#include "SysUtils.h"
 
 #include <atomic>
 #include <chrono>

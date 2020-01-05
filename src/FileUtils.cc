@@ -1,67 +1,80 @@
-//
-// This file is part of httpsrv
-// Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
-// See COPYING file in the project root for full license information.
-//
 
+#include "FileUtils.h"
+#include "StrUtils.h"
 
-/* -------------------------------------------------------------------------- */
-
-#include "Tools.h"
 #include "picosha2.h"
 
-#ifndef WIN32
+#include <iomanip>
+#include <sstream>
+
+#ifdef WIN32
+#include <direct.h>
+#else
 #include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <pwd.h>
+#include <uuid/uuid.h>
+#include <sys/stat.h>
 #endif
 
-
-#include <iostream>
-
 /* -------------------------------------------------------------------------- */
 
-void Tools::convertDurationInTimeval(const TimeoutInterval& d, timeval& tv)
+std::string FileUtils::initRepository(const std::string& path)
 {
-   std::chrono::microseconds usec
-      = std::chrono::duration_cast<std::chrono::microseconds>(d);
+   std::string repositoryPath;
 
-   if (usec <= std::chrono::microseconds(0)) {
-      tv.tv_sec = tv.tv_usec = 0;
+   // Resolve any homedir prefix
+   std::string resPath;
+   if (!path.empty()) {
+      size_t prefixSize = path.size() > 1 ? 2 : 1;
+      if ((prefixSize > 1 && path.substr(0, 2) == "~/") || path == "~") {
+         resPath = getHomeDir();
+         resPath += "/";
+         resPath += path.substr(prefixSize, path.size() - prefixSize);
+      }
    }
-   else {
-      tv.tv_sec = static_cast<long>(usec.count() / 1000000LL);
-      tv.tv_usec = static_cast<long>(usec.count() % 1000000LL);
+
+   if (!touchDir(resPath, repositoryPath)) {
+      repositoryPath.clear();
    }
+
+   return repositoryPath;
 }
 
 
 /* -------------------------------------------------------------------------- */
 
-void Tools::getLocalTime(std::string& localTime)
+bool FileUtils::scanRepository(
+   const std::string& path,
+   TimeOrderedFileList& list,
+   IdFileNameCache& idNameMap)
 {
-   time_t ltime;
-   ltime = ::time(NULL); // get current calendar time
-   localTime = ::asctime(::localtime(&ltime));
-   Tools::removeLastCharIf(localTime, '\n');
+   fs::path dirPath(path);
+   fs::directory_iterator endIt;
+
+   idNameMap.clear(); // make sure the id/filename cache is empty
+
+   if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
+      list.clear();
+      for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
+         if (fs::is_regular_file(it->status())) {
+            list.insert({ fs::last_write_time(it->path()), *it });
+
+            // update id/filename cache
+            auto fName = it->path().filename().string();
+            auto id = hashCode(fName);
+            idNameMap.insert(id, fName);
+         }
+      }
+      return true;
+   }
+
+   return false;
 }
 
 
 /* -------------------------------------------------------------------------- */
 
-void Tools::removeLastCharIf(std::string& s, char c)
-{
-   while (!s.empty() && s.c_str()[s.size() - 1] == c)
-      s = s.substr(0, s.size() - 1);
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-bool Tools::fileStat(
+bool FileUtils::fileStat(
    const std::string& fileName,
    std::string& dateTime,
    std::string& ext,
@@ -79,7 +92,7 @@ bool Tools::fileStat(
          ? fileName.substr(pos, fileName.size() - pos)
          : ".";
 
-      Tools::removeLastCharIf(dateTime, '\n');
+      StrUtils::removeLastCharIf(dateTime, '\n');
 
       return true;
    }
@@ -90,7 +103,7 @@ bool Tools::fileStat(
 
 /* -------------------------------------------------------------------------- */
 
-std::string Tools::hashCode(const std::string& src)
+std::string FileUtils::hashCode(const std::string& src)
 {
    std::string id;
    picosha2::hash256_hex_string(src, id);
@@ -100,10 +113,10 @@ std::string Tools::hashCode(const std::string& src)
 
 /* -------------------------------------------------------------------------- */
 
-bool Tools::jsonStat(
+bool FileUtils::jsonStat(
    const std::string& filePath,  // actual file path (including name)
-   const std::string& fileName,  // filename for JSON outout
-   const std::string& id,        // id related to filename for JSON output
+   const std::string& fileName,  // filename field of JSON output
+   const std::string& id,        // id field of JSON output
    std::string& jsonOutput)
 {
    struct stat rstat = { 0 };
@@ -152,7 +165,7 @@ bool Tools::jsonStat(
 
 /* -------------------------------------------------------------------------- */
 
-bool Tools::touch(const std::string& fileName)
+bool FileUtils::touch(const std::string& fileName)
 {
    std::fstream ofs;
    ofs.open(fileName, std::ofstream::out | std::ofstream::in);
@@ -184,7 +197,7 @@ bool Tools::touch(const std::string& fileName)
 
 /* -------------------------------------------------------------------------- */
 
-std::string Tools::getHomeDir() {
+std::string FileUtils::getHomeDir() {
    const char* homedir = nullptr;
 #ifdef WIN32
    if ((homedir = getenv("USERPROFILE")) == nullptr) {
@@ -203,7 +216,7 @@ std::string Tools::getHomeDir() {
 
 /* -------------------------------------------------------------------------- */
 
-bool Tools::getFullPath(const std::string& partialPath, std::string& fullPath)
+bool FileUtils::getFullPath(const std::string& partialPath, std::string& fullPath)
 {
 #ifdef WIN32
    char full[_MAX_PATH];
@@ -227,76 +240,27 @@ bool Tools::getFullPath(const std::string& partialPath, std::string& fullPath)
 
 /* -------------------------------------------------------------------------- */
 
-bool Tools::directoryExists(const std::string& pathName)
+bool FileUtils::directoryExists(const std::string& pathName)
 {
-   struct stat info;
-
-   if (stat(pathName.c_str(), &info) != 0)
-      return false;
-   else if (S_ISDIR(info.st_mode))
-      return true;
-
-   return false;
+   fs::path dirPath(pathName);
+   return fs::exists(dirPath) && fs::is_directory(dirPath);
 }
 
 
 /* -------------------------------------------------------------------------- */
 
-bool Tools::touchDir(
+bool FileUtils::touchDir(
    const std::string& relativeDirName,
    std::string& fullPath)
 {
    // Create a new support directory if it does not exist
+#ifdef WIN32
+   _mkdir(relativeDirName.c_str());
+#else
    mkdir(relativeDirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+#endif
 
    return
-      Tools::directoryExists(relativeDirName) &&
-      Tools::getFullPath(relativeDirName, fullPath);
+      FileUtils::directoryExists(relativeDirName) &&
+      FileUtils::getFullPath(relativeDirName, fullPath);
 }
-
-
-/* -------------------------------------------------------------------------- */
-
-bool Tools::splitLineInTokens(const std::string& line,
-   std::vector<std::string>& tokens, const std::string& sep)
-{
-   if (line.empty() || line.size() < sep.size())
-      return false;
-
-   std::string subline = line;
-
-   while (!subline.empty()) {
-      size_t pos = subline.find(sep);
-
-      if (pos == std::string::npos) {
-         tokens.push_back(subline);
-         return true;
-      }
-
-      tokens.push_back(subline.substr(0, pos));
-
-      size_t off = pos + sep.size();
-
-      subline = subline.substr(off, subline.size() - off);
-   }
-
-   return true;
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-std::string Tools::trim(const std::string& str)
-{
-   const auto strBegin = str.find_first_not_of(" \t\r\n");
-   if (strBegin == std::string::npos)
-      return ""; // no content
-
-   const auto strEnd = str.find_last_not_of(" \t\r\n");
-   const auto strRange = strEnd - strBegin + 1;
-
-   return str.substr(strBegin, strRange);
-}
-
-/* -------------------------------------------------------------------------- */
-

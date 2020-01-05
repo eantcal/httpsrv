@@ -9,8 +9,36 @@
 
 /* -------------------------------------------------------------------------- */
 
-#include "OsSpecific.h"
+#include "SysUtils.h"
+#include "StrUtils.h"
 
+
+/* -------------------------------------------------------------------------- */
+
+void SysUtils::convertDurationInTimeval(const TimeoutInterval& d, timeval& tv)
+{
+   std::chrono::microseconds usec
+      = std::chrono::duration_cast<std::chrono::microseconds>(d);
+
+   if (usec <= std::chrono::microseconds(0)) {
+      tv.tv_sec = tv.tv_usec = 0;
+   }
+   else {
+      tv.tv_sec = static_cast<long>(usec.count() / 1000000LL);
+      tv.tv_usec = static_cast<long>(usec.count() % 1000000LL);
+   }
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+void SysUtils::getLocalTime(std::string& localTime)
+{
+   time_t ltime;
+   ltime = ::time(NULL); // get current calendar time
+   localTime = ::asctime(::localtime(&ltime));
+   StrUtils::removeLastCharIf(localTime, '\n');
+}
 
 /* -------------------------------------------------------------------------- */
 
@@ -27,7 +55,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-bool OsSpecific::initSocketLibrary()
+bool SysUtils::initCommunicationLib()
 {
    // Socket library initialization
    WORD wVersionRequested = WINSOCK_VERSION;
@@ -39,7 +67,7 @@ bool OsSpecific::initSocketLibrary()
 
 /* -------------------------------------------------------------------------- */
 
-int OsSpecific::closeSocketFd(int sd) {
+int SysUtils::closeSocketFd(int sd) {
    return ::closesocket(sd);
 }
 
@@ -56,7 +84,7 @@ int OsSpecific::closeSocketFd(int sd) {
 
 /* -------------------------------------------------------------------------- */
 
-bool OsSpecific::initSocketLibrary() {
+bool SysUtils::initCommunicationLib() {
    signal(SIGPIPE, SIG_IGN);
    return true;
 }
@@ -64,7 +92,7 @@ bool OsSpecific::initSocketLibrary() {
 
 /* -------------------------------------------------------------------------- */
 
-int OsSpecific::closeSocketFd(int sd) {
+int SysUtils::closeSocketFd(int sd) {
    return ::close(sd);
 }
 

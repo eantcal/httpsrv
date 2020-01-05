@@ -9,8 +9,8 @@
 /* -------------------------------------------------------------------------- */
 
 #include "TransportSocket.h"
-#include "Tools.h"
-#include "OsSpecific.h"
+#include "StrUtils.h"
+#include "SysUtils.h"
 
 #include <thread>
 
@@ -20,7 +20,7 @@
 TransportSocket::~TransportSocket()
 {
     if (isValid())
-        OsSpecific::closeSocketFd(getSocketFd());
+        SysUtils::closeSocketFd(getSocketFd());
 }
 
 
@@ -30,7 +30,7 @@ TransportSocket::RecvEvent TransportSocket::waitForRecvEvent(
     const TransportSocket::TimeoutInterval& timeout)
 {
     struct timeval tv_timeout = { 0, 0 };
-    Tools::convertDurationInTimeval(timeout, tv_timeout);
+    SysUtils::convertDurationInTimeval(timeout, tv_timeout);
 
     fd_set rd_mask;
 

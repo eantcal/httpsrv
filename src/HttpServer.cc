@@ -13,8 +13,13 @@
 /* -------------------------------------------------------------------------- */
 
 #include "HttpServer.h"
-#include "Tools.h"
+
+#include "StrUtils.h"
+#include "SysUtils.h"
+#include "FileUtils.h"
+
 #include "IdFileNameCache.h"
+
 
 #include <thread>
 #include <cassert>
@@ -84,6 +89,50 @@ private:
    {
    }
 
+   bool writePostedFile(
+      const std::string& fileName,
+      const std::string& fileContent, 
+      std::string& json)
+   {
+      std::string filePath = getWebRootPath() + "/" + fileName;
+
+      std::ofstream os(filePath, std::ofstream::binary);
+
+      os.write(fileContent.data(), fileContent.size());
+
+      if (!os.fail()) {
+         auto id = FileUtils::hashCode(fileName);
+
+         os.close();  // create the file posted by client
+         if (!FileUtils::jsonStat(filePath, fileName, id, json)) {
+            json.clear();
+         }
+         else {
+            _idFileNameCache->insert(id, fileName);
+            return true;
+         }
+      }
+      
+      return false;
+   }
+
+   enum class ProcessGetRequestResult {
+      none,
+      sendErrorInvalidRequest,
+      sendJsonFileList,
+   };
+
+   ProcessGetRequestResult handleGetReq(
+      HttpRequest& httpRequest,
+      std::string& json)
+   {
+      if (httpRequest.getUri() == HTTP_SERVER_GET_FILES) {
+         // TODO
+      }
+
+      return ProcessGetRequestResult::sendErrorInvalidRequest;
+   }
+
 };
 
 
@@ -101,7 +150,7 @@ void HttpServerTask::operator()(Handle task_handle)
    // Generates an identifier for recognizing the transaction
    auto transactionId = [sd]() {
       return "[" + std::to_string(sd) + "] "
-         + "[" + Tools::getLocalTime() + "] ";
+         + "[" + SysUtils::getLocalTime() + "] ";
    };
 
    if (verboseModeOn())
@@ -133,47 +182,34 @@ void HttpServerTask::operator()(Handle task_handle)
          httpRequest->dump(log(), transactionId());
 
       const auto& fileName = httpRequest->getFileName();
-      std::string responseBody;
+      std::string jsonResponse;
+      ProcessGetRequestResult getRequestAction = ProcessGetRequestResult::none;
 
       if (httpRequest->getMethod() == HttpRequest::Method::POST
          && httpRequest->getUri() == HTTP_SERVER_POST_STORE
          && !httpRequest->isExpectedContinueResponse()
          && !fileName.empty())
       {
-         std::string filePath = getWebRootPath() + "/" + fileName;
-
          if (verboseModeOn())
-            log() << transactionId() << "Saving body content into '"
-            << filePath << "'\n\n";
+            log() << transactionId() << "Writing '" << fileName << "'" << std::endl;
 
-         std::ofstream os(filePath, std::ofstream::binary);
-
-         const auto& requestBody = httpRequest->getBody();
-         os.write(requestBody.data(), requestBody.size());
-
-         auto id = Tools::hashCode(fileName);
-
-         if (!os.fail()) {
-            os.close();
-            if (!Tools::jsonStat(filePath, fileName, id, responseBody)) {
-               responseBody.clear(); // will create a 500 error response
+         if (!writePostedFile(fileName, httpRequest->getBody(), jsonResponse)) {
+            if (verboseModeOn()) {
+               log() << transactionId() << "Error writing '"
+                  << fileName << "'" << std::endl;
             }
-            else {
-               _idFileNameCache->insert(id, fileName);
-            }
-         }
-         else if (verboseModeOn()) {
-            log() << transactionId() << "Error saving file '"
-               << filePath << "'\n\n";
          }
       }
+      else if (httpRequest->getMethod() == HttpRequest::Method::GET) {
+         getRequestAction = handleGetReq(*httpRequest, jsonResponse);
+      }
 
-      // Build a response to previous HTTP request
+      // Format a response to previous HTTP request
       HttpResponse response(
          *httpRequest,
          getWebRootPath(),
-         responseBody,
-         responseBody.empty() ? "" : ".json");
+         jsonResponse,
+         jsonResponse.empty() ? "" : ".json");
 
       // Send the response to remote peer
       httpSocket << response;

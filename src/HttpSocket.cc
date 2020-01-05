@@ -10,7 +10,8 @@
 /* -------------------------------------------------------------------------- */
 
 #include "HttpSocket.h"
-#include "Tools.h"
+#include "StrUtils.h"
+#include "SysUtils.h"
 
 #include <vector>
 
@@ -107,7 +108,7 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
             const std::string boundary_begin = "--" + handle->getBoundary();
             const std::string boundary_end = "--" + handle->getBoundary() + "--";
 
-            const std::string trimmedLine = Tools::trim(line);
+            const std::string trimmedLine = StrUtils::trim(line);
 
             if (!receivingBody && !boundary_maker && trimmedLine == boundary_begin) {
                boundary_maker = true;
@@ -139,7 +140,7 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
    std::string request = *handle->getHeaderList().cbegin();
    std::vector<std::string> tokens;
 
-   if (!Tools::splitLineInTokens(request, tokens, " ")) {
+   if (!StrUtils::splitLineInTokens(request, tokens, " ")) {
       return false;
    }
 

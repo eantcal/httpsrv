@@ -10,18 +10,17 @@
 /* -------------------------------------------------------------------------- */
 
 #include "HttpServer.h"
-#include "Tools.h"
 #include "IdFileNameCache.h"
 
+#include "FileUtils.h"
+#include "SysUtils.h"
+#include "StrUtils.h"
 
 #include <iostream>
 #include <string>
 #include <map>
 #include <unordered_map>
 
-#include <boost/filesystem.hpp>
-
-namespace fs = boost::filesystem;
 
 
 /* -------------------------------------------------------------------------- */
@@ -179,86 +178,8 @@ private:
 
    static const int _min_ver = HTTP_SERVER_MIN_V;
    static const int _maj_ver = HTTP_SERVER_MAJ_V;
-
 };
 
-
-/* -------------------------------------------------------------------------- */
-
-class FileRepository {
-public:
-   using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
-   //using IdFileNameCache = std::unordered_map<std::string, fs::path>;
-
-   using Handle = std::shared_ptr<FileRepository>;
-
-   static Handle make(const std::string& dirName) {
-      FileRepository::Handle handle(new (std::nothrow) FileRepository(dirName));
-      return handle && !handle->_directoryName.empty() ? handle : nullptr;
-   }
-
-   const std::string& getDirName() const noexcept {
-      return _directoryName;
-   }
-
-   bool scan(
-      const std::string& path,
-      TimeOrderedFileList& list,
-      IdFileNameCache& idNameMap,
-      int maxN = 0)
-   {
-      fs::path dirPath(path);
-      fs::directory_iterator endIt;
-      bool unlimited = maxN <= 0;
-
-      idNameMap.clear(); // make sure the id/filename cache is empty
-
-      if (fs::exists(dirPath) &&
-         fs::is_directory(dirPath))
-      {
-         list.clear();
-         for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
-            if (fs::is_regular_file(it->status())) {
-               list.insert({ fs::last_write_time(it->path()), *it });
-
-               // update id/filename cache
-               auto fName = it->path().filename().string();
-               auto id = Tools::hashCode(fName);
-               idNameMap.insert(id, fName);
-               
-               if (!unlimited && int(list.size()) >= maxN)
-                  break;
-            }
-         }
-         return true;
-      }
-
-      return false;
-   }
-
-private:
-   FileRepository(const std::string& dirName)
-   {
-      // Resolve any homedir prefix
-      std::string resPath;
-      if (!dirName.empty()) {
-         size_t prefixSize = dirName.size() > 1 ? 2 : 1;
-         if ((prefixSize > 1 && dirName.substr(0, 2) == "~/") || dirName == "~") {
-            resPath = Tools::getHomeDir();
-            resPath += "/";
-            resPath += dirName.substr(prefixSize, dirName.size() - prefixSize);
-         }
-      }
-
-      if (!Tools::touchDir(resPath, _directoryName)) {
-         // make sure error is propagate to factory function
-         _directoryName.clear();
-      }
-
-   }
-
-   std::string _directoryName;
-};
 
 
 /* -------------------------------------------------------------------------- */
@@ -282,7 +203,7 @@ public:
 
    ErrCode init(int argc, char* argv[], std::ostream& logger = std::clog) {
       // Initialize any O/S specific libraries
-      if (!OsSpecific::initSocketLibrary()) {
+      if (!SysUtils::initCommunicationLib()) {
          return ErrCode::socketInitiError;
       }
 
@@ -291,28 +212,27 @@ public:
          return ErrCode::configurationError;
       }
 
-      auto repositoryDir = _configuration->getWebRootPath();
-
-      // Creates or validates (if already existant) a file repository
-      _fileRepository = FileRepository::make(repositoryDir);
-      if (!_fileRepository) {
-         return ErrCode::fileRepositoryInitError;
-      }
-
+      // Creates or validates (if already existant) a repository for text file
       _idFileNameCache = IdFileNameCache::make();
       if (!_idFileNameCache) {
          return ErrCode::idFileNameCacheInitError;
       }
+      
+      auto repositoryPath = FileUtils::initRepository(
+         _configuration->getWebRootPath());
 
-      //tmp...
-      // Get a picture of repository file list
-      _fileRepository->scan(
-         _fileRepository->getDirName(),
-         _timeOrderedFileListCache,
-         *_idFileNameCache);
+      if(repositoryPath.empty() || 
+         !FileUtils::scanRepository(
+            repositoryPath,
+            _timeOrderedFileListCache,
+            *_idFileNameCache))
+      {
+         return ErrCode::fileRepositoryInitError;
+      }
 
       for (auto it = _timeOrderedFileListCache.rbegin();
-         it != _timeOrderedFileListCache.rend(); ++it)
+           it != _timeOrderedFileListCache.rend(); 
+           ++it)
       {
          std::cerr << it->second << std::endl;
       }
@@ -321,7 +241,7 @@ public:
       auto& httpSrv = HttpServer::getInstance();
 
       // file repository dir name is canonical full path name
-      httpSrv.setupWebRootPath(_fileRepository->getDirName());
+      httpSrv.setupWebRootPath(repositoryPath);
 
       if (!httpSrv.bind(_configuration->getHttpServerPort())) {
          return ErrCode::httpSrvBindError;
@@ -331,8 +251,7 @@ public:
          return ErrCode::httpSrvListenError;
       }
 
-      httpSrv.setupLogger(_configuration->verboseModeOn() ?
-         &logger : nullptr);
+      httpSrv.setupLogger(_configuration->verboseModeOn() ? &logger : nullptr);
 
       return ErrCode::success;
    }
@@ -345,11 +264,7 @@ public:
       // Configure the server
       httpServerInstance.setIdFileNameCache(_idFileNameCache);
 
-      return  httpServerInstance.run();
-   }
-
-   FileRepository::Handle getFileRepositoryHandle() const noexcept {
-      return _fileRepository;
+      return httpServerInstance.run();
    }
 
    Configuration::Handle getConfiguration() const noexcept {
@@ -357,13 +272,13 @@ public:
    }
 
 private:
-   Application() {
-   }
+   Application() = default;
+   Application(const Application&) = delete;
+   Application& operator=(const Application&) = delete;
 
    // Parse the command line
    Configuration::Handle _configuration;
-   FileRepository::Handle _fileRepository;
-   FileRepository::TimeOrderedFileList _timeOrderedFileListCache;
+   FileUtils::TimeOrderedFileList _timeOrderedFileListCache;
    IdFileNameCache::Handle _idFileNameCache;
 };
 
@@ -424,7 +339,7 @@ int main(int argc, char* argv[])
    }
 
    if (cfg->verboseModeOn()) {
-      std::clog << Tools::getLocalTime() << std::endl
+      std::clog << SysUtils::getLocalTime() << std::endl
          << "Command line :'" << cfg->getCommandLine() << "'"
          << std::endl
          << HTTP_SERVER_NAME << " is listening on TCP port "

@@ -69,9 +69,9 @@ void HttpRequest::parseHeader(const std::string& header)
    if (prefix == 'C' || prefix == 'E') {
       std::vector<std::string> tokens;
 
-      Tools::splitLineInTokens(header, tokens, " ");
+      StrUtils::splitLineInTokens(header, tokens, " ");
 
-      const auto headerName = Tools::uppercase(tokens[0]);
+      const auto headerName = StrUtils::uppercase(tokens[0]);
 
       if (tokens.size() >= 2) {
          if (prefix == 'C') {
@@ -86,12 +86,12 @@ void HttpRequest::parseHeader(const std::string& header)
             else if (headerName == "CONTENT-TYPE:") {
                _content_type = tokens[1];
                std::vector<std::string> content_type;
-               Tools::splitLineInTokens(header, content_type, ";");
+               StrUtils::splitLineInTokens(header, content_type, ";");
                if (!content_type.empty()) {
                   const std::string searched_prefix = "boundary=";
 
                   for (const auto& item : content_type) {
-                     auto field = Tools::trim(item);
+                     auto field = StrUtils::trim(item);
                      if (field.size() > searched_prefix.size() &&
                         field.substr(0, searched_prefix.size()) == searched_prefix)
                      {
@@ -104,13 +104,13 @@ void HttpRequest::parseHeader(const std::string& header)
             }
             else if (headerName == "CONTENT-DISPOSITION:") {
                std::vector<std::string> htoken;
-               Tools::splitLineInTokens(header, htoken, ";");
+               StrUtils::splitLineInTokens(header, htoken, ";");
 
                if (!htoken.empty()) {
                   const std::string searched_prefix = "filename=\"";
 
                   for (const auto& item : htoken) {
-                     auto field = Tools::trim(item);
+                     auto field = StrUtils::trim(item);
                      if (field.size() > searched_prefix.size() &&
                         field.substr(0, searched_prefix.size()) == searched_prefix)
                      {
@@ -128,7 +128,7 @@ void HttpRequest::parseHeader(const std::string& header)
          }
          else {
             if (headerName == "EXPECT:" && tokens[1][0] == '1') {
-               const auto value = Tools::uppercase(Tools::trim(tokens[1]));
+               const auto value = StrUtils::uppercase(StrUtils::trim(tokens[1]));
                _expected_100_continue = value == "100-CONTINUE";
             }
          }
