@@ -223,7 +223,8 @@ public:
 
                // update id/filename cache
                auto fName = it->path().filename().string();
-               idNameMap.insert(fName);
+               auto id = Tools::hashCode(fName);
+               idNameMap.insert(id, fName);
                
                if (!unlimited && int(list.size()) >= maxN)
                   break;

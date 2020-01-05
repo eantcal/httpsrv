@@ -14,6 +14,7 @@
 
 #include "HttpServer.h"
 #include "Tools.h"
+#include "IdFileNameCache.h"
 
 #include <thread>
 #include <cassert>
@@ -32,13 +33,15 @@ public:
       bool verboseModeOn,
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle,
-      const std::string& webRootPath)
+      const std::string& webRootPath,
+      IdFileNameCache::Handle idFileNameCache)
    {
-      return Handle(new HttpServerTask(
+      return Handle(new (std::nothrow) HttpServerTask(
          verboseModeOn,
          loggerOStream,
          socketHandle,
-         webRootPath));
+         webRootPath,
+         idFileNameCache));
    }
 
    HttpServerTask() = delete;
@@ -49,6 +52,7 @@ private:
    std::ostream& _logger;
    TcpSocket::Handle _tcpSocketHandle;
    std::string _webRootPath;
+   IdFileNameCache::Handle _idFileNameCache;
 
    std::ostream& log() {
       return _logger;
@@ -66,12 +70,17 @@ private:
       return _webRootPath;
    }
 
-   HttpServerTask(bool verboseModeOn, std::ostream& loggerOStream,
-      TcpSocket::Handle socketHandle, const std::string& webRootPath)
+   HttpServerTask(
+      bool verboseModeOn, 
+      std::ostream& loggerOStream,
+      TcpSocket::Handle socketHandle, 
+      const std::string& webRootPath,
+      IdFileNameCache::Handle idFileNameCache)
       : _verboseModeOn(verboseModeOn)
       , _logger(loggerOStream)
       , _tcpSocketHandle(socketHandle)
       , _webRootPath(webRootPath)
+      , _idFileNameCache(idFileNameCache)
    {
    }
 
@@ -142,10 +151,15 @@ void HttpServerTask::operator()(Handle task_handle)
          const auto& requestBody = httpRequest->getBody();
          os.write(requestBody.data(), requestBody.size());
 
+         auto id = Tools::hashCode(fileName);
+
          if (!os.fail()) {
             os.close();
-            if (!Tools::jsonStat(filePath, fileName, responseBody)) {
+            if (!Tools::jsonStat(filePath, fileName, id, responseBody)) {
                responseBody.clear(); // will create a 500 error response
+            }
+            else {
+               _idFileNameCache->insert(id, fileName);
             }
          }
          else if (verboseModeOn()) {
@@ -261,7 +275,8 @@ bool HttpServer::run()
          _verboseModeOn,
          *_loggerOStreamPtr,
          handle,
-         getWebRootPath());
+         getWebRootPath(),
+         _idFileNameCache);
 
       // Coping the http_server_task handle (shared_ptr) the reference
       // count is automatically increased by one

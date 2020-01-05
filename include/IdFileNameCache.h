@@ -12,8 +12,6 @@
 #ifndef __ID_FILENAME_CACHE_H__
 #define __ID_FILENAME_CACHE_H__
 
-#include "Tools.h"
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -49,15 +47,10 @@ public:
    /**
     * Add/Update a filename to the cache
     * @param pointer to ostream used for logging
-    * @return auto-generated id used as key to retreive the entry
     */
-   std::string insert(const std::string& fileName) {
+   void insert(const std::string id, const std::string& fileName) {
       std::unique_lock lock(_mtx);
-
-      auto id = Tools::hashCode(fileName);
       _data.insert({ id, fileName });
-
-      return id;
    }
 
    /**

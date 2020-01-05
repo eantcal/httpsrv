@@ -125,8 +125,9 @@ std::string hashCode(const std::string& src);
    * @return true if operation successfully completed, false otherwise
    */
 bool jsonStat(
-   const std::string filePath,
+   const std::string& filePath,
    const std::string& fileName,
+   const std::string& id,
    std::string& jsonOutput);
 
 
