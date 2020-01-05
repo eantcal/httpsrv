@@ -123,7 +123,18 @@ HttpResponse::HttpResponse(
       }
    }
    else { // GET/HEAD
-      if (FileUtils::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
+      if (request.getMethod() == HttpRequest::Method::GET && 
+          request.getUri() == HTTP_SERVER_GET_FILES) 
+      {
+         formatPositiveResponse(
+            _response,
+            SysUtils::getLocalTime(),
+            std::string(bodyFormat),
+            body.size());
+
+         _response += body;
+      }
+      else if (FileUtils::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
          formatPositiveResponse(_response, fileTime, fileExt, contentLen);
       }
       else {

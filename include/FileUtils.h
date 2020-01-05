@@ -39,11 +39,26 @@ namespace FileUtils {
      * Update a given instance of IdFileNameCache related to repository files.
      * @param path of repository
      * @param list is the time ordered list of file found in the given path
-     * @param idNameMap is the IdFileNameCache instance to be updated
+     * @param idFileNameCache is the IdFileNameCache instance to be updated
      * @return true if operation successfully completed, false otherwise
      */
    bool scanRepository(
-      const std::string& path, TimeOrderedFileList& list, IdFileNameCache& idNameMap);
+      const std::string& path, 
+      TimeOrderedFileList& list, 
+      IdFileNameCache& idFileNameCache);
+
+   /**
+     * Scans the repository to update a given idFileNameCache
+     * @param path of repository
+     * @param list is the time ordered list of file found in the given path
+     * @param idFileNameCache is the IdFileNameCache instance to be updated
+     * @param json is the JSON formatted text matching the cache content
+     * @return true if operation successfully completed, false otherwise
+     */
+   bool refreshIdFilenameCache(
+      const std::string& path,
+      IdFileNameCache& idFileNameCache,
+      std::string& json);
 
    /**
      * Returns file attributes of fileName.
@@ -53,8 +68,11 @@ namespace FileUtils {
      * @param ext File extension or "." if there is no any
      * @return true if operation successfully completed, false otherwise
      */
-   bool fileStat(const std::string& fileName, std::string& dateTime,
-      std::string& ext, size_t& fsize);
+   bool fileStat(
+      const std::string& fileName, 
+      std::string& dateTime,
+      std::string& ext, 
+      size_t& fsize);
 
    /**
      * Returns file attributes of fileName formatted using a JSON record of
@@ -71,7 +89,8 @@ namespace FileUtils {
       const std::string& filePath,
       const std::string& fileName,
       const std::string& id,
-      std::string& jsonOutput);
+      std::string& jsonOutput,
+      const std::string& endl="\n");
 
    /**
      * Trivial but portable version of basic touch command

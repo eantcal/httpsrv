@@ -120,6 +120,7 @@ private:
       none,
       sendErrorInvalidRequest,
       sendJsonFileList,
+      sendZipFile
    };
 
    ProcessGetRequestResult handleGetReq(
@@ -127,7 +128,13 @@ private:
       std::string& json)
    {
       if (httpRequest.getUri() == HTTP_SERVER_GET_FILES) {
-         // TODO
+         if (FileUtils::refreshIdFilenameCache(
+            getWebRootPath(),
+            *_idFileNameCache,
+            json))
+         {
+            return ProcessGetRequestResult::sendJsonFileList;
+         }
       }
 
       return ProcessGetRequestResult::sendErrorInvalidRequest;
@@ -214,8 +221,10 @@ void HttpServerTask::operator()(Handle task_handle)
       // Send the response to remote peer
       httpSocket << response;
 
-      // If HTTP command line method isn't HEAD then send requested URI
-      if (httpRequest->getMethod() == HttpRequest::Method::GET) {
+      // TODO
+      if (getRequestAction == ProcessGetRequestResult::sendZipFile &&
+          httpRequest->getMethod() == HttpRequest::Method::GET) 
+      {
          if (0 > httpSocket.sendFile(response.getLocalUriPath())) {
             if (verboseModeOn())
                log() << transactionId() << "Error sending '"
@@ -223,6 +232,7 @@ void HttpServerTask::operator()(Handle task_handle)
             break;
          }
       }
+     
 
       if (verboseModeOn())
          response.dump(log(), transactionId());

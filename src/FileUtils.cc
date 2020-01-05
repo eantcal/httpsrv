@@ -52,15 +52,49 @@ std::string FileUtils::initRepository(const std::string& path)
 
 /* -------------------------------------------------------------------------- */
 
-bool FileUtils::scanRepository(
+bool FileUtils::refreshIdFilenameCache(
    const std::string& path,
-   TimeOrderedFileList& list,
-   IdFileNameCache& idNameMap)
+   IdFileNameCache& idFileNameCache,
+   std::string& json)
 {
    fs::path dirPath(path);
    fs::directory_iterator endIt;
 
-   idNameMap.clear(); // make sure the id/filename cache is empty
+   IdFileNameCache newCache;
+   
+   json = "[\n";
+
+   if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
+      for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
+         if (fs::is_regular_file(it->status())) {
+            std::string jsonEntry;
+            auto fName = it->path().filename().string();
+            auto id = FileUtils::hashCode(fName);
+            if (jsonStat(it->path().string(), fName, id, jsonEntry, ",\n")) {
+               newCache.insert(id, fName);
+               json += jsonEntry;
+            }
+         }
+      }
+      idFileNameCache.locked_replace(newCache);
+      return true;
+   }
+
+   return false;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+bool FileUtils::scanRepository(
+   const std::string& path,
+   TimeOrderedFileList& list,
+   IdFileNameCache& idFileNameCache)
+{
+   fs::path dirPath(path);
+   fs::directory_iterator endIt;
+
+   IdFileNameCache newCache;
 
    if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
       list.clear();
@@ -71,9 +105,10 @@ bool FileUtils::scanRepository(
             // update id/filename cache
             auto fName = it->path().filename().string();
             auto id = hashCode(fName);
-            idNameMap.insert(id, fName);
+            newCache.insert(id, fName);
          }
       }
+      idFileNameCache.locked_replace(newCache);
       return true;
    }
 
@@ -126,7 +161,8 @@ bool FileUtils::jsonStat(
    const std::string& filePath,  // actual file path (including name)
    const std::string& fileName,  // filename field of JSON output
    const std::string& id,        // id field of JSON output
-   std::string& jsonOutput)
+   std::string& jsonOutput,
+   const std::string& endl)
 {
    struct stat rstat = { 0 };
    const int ret = stat(filePath.c_str(), &rstat);
@@ -165,7 +201,7 @@ bool FileUtils::jsonStat(
    oss << "  \"name\": \"" << fileName << "\"," << std::endl;
    oss << "  \"size\": " << rstat.st_size << "," << std::endl;
    oss << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
-   oss << "}" << std::endl;
+   oss << "}" << endl;
    jsonOutput = oss.str();
 
    return true;

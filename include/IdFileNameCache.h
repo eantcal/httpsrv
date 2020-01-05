@@ -45,11 +45,19 @@ public:
    }
 
    /**
-    * Add/Update a filename to the cache
-    * @param pointer to ostream used for logging
+    * Thread-safe version of insert
+    */
+   void locked_insert(const std::string id, const std::string& fileName) {
+      std::unique_lock lock(_mtx);
+      insert( id, fileName );
+   }
+
+   /**
+    * Insert <id, filename> in the map
+    * @param id is the map key
+    * @param fileName is the value
     */
    void insert(const std::string id, const std::string& fileName) {
-      std::unique_lock lock(_mtx);
       _data.insert({ id, fileName });
    }
 
@@ -60,6 +68,14 @@ public:
       std::unique_lock lock(_mtx);
 
       _data.clear();
+   }
+
+   /**
+    * Replace the entire cache content
+    */
+   void locked_replace(IdFileNameCache& newCache) {
+      std::unique_lock lock(_mtx);
+      _data = std::move(newCache._data);
    }
 
    /**
@@ -79,8 +95,9 @@ public:
       return false;
    }
 
+   IdFileNameCache() = default;
+
 private:
-   IdFileNameCache() {}
    using data_t = std::unordered_map<std::string, std::string>;
    mutable std::shared_mutex _mtx;
    data_t _data;
