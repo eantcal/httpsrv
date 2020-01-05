@@ -11,6 +11,8 @@
 
 #include "HttpServer.h"
 #include "Tools.h"
+#include "IdFileNameCache.h"
+
 
 #include <iostream>
 #include <string>
@@ -20,6 +22,7 @@
 #include <boost/filesystem.hpp>
 
 namespace fs = boost::filesystem;
+
 
 /* -------------------------------------------------------------------------- */
 
@@ -185,7 +188,7 @@ private:
 class FileRepository {
 public:
    using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
-   using IdFileNameCache = std::unordered_map<std::string, fs::path>;
+   //using IdFileNameCache = std::unordered_map<std::string, fs::path>;
 
    using Handle = std::shared_ptr<FileRepository>;
 
@@ -208,6 +211,8 @@ public:
       fs::directory_iterator endIt;
       bool unlimited = maxN <= 0;
 
+      idNameMap.clear(); // make sure the id/filename cache is empty
+
       if (fs::exists(dirPath) &&
          fs::is_directory(dirPath))
       {
@@ -216,9 +221,10 @@ public:
             if (fs::is_regular_file(it->status())) {
                list.insert({ fs::last_write_time(it->path()), *it });
 
+               // update id/filename cache
                auto fName = it->path().filename().string();
-               idNameMap[Tools::hashCode(fName)] = fName;
-               // std::cerr << Tools::hashCode(fName) << "=" << fName << std::endl;
+               idNameMap.insert(fName);
+               
                if (!unlimited && int(list.size()) >= maxN)
                   break;
             }
@@ -266,6 +272,7 @@ public:
    enum class ErrCode {
       success,
       fileRepositoryInitError,
+      idFileNameCacheInitError,
       socketInitiError,
       configurationError,
       httpSrvBindError,
@@ -291,12 +298,17 @@ public:
          return ErrCode::fileRepositoryInitError;
       }
 
+      _idFileNameCache = IdFileNameCache::make();
+      if (!_idFileNameCache) {
+         return ErrCode::idFileNameCacheInitError;
+      }
+
       //tmp...
       // Get a picture of repository file list
       _fileRepository->scan(
          _fileRepository->getDirName(),
          _timeOrderedFileListCache,
-         _idFileNameCache);
+         *_idFileNameCache);
 
       for (auto it = _timeOrderedFileListCache.rbegin();
          it != _timeOrderedFileListCache.rend(); ++it)
@@ -325,7 +337,14 @@ public:
    }
 
    bool runServer() {
-      return  HttpServer::getInstance().run();
+      auto & httpServerInstance = HttpServer::getInstance();
+
+      assert(_idFileNameCache);
+
+      // Configure the server
+      httpServerInstance.setIdFileNameCache(_idFileNameCache);
+
+      return  httpServerInstance.run();
    }
 
    FileRepository::Handle getFileRepositoryHandle() const noexcept {
@@ -344,7 +363,7 @@ private:
    Configuration::Handle _configuration;
    FileRepository::Handle _fileRepository;
    FileRepository::TimeOrderedFileList _timeOrderedFileListCache;
-   FileRepository::IdFileNameCache _idFileNameCache;
+   IdFileNameCache::Handle _idFileNameCache;
 };
 
 
@@ -377,6 +396,11 @@ int main(int argc, char* argv[])
       std::cerr << "Cannot initialize the file repository" << std::endl;
       return 1;
    }
+
+   case Application::ErrCode::idFileNameCacheInitError: {
+      std::cerr << "Cannot initialize the filename cache" << std::endl;
+      return 1;
+   }                           
 
    case Application::ErrCode::configurationError: {
       std::cerr << cfg->error() << std::endl;

@@ -17,6 +17,7 @@
 
 #include "HttpSocket.h"
 #include "TcpListener.h"
+#include "IdFileNameCache.h"
 
 #include "config.h"
 
@@ -41,6 +42,7 @@ private:
    TcpListener::Handle _tcpServer;
    std::string _webRootPath = "/tmp";
    bool _verboseModeOn = true;
+   IdFileNameCache::Handle _idFileNameCache;
 
    HttpServer() = default;
 
@@ -65,6 +67,13 @@ public:
    }
 
    /**
+    * Sets a id/filename cache instance
+    */
+   void setIdFileNameCache(IdFileNameCache::Handle cacheInstance) noexcept {
+      _idFileNameCache = cacheInstance;
+   }
+
+   /**
     * Gets HttpServer object instance reference.
     * This class is a singleton. First time this function is called,
     * the HttpServer object is initialized.
@@ -76,7 +85,7 @@ public:
    /**
     * Gets current server working directory
     */
-   const std::string& getWebRootPath() const {
+   const std::string& getWebRootPath() const noexcept {
       return _webRootPath;
    }
 

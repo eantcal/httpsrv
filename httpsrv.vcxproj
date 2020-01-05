@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="include\HttpRequest.h" />
     <ClInclude Include="include\HttpResponse.h" />
+    <ClInclude Include="include\IdFileNameCache.h" />
     <ClInclude Include="include\TcpListener.h" />
     <ClInclude Include="include\TcpSocket.h" />
     <ClInclude Include="include\TransportSocket.h" />
