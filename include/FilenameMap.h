@@ -110,6 +110,39 @@ public:
     */
    bool locked_updateMakeJson(const std::string& path, std::string& json);
 
+   /**
+     * Returns file attributes of fileName formatted using a JSON record of
+     * id, name, size, timestame, where id is sha256 of fileName,
+     * name is the fileName, size is the size in bytes of file,
+     * timestamp is a unix access timestamp of file
+     *
+     * @param filePath String containing complete file path and name
+     * @param fileName String containing the name to generate JSON output
+     * @param jsonOutput output JSON string
+     * @return true if operation successfully completed, false otherwise
+     */
+   static bool jsonStat(
+      const std::string& filePath,
+      const std::string& fileName,
+      const std::string& id,
+      std::string& jsonOutput,
+      const std::string& beginl = "",
+      const std::string& endl = "\n");
+
+   /**
+    * Touch an existing file and return a related JSON format status
+    * @param path String containing file directory
+    * @param filanameMap id2filename map
+    * @param id of file
+    * @param jsonOutput output JSON string
+    * @return true if operation successfully completed, false otherwise
+    */
+   static bool jsonTouchFile(
+      const std::string& path,
+      const FilenameMap& filenameMap,
+      const std::string& id,
+      std::string& json);
+
 
    FilenameMap() = default;
 

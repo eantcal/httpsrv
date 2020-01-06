@@ -25,116 +25,6 @@
 #include <sys/stat.h>
 #endif
 
-/* -------------------------------------------------------------------------- */
-
-std::string FileUtils::initLocalStore(const std::string& path)
-{
-   std::string storePath;
-
-   // Resolve any homedir prefix
-   std::string resPath;
-   if (!path.empty()) {
-      size_t prefixSize = path.size() > 1 ? 2 : 1;
-      if ((prefixSize > 1 && path.substr(0, 2) == "~/") || path == "~") {
-         resPath = getHomeDir();
-         resPath += "/";
-         resPath += path.substr(prefixSize, path.size() - prefixSize);
-      }
-   }
-
-   if (!touchDir(resPath, storePath)) {
-      storePath.clear();
-   }
-
-   return storePath;
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-bool FileUtils::createMruFilesList(
-   const std::string& path,
-   TimeOrderedFileList& list)
-{
-   fs::path dirPath(path);
-   fs::directory_iterator endIt;
-
-   FilenameMap newCache;
-
-   if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
-      list.clear();
-      for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
-         if (fs::is_regular_file(it->status())) {
-            list.insert({ fs::last_write_time(it->path()), *it });
-         }
-      }
-      return true;
-   }
-
-   return false;
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-bool FileUtils::createJsonMruFilesList(
-   const std::string& path, int mrufilesN, std::string& json)
-{
-   TimeOrderedFileList timeOrderedFileList;
-
-   if (!createMruFilesList(
-      path,
-      timeOrderedFileList))
-   {
-      return false;
-   }
-
-   json = "[\n";
-
-   int fileCnt = 0;
-
-   for (auto it = timeOrderedFileList.rbegin();
-      it != timeOrderedFileList.rend() &&
-      fileCnt < mrufilesN;
-      ++it,
-      ++fileCnt)
-   {
-         std::string jsonEntry;
-         auto fName = it->second.filename().string();
-         auto id = hashCode(fName);
-         if (jsonStat(it->second.string(), fName, id, jsonEntry, "  ", ",\n")) {
-            json += jsonEntry;
-         }
-   }
-
-   // remove last ",\n" sequence
-   if (json.size() > 2)
-      json.resize(json.size() - 2);
-
-   json += "\n]\n";
-   return true;
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-bool FileUtils::jsonTouchFile(
-   const std::string& path, 
-   const FilenameMap& filenameMap,
-   const std::string& id, 
-   std::string& json)
-{
-   std::string fName;
-   if (!filenameMap.locked_search(id, fName)) {
-      return false;
-   }
-
-   return jsonStat(path+"/"+fName, fName, id, json);
-
-   return true;
-}
-
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -164,7 +54,6 @@ bool FileUtils::fileStat(
    return false;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
 std::string FileUtils::hashCode(const std::string& src)
@@ -172,60 +61,6 @@ std::string FileUtils::hashCode(const std::string& src)
    std::string id;
    picosha2::hash256_hex_string(src, id);
    return id;
-}
-
-
-/* -------------------------------------------------------------------------- */
-
-bool FileUtils::jsonStat(
-   const std::string& filePath,  // actual file path (including name)
-   const std::string& fileName,  // filename field of JSON output
-   const std::string& id,        // id field of JSON output
-   std::string& jsonOutput,
-   const std::string& beginl,
-   const std::string& endl)
-{
-   struct stat rstat = { 0 };
-   const int ret = stat(filePath.c_str(), &rstat);
-
-   if (ret < 0)
-      return false;
-
-   std::tm bt = *localtime(&(rstat.st_atime));
-
-   std::ostringstream ossTS;
-
-#ifdef __linux__
-   // Supported by Linux only
-   size_t microsec = (rstat.st_atim.tv_nsec / 1000) % 1000000;
-#else
-   size_t microsec = 0;
-#endif
-   // YYYY-MM-DDTHH:MM:SS.uuuuuuZ
-   ossTS << std::put_time(&bt, "%Y-%m-%dT%H:%M:%S");
-   ossTS << '.' << std::setfill('0') << std::setw(6) << microsec << "Z";
-
-   /*
-   Example of JSON output
-
-   {
-     "id": "0d0dad8f655e69a1c5788682781bcc143fc9bf55e0b3dbb778e4a85f8e9e586b",
-     "name": "nino.txt",
-     "size": 123,
-     "timestamp": "2020-01-01T17:40:46.560645Z"
-   }
-   */
-
-   std::stringstream oss;
-   oss << beginl << "{" << std::endl;
-   oss << beginl << "  \"id\": \"" << id << "\"," << std::endl;
-   oss << beginl << "  \"name\": \"" << fileName << "\"," << std::endl;
-   oss << beginl << "  \"size\": " << rstat.st_size << "," << std::endl;
-   oss << beginl << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
-   oss << beginl << "}" << endl;
-   jsonOutput = oss.str();
-
-   return true;
 }
 
 

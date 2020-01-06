@@ -101,7 +101,7 @@ private:
          auto id = FileUtils::hashCode(fileName);
 
          os.close();  // create the file posted by client
-         if (!FileUtils::jsonStat(filePath, fileName, id, json)) {
+         if (!FilenameMap::jsonStat(filePath, fileName, id, json)) {
             json.clear();
          }
          else {

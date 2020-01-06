@@ -49,6 +49,8 @@ public:
    int getMruFilesN() const noexcept {
       return _mrufilesN;
    }
+
+   
 private:
    FileStore(const std::string& path, int mrufilesN) : 
       _path(path),

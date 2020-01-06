@@ -85,7 +85,7 @@ bool FileStore::createJsonMruFilesList(std::string& json)
       std::string jsonEntry;
       auto fName = it->second.filename().string();
       auto id = FileUtils::hashCode(fName);
-      if (FileUtils::jsonStat(it->second.string(), fName, id, jsonEntry, "  ", ",\n")) {
+      if (FilenameMap::jsonStat(it->second.string(), fName, id, jsonEntry, "  ", ",\n")) {
          json += jsonEntry;
       }
    }
@@ -97,3 +97,5 @@ bool FileStore::createJsonMruFilesList(std::string& json)
    json += "\n]\n";
    return true;
 }
+
+
