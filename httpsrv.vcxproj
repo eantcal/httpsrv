@@ -163,6 +163,7 @@
     <Text Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\FileStore.h" />
     <ClInclude Include="include\FileUtils.h" />
     <ClInclude Include="include\HttpRequest.h" />
     <ClInclude Include="include\HttpResponse.h" />
@@ -179,6 +180,8 @@
     <ClInclude Include="zip\src\zip.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\FilenameMap.cc" />
+    <ClCompile Include="src\FileStore.cc" />
     <ClCompile Include="src\HttpRequest.cc" />
     <ClCompile Include="src\HttpResponse.cc" />
     <ClCompile Include="src\HttpSocket.cc" />

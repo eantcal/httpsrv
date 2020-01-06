@@ -16,6 +16,7 @@
 /* -------------------------------------------------------------------------- */
 
 #include "HttpServer.h"
+#include "FileStore.h"
 #include "FilenameMap.h"
 #include "FileUtils.h"
 #include "SysUtils.h"
@@ -70,7 +71,7 @@ private:
 
    std::ostream& _logger;
 
-   FilenameMap::Handle _idFileNameCache;
+   FilenameMap::Handle _filenameMap;
 
    std::string _progName;
    std::string _commandLine;
@@ -88,6 +89,8 @@ private:
    static const int _maj_ver = HTTP_SERVER_MAJ_V;
 
    int _mrufilesN = MRUFILES_DEF_N;
+
+   FileStore::Handle _fileStore;
 };
 
 

@@ -13,13 +13,13 @@
 /* -------------------------------------------------------------------------- */
 
 #include "HttpServer.h"
+#include "FileStore.h"
+
+#include "FilenameMap.h"
 
 #include "StrUtils.h"
 #include "SysUtils.h"
 #include "FileUtils.h"
-
-#include "FilenameMap.h"
-
 
 #include <thread>
 #include <cassert>
@@ -38,17 +38,18 @@ public:
       bool verboseModeOn,
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle,
-      const std::string& webRootPath,
       FilenameMap::Handle filenameMap,
-      int mrufilesN)
+      int mrufilesN,
+      FileStore::Handle fileStore
+      )
    {
       return Handle(new (std::nothrow) HttpServerSession(
          verboseModeOn,
          loggerOStream,
          socketHandle,
-         webRootPath,
          filenameMap,
-         mrufilesN));
+         mrufilesN,
+         fileStore));
    }
 
    HttpServerSession() = delete;
@@ -58,9 +59,9 @@ private:
    bool _verboseModeOn = true;
    std::ostream& _logger;
    TcpSocket::Handle _tcpSocketHandle;
-   std::string _localStorePath;
-   FilenameMap::Handle _idFileNameCache;
+   FilenameMap::Handle _filenameMap;
    int _mrufilesN;
+   FileStore::Handle _fileStore;
 
    std::ostream& log() {
       return _logger;
@@ -71,22 +72,22 @@ private:
    }
 
    const std::string& getLocalStorePath() const {
-      return _localStorePath;
+      return _fileStore->getPath();
    }
 
    HttpServerSession(
       bool verboseModeOn, 
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle, 
-      const std::string& webRootPath,
       FilenameMap::Handle filenameMap,
-      int mrufilesN)
+      int mrufilesN,
+      FileStore::Handle fileStore)
       : _verboseModeOn(verboseModeOn)
       , _logger(loggerOStream)
       , _tcpSocketHandle(socketHandle)
-      , _localStorePath(webRootPath)
-      , _idFileNameCache(filenameMap)
+      , _filenameMap(filenameMap)
       , _mrufilesN(mrufilesN)
+      , _fileStore(fileStore)
    {
    }
 
@@ -109,7 +110,7 @@ private:
             json.clear();
          }
          else {
-            _idFileNameCache->insert(id, fileName);
+            _filenameMap->insert(id, fileName);
             return true;
          }
       }
@@ -128,16 +129,12 @@ private:
    ProcessGetRequestResult handleGetReq(HttpRequest& httpRequest, std::string& json)
    {
       if (httpRequest.getUri() == HTTP_SERVER_GET_FILES) {
-         if (FileUtils::refreshIdFilenameCache(
-            getLocalStorePath(),
-            *_idFileNameCache,
-            json))
-         {
+         if (_filenameMap->locked_updateMakeJson(getLocalStorePath(), json)) {
             return ProcessGetRequestResult::sendJsonFileList;
          }
       }
       else if (httpRequest.getUri() == HTTP_SERVER_GET_MRUFILES) {
-         FileUtils::TimeOrderedFileList timeOrderedFileList;
+         FileStore::TimeOrderedFileList timeOrderedFileList;
 
          if (!FileUtils::createJsonMruFilesList(
             getLocalStorePath(),
@@ -332,9 +329,9 @@ bool HttpServer::run()
          _verboseModeOn,
          *_loggerOStreamPtr,
          handle,
-         getLocalStorePath(),
-         _idFileNameCache,
-         _mrufilesN);
+         _filenameMap,
+         _mrufilesN,
+         _fileStore);
 
       // Coping the http_server_task handle (shared_ptr) the reference
       // count is automatically increased by one

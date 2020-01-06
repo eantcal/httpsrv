@@ -94,6 +94,23 @@ public:
       return false;
    }
 
+   /**
+    * Scan the file system path to populate the map
+    * @param path of local store
+    * @return true if operation successfully completed, false otherwise
+    */
+   bool scan(const std::string& path);
+
+
+   /**
+    * Scans the repository to update a given filenameMap
+    * @param path of repository
+    * @param json is the JSON formatted text matching the cache content
+    * @return true if operation successfully completed, false otherwise
+    */
+   bool locked_updateMakeJson(const std::string& path, std::string& json);
+
+
    FilenameMap() = default;
 
 private:

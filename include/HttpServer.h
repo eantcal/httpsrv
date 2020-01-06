@@ -17,6 +17,8 @@
 
 #include "HttpSocket.h"
 #include "TcpListener.h"
+
+#include "FileStore.h"
 #include "FilenameMap.h"
 
 #include "config.h"
@@ -57,8 +59,8 @@ public:
    /**
     * Sets a id/filename cache instance
     */
-   void setIdFileNameCache(FilenameMap::Handle cacheInstance) noexcept {
-      _idFileNameCache = cacheInstance;
+   void setFilenameMap(FilenameMap::Handle cacheInstance) noexcept {
+      _filenameMap = cacheInstance;
    }
 
    /**
@@ -78,17 +80,17 @@ public:
    static auto getInstance()->HttpServer&;
 
    /**
-    * Gets current server working directory
+    * Gets local store handle
     */
-   const std::string& getLocalStorePath() const noexcept {
-      return _localStorePath;
+   FileStore::Handle getFileStore() const noexcept {
+      return _fileStore;
    }
 
    /**
-    * Sets the server working directory
+    * Set local stoer handle
     */
-   void setLocalStorePath(const std::string& path) {
-      _localStorePath = path;
+   void setFileStore(FileStore::Handle handle) {
+      _fileStore = handle;
    }
 
    /**
@@ -141,10 +143,11 @@ private:
    static HttpServer* _instance;
    TranspPort _serverPort = HTTP_SERVER_PORT;
    TcpListener::Handle _tcpServer;
-   std::string _localStorePath = "/tmp";
+   //std::string _localStorePath = "/tmp";
    bool _verboseModeOn = true;
-   FilenameMap::Handle _idFileNameCache;
+   FilenameMap::Handle _filenameMap;
    int _mrufilesN = MRUFILES_DEF_N;
+   FileStore::Handle _fileStore;
 
    HttpServer() = default;
 

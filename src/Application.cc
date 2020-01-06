@@ -159,39 +159,28 @@ Application::ErrCode Application::run()
    }
 
    // Creates or validates (if already existant) a repository for text file
-   _idFileNameCache = FilenameMap::make();
-   if (!_idFileNameCache) {
+   _filenameMap = FilenameMap::make();
+   if (!_filenameMap) {
       _errMessage = "Cannot initialize the filename cache";
       return ErrCode::idFileNameCacheInitError;
    }
 
-   auto repositoryPath = FileUtils::initLocalStore(_localStorePath);
+   _fileStore = FileStore::make(_localStorePath);
+   
+  // auto storePath = FileUtils::initLocalStore(_localStorePath);
 
-   if (repositoryPath.empty() ||
-      !FileUtils::initIdFilenameCache(
-         repositoryPath,
-         *_idFileNameCache))
+   if (!_fileStore ||
+      !_filenameMap->scan(_fileStore->getPath()))
    {
       _errMessage = "Cannot initialize the local store";
       return ErrCode::fileRepositoryInitError;
    }
-#if 0
-   for (auto it = _timeOrderedFileListCache.rbegin();
-      it != _timeOrderedFileListCache.rend();
-      ++it)
-   {
-      std::cerr << it->second << std::endl;
-   }
-#endif
-   //...tmp
 
    auto& httpSrv = HttpServer::getInstance();
 
    httpSrv.setMruFilesNumber(_mrufilesN);
-   httpSrv.setIdFileNameCache(_idFileNameCache);
-
-   // file repository dir name is canonical full path name
-   httpSrv.setLocalStorePath(repositoryPath);
+   httpSrv.setFilenameMap(_filenameMap);
+   httpSrv.setFileStore(_fileStore);
 
    if (!httpSrv.bind(_httpServerPort)) {
       ss << "Error binding server port " << _httpServerPort;
