@@ -35,17 +35,32 @@ namespace FileUtils {
    std::string initRepository(const std::string& path);
 
    /**
-     * Scans the repository saving the content in a time ordered list.
-     * Update a given instance of IdFileNameCache related to repository files.
+     * Initialize the idFileNameCache
      * @param path of repository
-     * @param list is the time ordered list of file found in the given path
      * @param idFileNameCache is the IdFileNameCache instance to be updated
      * @return true if operation successfully completed, false otherwise
      */
-   bool scanRepository(
-      const std::string& path, 
-      TimeOrderedFileList& list, 
+   bool initIdFilenameCache(
+      const std::string& path,
       IdFileNameCache& idFileNameCache);
+
+   /**
+     * Scans the local store saving the content in a time ordered list.
+     * @param path of local store
+     * @param list is the time ordered list of file found in the given path
+     * @return true if operation successfully completed, false otherwise
+     */
+   bool createMruFilesList(const std::string& path, TimeOrderedFileList& list);
+
+   /**
+     * Scans the local file store to build MRU files list
+     * @param path of repository
+     * @param mrufilesN is the max number of list entries
+     * @param json is the JSON formatted text matching the cache content
+     *
+     * @return true if operation successfully completed, false otherwise
+     */
+   bool createJsonMruFilesList(const std::string& path, int mrufilesN, std::string& json);
 
    /**
      * Scans the repository to update a given idFileNameCache

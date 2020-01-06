@@ -52,6 +52,31 @@ std::string FileUtils::initRepository(const std::string& path)
 
 /* -------------------------------------------------------------------------- */
 
+bool FileUtils::initIdFilenameCache(
+   const std::string& path,
+   IdFileNameCache& idFileNameCache)
+{
+   fs::path dirPath(path);
+   fs::directory_iterator endIt;
+
+   if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
+      for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
+         if (fs::is_regular_file(it->status())) {
+            std::string jsonEntry;
+            auto fName = it->path().filename().string();
+            auto id = FileUtils::hashCode(fName);
+            idFileNameCache.insert(id, fName);
+         }
+      }
+      return true;
+   }
+
+   return false;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
 bool FileUtils::refreshIdFilenameCache(
    const std::string& path,
    IdFileNameCache& idFileNameCache,
@@ -77,7 +102,12 @@ bool FileUtils::refreshIdFilenameCache(
          }
       }
       idFileNameCache.locked_replace(newCache);
-      json += "]\n";
+
+      // remove last ",\n" sequence
+      if (json.size()>2) 
+         json.resize(json.size()-2);
+
+      json += "\n]\n";
       return true;
    }
 
@@ -88,10 +118,9 @@ bool FileUtils::refreshIdFilenameCache(
 
 /* -------------------------------------------------------------------------- */
 
-bool FileUtils::scanRepository(
+bool FileUtils::createMruFilesList(
    const std::string& path,
-   TimeOrderedFileList& list,
-   IdFileNameCache& idFileNameCache)
+   TimeOrderedFileList& list)
 {
    fs::path dirPath(path);
    fs::directory_iterator endIt;
@@ -103,18 +132,52 @@ bool FileUtils::scanRepository(
       for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
          if (fs::is_regular_file(it->status())) {
             list.insert({ fs::last_write_time(it->path()), *it });
-
-            // update id/filename cache
-            auto fName = it->path().filename().string();
-            auto id = hashCode(fName);
-            newCache.insert(id, fName);
          }
       }
-      idFileNameCache.locked_replace(newCache);
       return true;
    }
 
    return false;
+}
+
+/* -------------------------------------------------------------------------- */
+
+bool FileUtils::createJsonMruFilesList(
+   const std::string& path, int mrufilesN, std::string& json)
+{
+   FileUtils::TimeOrderedFileList timeOrderedFileList;
+
+   if (!FileUtils::createMruFilesList(
+      path,
+      timeOrderedFileList))
+   {
+      return false;
+   }
+
+   json = "[\n";
+
+   int fileCnt = 0;
+
+   for (auto it = timeOrderedFileList.rbegin();
+      it != timeOrderedFileList.rend() &&
+      fileCnt < mrufilesN;
+      ++it,
+      ++fileCnt)
+   {
+         std::string jsonEntry;
+         auto fName = it->second.filename().string();
+         auto id = FileUtils::hashCode(fName);
+         if (jsonStat(it->second.string(), fName, id, jsonEntry, "  ", ",\n")) {
+            json += jsonEntry;
+         }
+   }
+
+   // remove last ",\n" sequence
+   if (json.size() > 2)
+      json.resize(json.size() - 2);
+
+   json += "\n]\n";
+   return true;
 }
 
 

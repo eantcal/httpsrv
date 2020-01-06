@@ -26,30 +26,32 @@
 
 
 /* -------------------------------------------------------------------------- */
-// HttpServerTask
+// HttpServerSession
 
 /* -------------------------------------------------------------------------- */
 
-class HttpServerTask {
+class HttpServerSession {
 public:
-   using Handle = std::shared_ptr<HttpServerTask>;
+   using Handle = std::shared_ptr<HttpServerSession>;
 
    inline static Handle create(
       bool verboseModeOn,
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle,
       const std::string& webRootPath,
-      IdFileNameCache::Handle idFileNameCache)
+      IdFileNameCache::Handle idFileNameCache,
+      int mrufilesN)
    {
-      return Handle(new (std::nothrow) HttpServerTask(
+      return Handle(new (std::nothrow) HttpServerSession(
          verboseModeOn,
          loggerOStream,
          socketHandle,
          webRootPath,
-         idFileNameCache));
+         idFileNameCache,
+         mrufilesN));
    }
 
-   HttpServerTask() = delete;
+   HttpServerSession() = delete;
    void operator()(Handle task_handle);
 
 private:
@@ -58,6 +60,7 @@ private:
    TcpSocket::Handle _tcpSocketHandle;
    std::string _localStorePath;
    IdFileNameCache::Handle _idFileNameCache;
+   int _mrufilesN;
 
    std::ostream& log() {
       return _logger;
@@ -71,17 +74,19 @@ private:
       return _localStorePath;
    }
 
-   HttpServerTask(
+   HttpServerSession(
       bool verboseModeOn, 
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle, 
       const std::string& webRootPath,
-      IdFileNameCache::Handle idFileNameCache)
+      IdFileNameCache::Handle idFileNameCache,
+      int mrufilesN)
       : _verboseModeOn(verboseModeOn)
       , _logger(loggerOStream)
       , _tcpSocketHandle(socketHandle)
       , _localStorePath(webRootPath)
       , _idFileNameCache(idFileNameCache)
+      , _mrufilesN(mrufilesN)
    {
    }
 
@@ -115,6 +120,7 @@ private:
    enum class ProcessGetRequestResult {
       none,
       sendErrorInvalidRequest,
+      sendInternalError,
       sendJsonFileList,
       sendZipFile
    };
@@ -132,6 +138,17 @@ private:
             return ProcessGetRequestResult::sendJsonFileList;
          }
       }
+      else if (httpRequest.getUri() == HTTP_SERVER_GET_MRUFILES) {
+         FileUtils::TimeOrderedFileList timeOrderedFileList;
+
+         if (!FileUtils::createJsonMruFilesList(
+            getLocalStorePath(),
+            _mrufilesN,
+            json))
+         {
+            return ProcessGetRequestResult::sendInternalError;
+         }
+      }
 
       return ProcessGetRequestResult::sendErrorInvalidRequest;
    }
@@ -144,7 +161,7 @@ private:
 // Handles the HTTP server request
 // This method executes in a specific thread context for
 // each accepted HTTP request
-void HttpServerTask::operator()(Handle task_handle)
+void HttpServerSession::operator()(Handle task_handle)
 {
    (void)task_handle;
 
@@ -313,16 +330,17 @@ bool HttpServer::run()
 
       assert(_loggerOStreamPtr);
 
-      HttpServerTask::Handle taskHandle = HttpServerTask::create(
+      HttpServerSession::Handle sessionHandle = HttpServerSession::create(
          _verboseModeOn,
          *_loggerOStreamPtr,
          handle,
          getLocalStorePath(),
-         _idFileNameCache);
+         _idFileNameCache,
+         _mrufilesN);
 
       // Coping the http_server_task handle (shared_ptr) the reference
       // count is automatically increased by one
-      std::thread workerThread(*taskHandle, taskHandle);
+      std::thread workerThread(*sessionHandle, sessionHandle);
 
       workerThread.detach();
    }
