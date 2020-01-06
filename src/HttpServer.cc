@@ -39,7 +39,6 @@ public:
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle,
       FilenameMap::Handle filenameMap,
-      int mrufilesN,
       FileStore::Handle fileStore
       )
    {
@@ -48,7 +47,6 @@ public:
          loggerOStream,
          socketHandle,
          filenameMap,
-         mrufilesN,
          fileStore));
    }
 
@@ -60,7 +58,6 @@ private:
    std::ostream& _logger;
    TcpSocket::Handle _tcpSocketHandle;
    FilenameMap::Handle _filenameMap;
-   int _mrufilesN;
    FileStore::Handle _fileStore;
 
    std::ostream& log() {
@@ -80,13 +77,11 @@ private:
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle, 
       FilenameMap::Handle filenameMap,
-      int mrufilesN,
       FileStore::Handle fileStore)
       : _verboseModeOn(verboseModeOn)
       , _logger(loggerOStream)
       , _tcpSocketHandle(socketHandle)
       , _filenameMap(filenameMap)
-      , _mrufilesN(mrufilesN)
       , _fileStore(fileStore)
    {
    }
@@ -136,11 +131,7 @@ private:
       else if (httpRequest.getUri() == HTTP_SERVER_GET_MRUFILES) {
          FileStore::TimeOrderedFileList timeOrderedFileList;
 
-         if (!FileUtils::createJsonMruFilesList(
-            getLocalStorePath(),
-            _mrufilesN,
-            json))
-         {
+         if (!_fileStore->createJsonMruFilesList(json)) {
             return ProcessGetRequestResult::sendInternalError;
          }
       }
@@ -330,7 +321,6 @@ bool HttpServer::run()
          *_loggerOStreamPtr,
          handle,
          _filenameMap,
-         _mrufilesN,
          _fileStore);
 
       // Coping the http_server_task handle (shared_ptr) the reference

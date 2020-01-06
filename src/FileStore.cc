@@ -37,3 +37,63 @@ bool FileStore::init() {
    _path = storePath;
    return true;
 }
+
+
+/* -------------------------------------------------------------------------- */
+
+bool FileStore::createMruFilesList(TimeOrderedFileList& list)
+{
+   fs::path dirPath(getPath());
+   fs::directory_iterator endIt;
+
+   FilenameMap newCache;
+
+   if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
+      list.clear();
+      for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
+         if (fs::is_regular_file(it->status())) {
+            list.insert({ fs::last_write_time(it->path()), *it });
+         }
+      }
+      return true;
+   }
+
+   return false;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+bool FileStore::createJsonMruFilesList(std::string& json)
+{
+   TimeOrderedFileList timeOrderedFileList;
+
+   if (!createMruFilesList(timeOrderedFileList)) {
+      return false;
+   }
+
+   json = "[\n";
+
+   int fileCnt = 0;
+
+   for (auto it = timeOrderedFileList.rbegin();
+      it != timeOrderedFileList.rend() &&
+      fileCnt < _mrufilesN;
+      ++it,
+      ++fileCnt)
+   {
+      std::string jsonEntry;
+      auto fName = it->second.filename().string();
+      auto id = FileUtils::hashCode(fName);
+      if (FileUtils::jsonStat(it->second.string(), fName, id, jsonEntry, "  ", ",\n")) {
+         json += jsonEntry;
+      }
+   }
+
+   // remove last ",\n" sequence
+   if (json.size() > 2)
+      json.resize(json.size() - 2);
+
+   json += "\n]\n";
+   return true;
+}

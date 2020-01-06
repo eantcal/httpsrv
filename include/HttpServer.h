@@ -64,13 +64,6 @@ public:
    }
 
    /**
-    * Sets mrufiles number
-    */
-   void setMruFilesNumber(int mrufilesN) noexcept {
-      _mrufilesN = mrufilesN;
-   }
-
-   /**
     * Gets HttpServer object instance reference.
     * This class is a singleton. First time this function is called,
     * the HttpServer object is initialized.
@@ -143,10 +136,8 @@ private:
    static HttpServer* _instance;
    TranspPort _serverPort = HTTP_SERVER_PORT;
    TcpListener::Handle _tcpServer;
-   //std::string _localStorePath = "/tmp";
    bool _verboseModeOn = true;
    FilenameMap::Handle _filenameMap;
-   int _mrufilesN = MRUFILES_DEF_N;
    FileStore::Handle _fileStore;
 
    HttpServer() = default;

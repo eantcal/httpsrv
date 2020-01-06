@@ -30,8 +30,8 @@ public:
    using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
    using Handle = std::shared_ptr<FileStore>;
 
-   static Handle make(const std::string& path) {
-      Handle ret(new (std::nothrow) FileStore(path));
+   static Handle make(const std::string& path, int mrufilesN) {
+      Handle ret(new (std::nothrow) FileStore(path, mrufilesN));
       if (ret) {
          if (!ret->init()) {
             return nullptr;
@@ -40,17 +40,28 @@ public:
       return ret;
    }
 
+   bool createJsonMruFilesList(std::string& json);
+
    const std::string& getPath() const noexcept {
       return _path;
    }
 
+   int getMruFilesN() const noexcept {
+      return _mrufilesN;
+   }
 private:
-   FileStore(const std::string& path) : _path(path) {}
+   FileStore(const std::string& path, int mrufilesN) : 
+      _path(path),
+      _mrufilesN(mrufilesN)
+   {}
+
    bool init();
 
+   bool createMruFilesList(TimeOrderedFileList& list);
 
 private:
    std::string _path;
+   int _mrufilesN;
 };
 
 

@@ -165,10 +165,8 @@ Application::ErrCode Application::run()
       return ErrCode::idFileNameCacheInitError;
    }
 
-   _fileStore = FileStore::make(_localStorePath);
+   _fileStore = FileStore::make(_localStorePath, _mrufilesN);
    
-  // auto storePath = FileUtils::initLocalStore(_localStorePath);
-
    if (!_fileStore ||
       !_filenameMap->scan(_fileStore->getPath()))
    {
@@ -178,7 +176,6 @@ Application::ErrCode Application::run()
 
    auto& httpSrv = HttpServer::getInstance();
 
-   httpSrv.setMruFilesNumber(_mrufilesN);
    httpSrv.setFilenameMap(_filenameMap);
    httpSrv.setFileStore(_fileStore);
 
