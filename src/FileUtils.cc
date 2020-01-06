@@ -15,6 +15,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <random>
 
 #ifdef WIN32
 #include <direct.h>
@@ -26,13 +27,18 @@
 #endif
 
 
+
 /* -------------------------------------------------------------------------- */
 
 bool FileUtils::createTemporaryDir(fs::path& path) {
-   path = fs::temp_directory_path();
-   path += fs::unique_path();
-
-   return fs::create_directories(path);
+   auto tmp_dir = fs::temp_directory_path();
+   std::random_device dev;
+   std::mt19937 prng(dev());
+   std::uniform_int_distribution<uint64_t> rand(0);
+   std::stringstream ss;
+   ss << std::hex << rand(prng);
+   path = tmp_dir / ss.str();
+   return (fs::create_directory(path));
 }
 
 
