@@ -131,15 +131,13 @@ public:
 
    /**
     * Touch an existing file and return a related JSON format status
-    * @param path String containing file directory
-    * @param filanameMap id2filename map
+    * @param path points to store directory
     * @param id of file
     * @param jsonOutput output JSON string
     * @return true if operation successfully completed, false otherwise
     */
-   static bool jsonTouchFile(
+   bool jsonTouchFile(
       const std::string& path,
-      const FilenameMap& filenameMap,
       const std::string& id,
       std::string& json);
 

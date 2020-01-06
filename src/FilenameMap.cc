@@ -15,6 +15,12 @@
 #include <sstream>
 #include <iomanip>
 
+#ifndef WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 /* -------------------------------------------------------------------------- */
 
 bool FilenameMap::scan(const std::string& path)
@@ -77,22 +83,22 @@ bool FilenameMap::locked_updateMakeJson(
    return false;
 }
 
+
 /* -------------------------------------------------------------------------- */
 
 bool FilenameMap::jsonTouchFile(
    const std::string& path,
-   const FilenameMap& filenameMap,
    const std::string& id,
    std::string& json)
 {
    std::string fName;
-   if (!filenameMap.locked_search(id, fName)) {
+   if (!locked_search(id, fName)) {
       return false;
    }
+   std::string filePath = path + "/" + fName;
 
-   return jsonStat(path + "/" + fName, fName, id, json);
-
-   return true;
+   FileUtils::touch(filePath, false /*== do not create if it does not exist*/);
+   return jsonStat(filePath, fName, id, json);
 }
 
 

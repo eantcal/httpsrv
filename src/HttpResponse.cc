@@ -125,7 +125,8 @@ HttpResponse::HttpResponse(
    else { // GET/HEAD
       if (request.getMethod() == HttpRequest::Method::GET && 
           (request.getUri() == HTTP_SERVER_GET_MRUFILES ||
-           request.getUri() == HTTP_SERVER_GET_FILES))
+           request.getUri() == HTTP_SERVER_GET_FILES || 
+           (request.getUriArgs().size() == 3 && request.getUriArgs()[1]== HTTP_URIPFX_FILES)))
       {
          formatPositiveResponse(
             _response,

@@ -32,10 +32,13 @@
 #define HTTP_CONNECTION_TIMEOUT_MS    10
 #define HTTP_SERVER_VER               "HTTP/1.1"
 
-#define HTTP_SERVER_POST_STORE       "/store"
-#define HTTP_SERVER_GET_FILES        "/files"
-#define HTTP_SERVER_GET_MRUFILES     "/mrufiles"
-#define HTTP_SERVER_GET_MRUFILES_ZIP "/mrufiles/zip"
+#define HTTP_URIPFX_FILES             "files"
+#define HTTP_URISFX_ZIP               "zip"
+
+#define HTTP_SERVER_POST_STORE        "/store"
+#define HTTP_SERVER_GET_FILES         "/" HTTP_URIPFX_FILES
+#define HTTP_SERVER_GET_MRUFILES      "/mrufiles"
+#define HTTP_SERVER_GET_MRUFILES_ZIP  "/mrufiles/" HTTP_URISFX_ZIP
 
 #define MRUFILES_DEF_N                3
 #define MRUFILES_MAX_N                1000

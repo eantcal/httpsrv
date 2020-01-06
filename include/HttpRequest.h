@@ -74,6 +74,14 @@ public:
 
 
    /**
+    * Returns the command line URI args (arg1/arg2/.../argN)
+    */
+   const std::vector<std::string>& getUriArgs() const noexcept {
+      return _uriArgs;
+   }
+
+
+   /**
     * Parses the HTTP method.
     *
     * @param method input string
@@ -87,6 +95,7 @@ public:
     * @param uri The input string to parse
     */
    void parseUri(const std::string& uri) {
+      StrUtils::splitLineInTokens(StrUtils::trim(uri), _uriArgs, "/");
       _uri = uri; // == "/" ? "index.html" : uri;
    }
 
@@ -204,6 +213,7 @@ private:
    std::string _filename;
    std::string _boundary;
    bool _expected_100_continue = false;
+   std::vector<std::string> _uriArgs;
 };
 
 

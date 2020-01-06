@@ -135,6 +135,14 @@ private:
             return ProcessGetRequestResult::sendInternalError;
          }
       }
+      else if (httpRequest.getUriArgs().size() == 3 && 
+               httpRequest.getUriArgs()[1] == HTTP_URIPFX_FILES) 
+      {
+         const auto &id = httpRequest.getUriArgs()[2];
+         if (!_filenameMap->jsonTouchFile(getLocalStorePath(), id, json)) {
+            return ProcessGetRequestResult::sendInternalError;
+         }
+      }
 
       return ProcessGetRequestResult::sendErrorInvalidRequest;
    }
