@@ -17,7 +17,7 @@
 
 #include "HttpSocket.h"
 #include "TcpListener.h"
-#include "IdFileNameCache.h"
+#include "FilenameMap.h"
 
 #include "config.h"
 
@@ -57,7 +57,7 @@ public:
    /**
     * Sets a id/filename cache instance
     */
-   void setIdFileNameCache(IdFileNameCache::Handle cacheInstance) noexcept {
+   void setIdFileNameCache(FilenameMap::Handle cacheInstance) noexcept {
       _idFileNameCache = cacheInstance;
    }
 
@@ -143,7 +143,7 @@ private:
    TcpListener::Handle _tcpServer;
    std::string _localStorePath = "/tmp";
    bool _verboseModeOn = true;
-   IdFileNameCache::Handle _idFileNameCache;
+   FilenameMap::Handle _idFileNameCache;
    int _mrufilesN = MRUFILES_DEF_N;
 
    HttpServer() = default;

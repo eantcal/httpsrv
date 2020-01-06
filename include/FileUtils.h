@@ -13,7 +13,7 @@
 #define __FILE_UTILS__H__
 
 #include "StrUtils.h"
-#include "IdFileNameCache.h"
+#include "FilenameMap.h"
 
 #include <map>
 
@@ -28,21 +28,21 @@ namespace FileUtils {
    using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
 
    /**
-     * Initializes the repository (creates an empty dir if not already present) 
+     * Initializes the local store (creates an empty dir if not already present) 
      * to a given path.
      * @return the actual path of repository, or empty string in case of errors
      */
-   std::string initRepository(const std::string& path);
+   std::string initLocalStore(const std::string& path);
 
    /**
-     * Initialize the idFileNameCache
-     * @param path of repository
-     * @param idFileNameCache is the IdFileNameCache instance to be updated
+     * Initialize the filenameMap
+     * @param path of local store
+     * @param filenameMap is the FilenameMap instance to be updated
      * @return true if operation successfully completed, false otherwise
      */
    bool initIdFilenameCache(
       const std::string& path,
-      IdFileNameCache& idFileNameCache);
+      FilenameMap& filenameMap);
 
    /**
      * Scans the local store saving the content in a time ordered list.
@@ -63,16 +63,16 @@ namespace FileUtils {
    bool createJsonMruFilesList(const std::string& path, int mrufilesN, std::string& json);
 
    /**
-     * Scans the repository to update a given idFileNameCache
+     * Scans the repository to update a given filenameMap
      * @param path of repository
      * @param list is the time ordered list of file found in the given path
-     * @param idFileNameCache is the IdFileNameCache instance to be updated
+     * @param filenameMap is the FilenameMap instance to be updated
      * @param json is the JSON formatted text matching the cache content
      * @return true if operation successfully completed, false otherwise
      */
    bool refreshIdFilenameCache(
       const std::string& path,
-      IdFileNameCache& idFileNameCache,
+      FilenameMap& filenameMap,
       std::string& json);
 
    /**
@@ -109,12 +109,28 @@ namespace FileUtils {
       const std::string& endl="\n");
 
    /**
+    * Touch an existing file and return a related JSON format status
+    * @param path String containing file directory
+    * @param filanameMap id2filename map
+    * @param id of file
+    * @param jsonOutput output JSON string
+    * @return true if operation successfully completed, false otherwise
+    */
+   bool jsonTouchFile(
+      const std::string& path,
+      const FilenameMap& filenameMap,
+      const std::string& id,
+      std::string& json);
+
+   /**
      * Trivial but portable version of basic touch command
      *
      * @param fileName String containing the path of existing or new file
+     * @param createNewIfNotExists is optional parameter that if true force
+       *      to create a new file if not already existant
      * @return true if operation successfully completed, false otherwise
      */
-   bool touch(const std::string& fileName);
+   bool touch(const std::string& fileName, bool createNewIfNotExists=false);
 
    /**
      * Gets full path of existing file or directory

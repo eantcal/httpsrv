@@ -18,7 +18,7 @@
 #include "SysUtils.h"
 #include "FileUtils.h"
 
-#include "IdFileNameCache.h"
+#include "FilenameMap.h"
 
 
 #include <thread>
@@ -39,7 +39,7 @@ public:
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle,
       const std::string& webRootPath,
-      IdFileNameCache::Handle idFileNameCache,
+      FilenameMap::Handle filenameMap,
       int mrufilesN)
    {
       return Handle(new (std::nothrow) HttpServerSession(
@@ -47,7 +47,7 @@ public:
          loggerOStream,
          socketHandle,
          webRootPath,
-         idFileNameCache,
+         filenameMap,
          mrufilesN));
    }
 
@@ -59,7 +59,7 @@ private:
    std::ostream& _logger;
    TcpSocket::Handle _tcpSocketHandle;
    std::string _localStorePath;
-   IdFileNameCache::Handle _idFileNameCache;
+   FilenameMap::Handle _idFileNameCache;
    int _mrufilesN;
 
    std::ostream& log() {
@@ -79,13 +79,13 @@ private:
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle, 
       const std::string& webRootPath,
-      IdFileNameCache::Handle idFileNameCache,
+      FilenameMap::Handle filenameMap,
       int mrufilesN)
       : _verboseModeOn(verboseModeOn)
       , _logger(loggerOStream)
       , _tcpSocketHandle(socketHandle)
       , _localStorePath(webRootPath)
-      , _idFileNameCache(idFileNameCache)
+      , _idFileNameCache(filenameMap)
       , _mrufilesN(mrufilesN)
    {
    }
@@ -125,9 +125,7 @@ private:
       sendZipFile
    };
 
-   ProcessGetRequestResult handleGetReq(
-      HttpRequest& httpRequest,
-      std::string& json)
+   ProcessGetRequestResult handleGetReq(HttpRequest& httpRequest, std::string& json)
    {
       if (httpRequest.getUri() == HTTP_SERVER_GET_FILES) {
          if (FileUtils::refreshIdFilenameCache(

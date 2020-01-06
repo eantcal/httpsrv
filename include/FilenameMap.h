@@ -9,8 +9,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-#ifndef __ID_FILENAME_CACHE_H__
-#define __ID_FILENAME_CACHE_H__
+#ifndef __ID_FILENAME_MAP_H__
+#define __ID_FILENAME_MAP_H__
 
 
 /* -------------------------------------------------------------------------- */
@@ -25,23 +25,23 @@
 /* -------------------------------------------------------------------------- */
 
 /**
- * Thread-safe id/filename cache used to resolve a filename
+ * Thread-safe id/filename map used to resolve a filename
  * for a given id
  */
-class IdFileNameCache {
+class FilenameMap {
 public:
-   using Handle = std::shared_ptr<IdFileNameCache>;
+   using Handle = std::shared_ptr<FilenameMap>;
 
-   IdFileNameCache(const IdFileNameCache&) = delete;
-   IdFileNameCache(IdFileNameCache&&) = delete;
-   IdFileNameCache& operator=(const IdFileNameCache&) = delete;
-   IdFileNameCache& operator=(IdFileNameCache&&) = delete;
+   FilenameMap(const FilenameMap&) = delete;
+   FilenameMap(FilenameMap&&) = delete;
+   FilenameMap& operator=(const FilenameMap&) = delete;
+   FilenameMap& operator=(FilenameMap&&) = delete;
 
    /**
     * Create an object instance
     */
    static Handle make() {
-      return IdFileNameCache::Handle(new (std::nothrow) IdFileNameCache);
+      return FilenameMap::Handle(new (std::nothrow) FilenameMap);
    }
 
    /**
@@ -66,14 +66,13 @@ public:
     */
    void clear() {
       std::unique_lock lock(_mtx);
-
       _data.clear();
    }
 
    /**
     * Replace the entire cache content
     */
-   void locked_replace(IdFileNameCache& newCache) {
+   void locked_replace(FilenameMap& newCache) {
       std::unique_lock lock(_mtx);
       _data = std::move(newCache._data);
    }
@@ -84,7 +83,7 @@ public:
     * @param fileName is assigned with corrispondent filename if found
     * @return true if id is found, false otherwise
     */
-   bool searchId(const std::string& id, std::string& fileName) const {
+   bool locked_search(const std::string& id, std::string& fileName) const {
       std::shared_lock lock(_mtx);
 
       auto it = _data.find(id);
@@ -95,7 +94,7 @@ public:
       return false;
    }
 
-   IdFileNameCache() = default;
+   FilenameMap() = default;
 
 private:
    using data_t = std::unordered_map<std::string, std::string>;
@@ -106,4 +105,4 @@ private:
 
 /* -------------------------------------------------------------------------- */
 
-#endif // !__ID_FILENAME_CACHE_H__
+#endif // !__ID_FILENAME_MAP_H__

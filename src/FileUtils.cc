@@ -27,7 +27,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-std::string FileUtils::initRepository(const std::string& path)
+std::string FileUtils::initLocalStore(const std::string& path)
 {
    std::string repositoryPath;
 
@@ -54,7 +54,7 @@ std::string FileUtils::initRepository(const std::string& path)
 
 bool FileUtils::initIdFilenameCache(
    const std::string& path,
-   IdFileNameCache& idFileNameCache)
+   FilenameMap& filenameMap)
 {
    fs::path dirPath(path);
    fs::directory_iterator endIt;
@@ -65,7 +65,7 @@ bool FileUtils::initIdFilenameCache(
             std::string jsonEntry;
             auto fName = it->path().filename().string();
             auto id = FileUtils::hashCode(fName);
-            idFileNameCache.insert(id, fName);
+            filenameMap.insert(id, fName);
          }
       }
       return true;
@@ -79,13 +79,13 @@ bool FileUtils::initIdFilenameCache(
 
 bool FileUtils::refreshIdFilenameCache(
    const std::string& path,
-   IdFileNameCache& idFileNameCache,
+   FilenameMap& filenameMap,
    std::string& json)
 {
    fs::path dirPath(path);
    fs::directory_iterator endIt;
 
-   IdFileNameCache newCache;
+   FilenameMap newCache;
    
    json = "[\n";
 
@@ -101,7 +101,7 @@ bool FileUtils::refreshIdFilenameCache(
             }
          }
       }
-      idFileNameCache.locked_replace(newCache);
+      filenameMap.locked_replace(newCache);
 
       // remove last ",\n" sequence
       if (json.size()>2) 
@@ -125,7 +125,7 @@ bool FileUtils::createMruFilesList(
    fs::path dirPath(path);
    fs::directory_iterator endIt;
 
-   IdFileNameCache newCache;
+   FilenameMap newCache;
 
    if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
       list.clear();
@@ -140,14 +140,15 @@ bool FileUtils::createMruFilesList(
    return false;
 }
 
+
 /* -------------------------------------------------------------------------- */
 
 bool FileUtils::createJsonMruFilesList(
    const std::string& path, int mrufilesN, std::string& json)
 {
-   FileUtils::TimeOrderedFileList timeOrderedFileList;
+   TimeOrderedFileList timeOrderedFileList;
 
-   if (!FileUtils::createMruFilesList(
+   if (!createMruFilesList(
       path,
       timeOrderedFileList))
    {
@@ -166,7 +167,7 @@ bool FileUtils::createJsonMruFilesList(
    {
          std::string jsonEntry;
          auto fName = it->second.filename().string();
-         auto id = FileUtils::hashCode(fName);
+         auto id = hashCode(fName);
          if (jsonStat(it->second.string(), fName, id, jsonEntry, "  ", ",\n")) {
             json += jsonEntry;
          }
@@ -179,6 +180,26 @@ bool FileUtils::createJsonMruFilesList(
    json += "\n]\n";
    return true;
 }
+
+
+/* -------------------------------------------------------------------------- */
+
+bool FileUtils::jsonTouchFile(
+   const std::string& path, 
+   const FilenameMap& filenameMap,
+   const std::string& id, 
+   std::string& json)
+{
+   std::string fName;
+   if (!filenameMap.locked_search(id, fName)) {
+      return false;
+   }
+
+   return jsonStat(path+"/"+fName, fName, id, json);
+
+   return true;
+}
+
 
 
 /* -------------------------------------------------------------------------- */
@@ -276,7 +297,7 @@ bool FileUtils::jsonStat(
 
 /* -------------------------------------------------------------------------- */
 
-bool FileUtils::touch(const std::string& fileName)
+bool FileUtils::touch(const std::string& fileName, bool createNewIfNotExists)
 {
    std::fstream ofs;
    ofs.open(fileName, std::ofstream::out | std::ofstream::in);
@@ -299,7 +320,8 @@ bool FileUtils::touch(const std::string& fileName)
       }
    }
    else {
-      ofs.open(fileName, std::ofstream::out);
+      if (createNewIfNotExists)
+         ofs.open(fileName, std::ofstream::out);
    }
 
    return !ofs.fail();

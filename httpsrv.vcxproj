@@ -166,7 +166,7 @@
     <ClInclude Include="include\FileUtils.h" />
     <ClInclude Include="include\HttpRequest.h" />
     <ClInclude Include="include\HttpResponse.h" />
-    <ClInclude Include="include\IdFileNameCache.h" />
+    <ClInclude Include="include\FilenameMap.h" />
     <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\TcpListener.h" />
     <ClInclude Include="include\TcpSocket.h" />
