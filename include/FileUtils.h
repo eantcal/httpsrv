@@ -25,7 +25,11 @@ namespace fs = boost::filesystem;
 
 namespace FileUtils {
 
-   using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
+   /**
+    *  Create a temporary directory
+    *  Returns true if operation successfully completed, false otherwise
+    */
+   bool createTemporaryDir(fs::path& path);
 
    /**
      * Returns file attributes of fileName.
@@ -84,7 +88,6 @@ namespace FileUtils {
      * @return string containig user home directory path
      */
    std::string getHomeDir();
-
 
    /**
      * Create an unique id from a given string

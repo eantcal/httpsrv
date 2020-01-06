@@ -28,6 +28,16 @@
 
 /* -------------------------------------------------------------------------- */
 
+bool FileUtils::createTemporaryDir(fs::path& path) {
+   path = fs::temp_directory_path();
+   path += fs::unique_path();
+
+   return fs::create_directories(path);
+}
+
+
+/* -------------------------------------------------------------------------- */
+
 bool FileUtils::fileStat(
    const std::string& fileName,
    std::string& dateTime,

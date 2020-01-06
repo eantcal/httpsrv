@@ -64,6 +64,7 @@ private:
 private:
    std::string _path;
    int _mrufilesN;
+   fs::path _tempDir;
 };
 
 

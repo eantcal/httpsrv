@@ -176,6 +176,7 @@
     <ClInclude Include="include\config.h" />
     <ClInclude Include="include\HttpServer.h" />
     <ClInclude Include="include\SysUtils.h" />
+    <ClInclude Include="include\ZipArchive.h" />
     <ClInclude Include="PicoSHA2\picosha2.h" />
     <ClInclude Include="zip\src\zip.h" />
   </ItemGroup>
