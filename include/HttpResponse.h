@@ -44,6 +44,7 @@ public:
    HttpResponse(
       const HttpRequest& request,
       const std::string& webRootPath,
+      const std::string& fileName,
       const std::string& body = "",
       const std::string& bodyFormat = "");
 

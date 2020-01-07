@@ -77,6 +77,7 @@ void HttpResponse::formatContinueResponse(std::string& response)
 
 HttpResponse::HttpResponse(
    const HttpRequest& request,
+   const std::string& fileName,
    const std::string& webRootPath,
    const std::string& body,
    const std::string& bodyFormat)
@@ -93,7 +94,7 @@ HttpResponse::HttpResponse(
 
    _localRepositoryPath = webRootPath;
 
-   _localUriPath = request.getUri();
+   _localUriPath = fileName.empty() ? request.getUri() : fileName;
    rpath(_localUriPath);
    _localUriPath = webRootPath + _localUriPath;
 
@@ -123,24 +124,28 @@ HttpResponse::HttpResponse(
       }
    }
    else { // GET/HEAD
-      if (request.getMethod() == HttpRequest::Method::GET && 
-          (request.getUri() == HTTP_SERVER_GET_MRUFILES ||
-           request.getUri() == HTTP_SERVER_GET_FILES || 
-           (request.getUriArgs().size() == 3 && request.getUriArgs()[1]== HTTP_URIPFX_FILES)))
-      {
-         formatPositiveResponse(
-            _response,
-            SysUtils::getLocalTime(),
-            std::string(bodyFormat),
-            body.size());
+      if (request.isValidGetRequest()) {
+         if (body.empty()) {
+            std::cerr << _localUriPath << std::endl;
+            if (FileUtils::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
+               formatPositiveResponse(_response, fileTime, fileExt, contentLen);
+            }
+            else {
+              formatError(_response, 404, "Not Found");
+            }
+         }
+         else {
+            formatPositiveResponse(
+               _response,
+               SysUtils::getLocalTime(),
+               std::string(bodyFormat),
+               body.size());
 
-         _response += body;
-      }
-      else if (FileUtils::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
-         formatPositiveResponse(_response, fileTime, fileExt, contentLen);
+            _response += body;
+         }
       }
       else {
-         formatError(_response, 404, "Not Found");
+         formatError(_response, 400, "Bad Request Error");
       }
    }
 }

@@ -118,10 +118,13 @@ private:
       sendErrorInvalidRequest,
       sendInternalError,
       sendJsonFileList,
+      sendNotFound,
       sendZipFile
    };
 
-   ProcessGetRequestResult handleGetReq(HttpRequest& httpRequest, std::string& json)
+   ProcessGetRequestResult handleGetReq(
+      HttpRequest& httpRequest, 
+      std::string& json)
    {
       if (httpRequest.getUri() == HTTP_SERVER_GET_FILES) {
          if (_filenameMap->locked_updateMakeJson(getLocalStorePath(), json)) {
@@ -139,9 +142,21 @@ private:
                httpRequest.getUriArgs()[1] == HTTP_URIPFX_FILES) 
       {
          const auto &id = httpRequest.getUriArgs()[2];
-         if (!_filenameMap->jsonTouchFile(getLocalStorePath(), id, json)) {
+         if (!_filenameMap->jsonStatFileUpdateTS(getLocalStorePath(), id, json, true)) {
             return ProcessGetRequestResult::sendInternalError;
          }
+      }
+      else if (httpRequest.getUriArgs().size() == 4 && 
+               httpRequest.getUriArgs()[1] == HTTP_URIPFX_FILES &&
+               httpRequest.getUriArgs()[3] == HTTP_URISFX_ZIP) 
+      {
+         std::string fileName;
+         const auto &id = httpRequest.getUriArgs()[2];
+         if (_filenameMap->locked_search(id, fileName)) {
+            return ProcessGetRequestResult::sendNotFound;
+         }
+         httpRequest.setFileName(fileName);
+         return ProcessGetRequestResult::sendZipFile;
       }
 
       return ProcessGetRequestResult::sendErrorInvalidRequest;
@@ -195,7 +210,7 @@ void HttpServerSession::operator()(Handle task_handle)
       if (_verboseModeOn)
          httpRequest->dump(log(), transactionId());
 
-      const auto& fileName = httpRequest->getFileName();
+      auto fileName = httpRequest->getFileName();
       std::string jsonResponse;
       ProcessGetRequestResult getRequestAction = ProcessGetRequestResult::none;
 
@@ -221,6 +236,7 @@ void HttpServerSession::operator()(Handle task_handle)
       // Format a response to previous HTTP request
       HttpResponse response(
          *httpRequest,
+         fileName, 
          getLocalStorePath(),
          jsonResponse,
          jsonResponse.empty() ? "" : ".json");
@@ -228,10 +244,8 @@ void HttpServerSession::operator()(Handle task_handle)
       // Send the response to remote peer
       httpSocket << response;
 
-      // TODO
-      if (getRequestAction == ProcessGetRequestResult::sendZipFile &&
-          httpRequest->getMethod() == HttpRequest::Method::GET) 
-      {
+      if (getRequestAction == ProcessGetRequestResult::sendZipFile) {
+         
          if (0 > httpSocket.sendFile(response.getLocalUriPath())) {
             if (_verboseModeOn)
                log() << transactionId() << "Error sending '"

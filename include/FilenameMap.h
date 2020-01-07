@@ -130,16 +130,17 @@ public:
       const std::string& endl = "\n");
 
    /**
-    * Touch an existing file and return a related JSON format status
+    * Touch an existing file and return a related stat in JSON format
     * @param path points to store directory
     * @param id of file
     * @param jsonOutput output JSON string
     * @return true if operation successfully completed, false otherwise
     */
-   bool jsonTouchFile(
+   bool jsonStatFileUpdateTS(
       const std::string& path,
       const std::string& id,
-      std::string& json);
+      std::string& json,
+      bool updateTimeStamp);
 
 
    FilenameMap() = default;

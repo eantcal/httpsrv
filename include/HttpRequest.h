@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+#include "config.h"
+
 
 /* -------------------------------------------------------------------------- */
 
@@ -165,6 +167,14 @@ public:
 
 
    /**
+    * Set fileName
+    */
+   void setFileName(const std::string& fileName) noexcept {
+      _filename = fileName;
+   }
+
+
+   /**
     * Get the content-type multipart boundary
     *
     * @return string containing any boundary string
@@ -200,6 +210,21 @@ public:
     * @return output stream reference
     */
    std::ostream& dump(std::ostream& os, const std::string& id = "");
+
+   /**
+    * Return true if the GET request is valid, false otherwise
+    */
+   bool isValidGetRequest() const noexcept {
+      return 
+         (getMethod() == HttpRequest::Method::GET && 
+          (getUri() == HTTP_SERVER_GET_MRUFILES ||
+           getUri() == HTTP_SERVER_GET_FILES || 
+           (getUriArgs().size() == 3 && 
+            getUriArgs()[1]== HTTP_URIPFX_FILES) ||
+           (getUriArgs().size() == 4 && 
+            getUriArgs()[1]== HTTP_URIPFX_FILES &&
+            getUriArgs()[3]== HTTP_URISFX_ZIP)));
+   }
 
 
 private:

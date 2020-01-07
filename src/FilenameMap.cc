@@ -86,10 +86,11 @@ bool FilenameMap::locked_updateMakeJson(
 
 /* -------------------------------------------------------------------------- */
 
-bool FilenameMap::jsonTouchFile(
+bool FilenameMap::jsonStatFileUpdateTS(
    const std::string& path,
    const std::string& id,
-   std::string& json)
+   std::string& json,
+   bool updateTimeStamp)
 {
    std::string fName;
    if (!locked_search(id, fName)) {
@@ -97,7 +98,9 @@ bool FilenameMap::jsonTouchFile(
    }
    std::string filePath = path + "/" + fName;
 
-   FileUtils::touch(filePath, false /*== do not create if it does not exist*/);
+   if (updateTimeStamp)
+      FileUtils::touch(filePath, false /*== do not create if it does not exist*/);
+   
    return jsonStat(filePath, fName, id, json);
 }
 
