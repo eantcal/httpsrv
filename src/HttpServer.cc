@@ -152,7 +152,7 @@ private:
       {
          std::string fileName;
          const auto &id = httpRequest.getUriArgs()[2];
-         if (_filenameMap->locked_search(id, fileName)) {
+         if (!_filenameMap->locked_search(id, fileName)) {
             return ProcessGetRequestResult::sendNotFound;
          }
          httpRequest.setFileName(fileName);
@@ -231,6 +231,9 @@ void HttpServerSession::operator()(Handle task_handle)
       }
       else if (httpRequest->getMethod() == HttpRequest::Method::GET) {
          getRequestAction = handleGetReq(*httpRequest, jsonResponse);
+         fileName = 
+            getRequestAction== ProcessGetRequestResult::sendZipFile ?
+               httpRequest->getFileName() : "";
       }
 
       // Format a response to previous HTTP request
