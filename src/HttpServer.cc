@@ -157,8 +157,6 @@ private:
          }
       }
       else if (httpRequest.getUri() == HTTP_SERVER_GET_MRUFILES) {
-         FileStore::TimeOrderedFileList timeOrderedFileList;
-
          if (!_fileStore->createJsonMruFilesList(json)) {
             return ProcessGetRequestResult::sendInternalError;
          }
@@ -190,9 +188,12 @@ private:
          tempDir += fileName + ".zip";
          fs::path src(getLocalStorePath());
          src /= fileName;
+
+         const auto updated = 
+            FileUtils::touch(src.string(), false /*== do not create if it does not exist*/);
          
          ZipArchive zipArchive(tempDir.string());
-         if (!zipArchive.create() || !zipArchive.add(src.string(), fileName)) {
+         if (!updated || !zipArchive.create() || !zipArchive.add(src.string(), fileName)) {
             return ProcessGetRequestResult::sendInternalError;
          }
          

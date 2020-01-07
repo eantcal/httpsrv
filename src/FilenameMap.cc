@@ -69,7 +69,7 @@ bool FilenameMap::locked_updateMakeJson(
             }
          }
       }
-      locked_replace(newCache);
+      locked_replace(std::move(newCache));
 
       // remove last ",\n" sequence
       if (json.size() > 2)
