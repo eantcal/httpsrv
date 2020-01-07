@@ -20,56 +20,58 @@
 
 /* -------------------------------------------------------------------------- */
 
-void HttpResponse::formatError(
-   std::string& output, int code, const std::string& msg)
+void HttpResponse::formatError(int code, const std::string& msg)
 {
    std::string scode = std::to_string(code);
 
    std::string error_html = "<html><head><title>" + scode + " " + msg
       + "</title></head>" + "<body>Sorry, I can't do that</body></html>\r\n";
 
-   output = HTTP_SERVER_VER " " + scode + " " + msg + "\r\n";
-   output += "Date: " + SysUtils::getLocalTime() + "\r\n";
-   output += "Server: " HTTP_SERVER_NAME "\r\n";
-   output += "Content-Length: " + std::to_string(error_html.size()) + "\r\n";
-   output += "Content-Type: text/html\r\n\r\n";
-   output += error_html;
+   _response = HTTP_SERVER_VER " " + scode + " " + msg + "\r\n";
+   _response += "Date: " + SysUtils::getLocalTime() + "\r\n";
+   _response += "Server: " HTTP_SERVER_NAME "\r\n";
+   _response += "Content-Length: " + std::to_string(error_html.size()) + "\r\n";
+   _response += "Content-Type: text/html\r\n\r\n";
+   _response += error_html;
+
+   _errorResponse = true;
 }
 
 
 /* -------------------------------------------------------------------------- */
 
 void HttpResponse::formatPositiveResponse(
-   std::string& response,
    const std::string& fileTime,
    const std::string& fileExt,
    const size_t& contentLen)
 {
 
-   response = HTTP_SERVER_VER " 200 OK\r\n";
-   response += "Date: " + SysUtils::getLocalTime() + "\r\n";
-   response += "Server: " HTTP_SERVER_NAME "\r\n";
-   response += "Content-Length: " + std::to_string(contentLen) + "\r\n";
-   // response += "Connection: Keep-Alive\r\n";
-   response += "Last Modified: " + fileTime + "\r\n";
-   response += "Content-Type: ";
+   _response = HTTP_SERVER_VER " 200 OK\r\n";
+   _response += "Date: " + SysUtils::getLocalTime() + "\r\n";
+   _response += "Server: " HTTP_SERVER_NAME "\r\n";
+   _response += "Content-Length: " + std::to_string(contentLen) + "\r\n";
+   _response += "Last Modified: " + fileTime + "\r\n";
+   _response += "Content-Type: ";
 
    // Resolve mime type using the uri/file extension
    auto it = _mimeTbl.find(fileExt);
 
-   response
+   _response
       += it != _mimeTbl.end() ? it->second : "application/octet-stream";
 
    // Close the rensponse header by using the sequence CRFL twice
-   response += "\r\n\r\n";
+   _response += "\r\n\r\n";
+
+   _errorResponse = false;
 }
 
 
 /* -------------------------------------------------------------------------- */
 
-void HttpResponse::formatContinueResponse(std::string& response)
+void HttpResponse::formatContinueResponse()
 {
-   response = HTTP_SERVER_VER " 100 Continue\r\n\r\n";
+   _response = HTTP_SERVER_VER " 100 Continue\r\n\r\n";
+   _errorResponse = false;
 }
 
 
@@ -77,44 +79,28 @@ void HttpResponse::formatContinueResponse(std::string& response)
 
 HttpResponse::HttpResponse(
    const HttpRequest& request,
-   const std::string& fileName,
-   const std::string& webRootPath,
    const std::string& body,
-   const std::string& bodyFormat)
+   const std::string& bodyFormat,
+   const std::string& fileToSend)
 {
    if (request.getMethod() == HttpRequest::Method::UNKNOWN) {
-      formatError(_response, 403, "Forbidden");
+      formatError(403, "Forbidden");
       return;
    }
 
-   auto rpath = [](std::string& s) {
-      if (!s.empty() && s[0] != '/')
-         s = "/" + s;
-   };
-
-   _localRepositoryPath = webRootPath;
-
-   _localUriPath = fileName.empty() ? request.getUri() : fileName;
-   rpath(_localUriPath);
-   _localUriPath = webRootPath + _localUriPath;
-
-   std::string fileTime, fileExt;
-   size_t contentLen = 0;
-
    if (request.getMethod() == HttpRequest::Method::POST) {
       if (request.isExpectedContinueResponse()) {
-         formatContinueResponse(_response);
+         formatContinueResponse();
       }
       else {
          if (request.getUri() != HTTP_SERVER_POST_STORE) {
-            formatError(_response, 400, "Bad Request Error");
+            formatError(400, "Bad Request Error");
          }
          else if (body.empty()) {
-            formatError(_response, 500, "Internal Server Error");
+            formatError(500, "Internal Server Error");
          }
          else {
             formatPositiveResponse(
-               _response,
                SysUtils::getLocalTime(),
                std::string(bodyFormat),
                body.size());
@@ -126,17 +112,18 @@ HttpResponse::HttpResponse(
    else { // GET/HEAD
       if (request.isValidGetRequest()) {
          if (body.empty()) {
-            std::cerr << _localUriPath << std::endl;
-            if (FileUtils::fileStat(_localUriPath, fileTime, fileExt, contentLen)) {
-               formatPositiveResponse(_response, fileTime, fileExt, contentLen);
+            std::string fileTime, fileExt;
+            size_t contentLen = 0;
+
+            if (FileUtils::fileStat(fileToSend, fileTime, fileExt, contentLen)) {
+               formatPositiveResponse(fileTime, fileExt, contentLen);
             }
             else {
-              formatError(_response, 404, "Not Found");
+              formatError(404, "Not Found");
             }
          }
          else {
             formatPositiveResponse(
-               _response,
                SysUtils::getLocalTime(),
                std::string(bodyFormat),
                body.size());
@@ -145,7 +132,7 @@ HttpResponse::HttpResponse(
          }
       }
       else {
-         formatError(_response, 400, "Bad Request Error");
+         formatError(400, "Bad Request Error");
       }
    }
 }

@@ -74,6 +74,10 @@ public:
       return _uri;
    }
 
+   // TODO
+   void setUri(const std::string& uri) {
+      _uri = uri;
+   }
 
    /**
     * Returns the command line URI args (arg1/arg2/.../argN)

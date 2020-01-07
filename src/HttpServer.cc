@@ -119,6 +119,7 @@ private:
       sendErrorInvalidRequest,
       sendInternalError,
       sendJsonFileList,
+      sendMruFiles,
       sendNotFound,
       sendZipFile
    };
@@ -147,7 +148,8 @@ private:
 
    ProcessGetRequestResult processGetRequest(
       HttpRequest& httpRequest, 
-      std::string& json)
+      std::string& json,
+      std::string& fileToSend)
    {
       if (httpRequest.getUri() == HTTP_SERVER_GET_FILES) {
          if (_filenameMap->locked_updateMakeJson(getLocalStorePath(), json)) {
@@ -160,6 +162,7 @@ private:
          if (!_fileStore->createJsonMruFilesList(json)) {
             return ProcessGetRequestResult::sendInternalError;
          }
+         return ProcessGetRequestResult::sendMruFiles;
       }
       else if (httpRequest.getUriArgs().size() == 3 && 
                httpRequest.getUriArgs()[1] == HTTP_URIPFX_FILES) 
@@ -178,8 +181,25 @@ private:
          if (!_filenameMap->locked_search(id, fileName)) {
             return ProcessGetRequestResult::sendNotFound;
          }
-      
-         httpRequest.setFileName(fileName);
+         
+         fs::path tempDir;
+         if (!FileUtils::createTemporaryDir(tempDir)) {
+            return ProcessGetRequestResult::sendInternalError;
+         }
+         
+         tempDir += fileName + ".zip";
+         fs::path src(getLocalStorePath());
+         src /= fileName;
+         
+         ZipArchive zipArchive(tempDir.string());
+         if (!zipArchive.create() || !zipArchive.add(src.string())) {
+            return ProcessGetRequestResult::sendInternalError;
+         }
+         
+         zipArchive.close();
+         
+         fileToSend = tempDir.string();
+
          return ProcessGetRequestResult::sendZipFile;
       }
 
@@ -218,16 +238,13 @@ void HttpServerSession::operator()(Handle task_handle)
       if (_verboseModeOn)
          httpRequest->dump(log(), transactionId);
 
-      auto fileName = httpRequest->getFileName();
       std::string jsonResponse;
+      std::string fileToSend;
       ProcessGetRequestResult getRequestAction = ProcessGetRequestResult::none;
 
-      if (httpRequest->isValidPostRequest())
-      //if (httpRequest->getMethod() == HttpRequest::Method::POST
-      //   && httpRequest->getUri() == HTTP_SERVER_POST_STORE
-      //   && !httpRequest->isExpectedContinueResponse()
-      //   && !fileName.empty())
-      {
+      if (httpRequest->isValidPostRequest()) {
+         auto fileName = httpRequest->getFileName();
+
          if (_verboseModeOn)
             log() << transactionId << "Writing '" << fileName << "'" << std::endl;
 
@@ -239,38 +256,35 @@ void HttpServerSession::operator()(Handle task_handle)
          }
       }
       else if (httpRequest->getMethod() == HttpRequest::Method::GET) {
-         getRequestAction = processGetRequest(*httpRequest, jsonResponse);
-         
-         fileName = 
-            getRequestAction== ProcessGetRequestResult::sendZipFile ?
-               httpRequest->getFileName() : "";
-
+         getRequestAction = processGetRequest(*httpRequest, jsonResponse, fileToSend);
       }
 
       // Format a response to previous HTTP request
       HttpResponse response(
          *httpRequest,
-         fileName, 
-         getLocalStorePath(),
          jsonResponse,
-         jsonResponse.empty() ? "" : ".json");
+         jsonResponse.empty() ? "" : ".json",
+         fileToSend);
 
       // Send the response to remote peer
       httpSocket << response;
 
       if (getRequestAction == ProcessGetRequestResult::sendZipFile) {
          
-         if (0 > httpSocket.sendFile(response.getLocalUriPath())) {
+         if (0 > httpSocket.sendFile(fileToSend)) {
             if (_verboseModeOn)
                log() << transactionId << "Error sending '"
-                     << response.getLocalUriPath() << "'\n\n";
+                     << fileToSend << "'\n\n";
             break;
          }
       }
-     
 
       if (_verboseModeOn)
          response.dump(log(), transactionId);
+
+      if (response.isErrorResponse()) {
+         break;
+      }
 
       if (!httpRequest->isExpectedContinueResponse()) {
          httpRequest.reset(new (std::nothrow) HttpRequest);

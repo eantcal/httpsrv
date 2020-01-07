@@ -36,17 +36,12 @@ public:
 
    /**
     * Constructs a response to a request.
-    *
-    * @param request an http request
-    * @param webRootPath local working directory of the web server
-    * @param body optional body field
     */
    HttpResponse(
       const HttpRequest& request,
-      const std::string& webRootPath,
-      const std::string& fileName,
-      const std::string& body = "",
-      const std::string& bodyFormat = "");
+      const std::string& body,
+      const std::string& bodyFormat,
+      const std::string& fileToSend);
 
 
    /**
@@ -54,22 +49,6 @@ public:
     */
    operator const std::string& () const {
       return _response;
-   }
-
-
-   /**
-    * Returns the content of local resource related to the URI requested.
-    */
-   const std::string& getLocalUriPath() const {
-      return _localUriPath;
-   }
-
-
-   /**
-    * Returns the content of local resource repository root path
-    */
-   const std::string& getLocalRepositoryPath() const {
-      return _localRepositoryPath;
    }
 
 
@@ -82,29 +61,28 @@ public:
     */
    std::ostream& dump(std::ostream& os, const std::string& id = "");
 
+   // TODO
+   bool isErrorResponse() const throw() {
+      return _errorResponse;
+   }
+
 private:
    static std::unordered_map<std::string, std::string> _mimeTbl;
 
    std::string _response;
-   std::string _localUriPath;
-   std::string _localRepositoryPath;
+   bool _errorResponse = false;
 
    // Format an error response
-   static void formatError(
-      std::string& output,
-      int code,
-      const std::string& msg);
+   void formatError(int code, const std::string& msg);
 
    // Format an positive response
-   static void formatPositiveResponse(
-      std::string& response,
+   void formatPositiveResponse(
       const std::string& fileTime,
       const std::string& fileExt,
       const size_t& contentLen);
-public:
+
    // Format an positive response
-   static void formatContinueResponse(
-      std::string& response);
+   void formatContinueResponse();
 };
 
 
