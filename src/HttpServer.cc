@@ -12,6 +12,7 @@
 
 /* -------------------------------------------------------------------------- */
 
+#include "ZipArchive.h"
 #include "HttpServer.h"
 #include "FileStore.h"
 
@@ -122,7 +123,29 @@ private:
       sendZipFile
    };
 
-   ProcessGetRequestResult handleGetReq(
+   std::string logBegin() {
+      // Generates an identifier for recognizing the transaction
+      std::string transactionId;
+
+      if (_verboseModeOn) {
+         const int sd = getTcpSocketHandle()->getSocketFd();
+         transactionId =
+            "[" + std::to_string(sd) + "] " +
+            "[" + SysUtils::getLocalTime() + "] ";
+
+         log() << transactionId << "---- http_server_task +\n\n";
+      }
+      return transactionId;
+   }
+
+   void logEnd(const std::string& transactionId) {
+      if (_verboseModeOn) {
+         log() << transactionId << "---- http_server_task -\n\n";
+         log().flush();
+      }
+   }
+
+   ProcessGetRequestResult processGetRequest(
       HttpRequest& httpRequest, 
       std::string& json)
    {
@@ -155,6 +178,7 @@ private:
          if (!_filenameMap->locked_search(id, fileName)) {
             return ProcessGetRequestResult::sendNotFound;
          }
+      
          httpRequest.setFileName(fileName);
          return ProcessGetRequestResult::sendZipFile;
       }
@@ -172,68 +196,55 @@ private:
 // each accepted HTTP request
 void HttpServerSession::operator()(Handle task_handle)
 {
-   (void)task_handle;
+   (void)task_handle;   
 
-   const int sd = getTcpSocketHandle()->getSocketFd();
-
-   // Generates an identifier for recognizing the transaction
-   auto transactionId = [sd]() {
-      return "[" + std::to_string(sd) + "] "
-         + "[" + SysUtils::getLocalTime() + "] ";
-   };
-
-   if (_verboseModeOn)
-      log() << transactionId() << "---- http_server_task +\n\n";
+   auto transactionId = logBegin();
 
    // Wait for a request from remote peer
    HttpRequest::Handle httpRequest(new (std::nothrow) HttpRequest);
+   assert(httpRequest);
 
    // Wait for a request from remote peer
    while (getTcpSocketHandle()) {
       // Create an http socket around a connected tcp socket
       HttpSocket httpSocket(getTcpSocketHandle());
-
-      if (!httpRequest) {
-         if (_verboseModeOn)
-            log() << transactionId() << "FATAL ERROR: no memory?\n\n";
-         break;
-      }
-
       httpSocket >> httpRequest;
 
       // If an error occoured terminate the task
-      if (!httpSocket) {
+      if (!httpSocket)
          break;
-      }
 
       // Log the request
       if (_verboseModeOn)
-         httpRequest->dump(log(), transactionId());
+         httpRequest->dump(log(), transactionId);
 
       auto fileName = httpRequest->getFileName();
       std::string jsonResponse;
       ProcessGetRequestResult getRequestAction = ProcessGetRequestResult::none;
 
-      if (httpRequest->getMethod() == HttpRequest::Method::POST
-         && httpRequest->getUri() == HTTP_SERVER_POST_STORE
-         && !httpRequest->isExpectedContinueResponse()
-         && !fileName.empty())
+      if (httpRequest->isValidPostRequest())
+      //if (httpRequest->getMethod() == HttpRequest::Method::POST
+      //   && httpRequest->getUri() == HTTP_SERVER_POST_STORE
+      //   && !httpRequest->isExpectedContinueResponse()
+      //   && !fileName.empty())
       {
          if (_verboseModeOn)
-            log() << transactionId() << "Writing '" << fileName << "'" << std::endl;
+            log() << transactionId << "Writing '" << fileName << "'" << std::endl;
 
          if (!writePostedFile(fileName, httpRequest->getBody(), jsonResponse)) {
             if (_verboseModeOn) {
-               log() << transactionId() << "Error writing '"
+               log() << transactionId << "Error writing '"
                   << fileName << "'" << std::endl;
             }
          }
       }
       else if (httpRequest->getMethod() == HttpRequest::Method::GET) {
-         getRequestAction = handleGetReq(*httpRequest, jsonResponse);
+         getRequestAction = processGetRequest(*httpRequest, jsonResponse);
+         
          fileName = 
             getRequestAction== ProcessGetRequestResult::sendZipFile ?
                httpRequest->getFileName() : "";
+
       }
 
       // Format a response to previous HTTP request
@@ -251,18 +262,19 @@ void HttpServerSession::operator()(Handle task_handle)
          
          if (0 > httpSocket.sendFile(response.getLocalUriPath())) {
             if (_verboseModeOn)
-               log() << transactionId() << "Error sending '"
-               << response.getLocalUriPath() << "'\n\n";
+               log() << transactionId << "Error sending '"
+                     << response.getLocalUriPath() << "'\n\n";
             break;
          }
       }
      
 
       if (_verboseModeOn)
-         response.dump(log(), transactionId());
+         response.dump(log(), transactionId);
 
       if (!httpRequest->isExpectedContinueResponse()) {
          httpRequest.reset(new (std::nothrow) HttpRequest);
+         assert(httpRequest);
       }
       else {
          httpRequest->clearExpectedContinueFlag();
@@ -271,10 +283,7 @@ void HttpServerSession::operator()(Handle task_handle)
 
    getTcpSocketHandle()->shutdown();
 
-   if (_verboseModeOn) {
-      log() << transactionId() << "---- http_server_task -\n\n";
-      log().flush();
-   }
+   logEnd(transactionId);
 }
 
 

@@ -42,7 +42,7 @@ public:
       return false;
    }
 
-   bool close() {
+   void close() {
       if (_zipHandler) {
          zip_close(_zipHandler);
          _zipHandler = nullptr;

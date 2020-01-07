@@ -226,6 +226,13 @@ public:
             getUriArgs()[3]== HTTP_URISFX_ZIP)));
    }
 
+   bool isValidPostRequest() const noexcept {
+      return getMethod() == HttpRequest::Method::POST
+         && getUri() == HTTP_SERVER_POST_STORE
+         && !isExpectedContinueResponse()
+         && !getFileName().empty();
+   }
+
 
 private:
    HeaderList _headerList;
