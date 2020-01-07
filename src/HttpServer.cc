@@ -192,7 +192,7 @@ private:
          src /= fileName;
          
          ZipArchive zipArchive(tempDir.string());
-         if (!zipArchive.create() || !zipArchive.add(src.string())) {
+         if (!zipArchive.create() || !zipArchive.add(src.string(), fileName)) {
             return ProcessGetRequestResult::sendInternalError;
          }
          

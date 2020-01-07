@@ -18,6 +18,8 @@
 #include "zip.h"
 #include <string>
 
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
 
 /* -------------------------------------------------------------------------- */
 
@@ -33,8 +35,8 @@ public:
       return _zipHandler != nullptr;
    }
 
-   bool add(const std::string& fileName) {
-      if (0 == zip_entry_open(_zipHandler, fileName.c_str())) {
+   bool add(const std::string& fileName, const std::string& zipDirName) {
+      if (0 == zip_entry_open(_zipHandler, zipDirName.c_str())) {
          if (0 == zip_entry_fwrite(_zipHandler, fileName.c_str())) {
             return 0 == zip_entry_close(_zipHandler);
          }
