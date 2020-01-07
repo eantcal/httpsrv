@@ -125,23 +125,23 @@ private:
    };
 
    std::string logBegin() {
-      // Generates an identifier for recognizing the transaction
-      std::string transactionId;
+      // Generates an identifier for recognizing HTTP session
+      std::string sessionId;
 
       if (_verboseModeOn) {
          const int sd = getTcpSocketHandle()->getSocketFd();
-         transactionId =
+         sessionId =
             "[" + std::to_string(sd) + "] " +
             "[" + SysUtils::getLocalTime() + "] ";
 
-         log() << transactionId << "---- http_server_task +\n\n";
+         log() << sessionId << "---- HTTP SERVER SESSION STARTS" << std::endl;
       }
-      return transactionId;
+      return sessionId;
    }
 
-   void logEnd(const std::string& transactionId) {
+   void logEnd(const std::string& sessionId) {
       if (_verboseModeOn) {
-         log() << transactionId << "---- http_server_task -\n\n";
+         log() << sessionId << "---- HTTP SERVER SESSION ENDS" << std::endl;
          log().flush();
       }
    }
@@ -151,31 +151,66 @@ private:
       std::string& json,
       std::string& fileToSend)
    {
-      if (httpRequest.getUri() == HTTP_SERVER_GET_FILES) {
+      const auto& uri = httpRequest.getUri();
+
+      if (uri == HTTP_SERVER_GET_FILES) {
          if (_filenameMap->locked_updateMakeJson(getLocalStorePath(), json)) {
             return ProcessGetRequestResult::sendJsonFileList;
          }
       }
-      else if (httpRequest.getUri() == HTTP_SERVER_GET_MRUFILES) {
+      
+      if (uri == HTTP_SERVER_GET_MRUFILES) {
          if (!_fileStore->createJsonMruFilesList(json)) {
             return ProcessGetRequestResult::sendInternalError;
          }
          return ProcessGetRequestResult::sendMruFiles;
       }
-      else if (httpRequest.getUriArgs().size() == 3 && 
-               httpRequest.getUriArgs()[1] == HTTP_URIPFX_FILES) 
-      {
+
+      if (uri == HTTP_SERVER_GET_MRUFILES_ZIP) {
+         fs::path tempDir;
+         if (!FileUtils::createTemporaryDir(tempDir)) {
+            return ProcessGetRequestResult::sendInternalError;
+         }
+
+         std::list<std::string> fileList;
+         if (!_fileStore->createMruFilesList(fileList)) {
+            return ProcessGetRequestResult::sendInternalError;
+         }
+   
+         tempDir += MRU_FILES_ZIP_NAME;
+         ZipArchive zipArchive(tempDir.string());
+         if (!zipArchive.create()) {
+            return ProcessGetRequestResult::sendInternalError;
+         }
+
+         for (const auto& fileName: fileList) {
+            fs::path src(getLocalStorePath());
+            src /= fileName;
+         
+            if (!zipArchive.add(src.string(), fileName)) {
+               return ProcessGetRequestResult::sendInternalError;
+            }
+         }
+
+         zipArchive.close();         
+         fileToSend = tempDir.string();
+
+         return ProcessGetRequestResult::sendZipFile;
+      }
+
+      const auto& uriArgs = httpRequest.getUriArgs();
+
+      if (uriArgs.size() == 3 && uriArgs[1] == HTTP_URIPFX_FILES) {
          const auto &id = httpRequest.getUriArgs()[2];
          if (!_filenameMap->jsonStatFileUpdateTS(getLocalStorePath(), id, json, true)) {
             return ProcessGetRequestResult::sendInternalError;
          }
       }
-      else if (httpRequest.getUriArgs().size() == 4 && 
-               httpRequest.getUriArgs()[1] == HTTP_URIPFX_FILES &&
-               httpRequest.getUriArgs()[3] == HTTP_URISFX_ZIP) 
-      {
+      
+      if (uriArgs.size() == 4 && uriArgs[1] == HTTP_URIPFX_FILES && uriArgs[3] == HTTP_URISFX_ZIP) {
          std::string fileName;
-         const auto &id = httpRequest.getUriArgs()[2];
+         const auto &id = uriArgs[2];
+
          if (!_filenameMap->locked_search(id, fileName)) {
             return ProcessGetRequestResult::sendNotFound;
          }
@@ -219,7 +254,7 @@ void HttpServerSession::operator()(Handle task_handle)
 {
    (void)task_handle;   
 
-   auto transactionId = logBegin();
+   auto sessionId = logBegin();
 
    // Wait for a request from remote peer
    HttpRequest::Handle httpRequest(new (std::nothrow) HttpRequest);
@@ -237,7 +272,7 @@ void HttpServerSession::operator()(Handle task_handle)
 
       // Log the request
       if (_verboseModeOn)
-         httpRequest->dump(log(), transactionId);
+         httpRequest->dump(log(), sessionId);
 
       std::string jsonResponse;
       std::string fileToSend;
@@ -247,12 +282,11 @@ void HttpServerSession::operator()(Handle task_handle)
          auto fileName = httpRequest->getFileName();
 
          if (_verboseModeOn)
-            log() << transactionId << "Writing '" << fileName << "'" << std::endl;
+            log() << sessionId << "Writing '" << fileName << "'" << std::endl;
 
          if (!writePostedFile(fileName, httpRequest->getBody(), jsonResponse)) {
             if (_verboseModeOn) {
-               log() << transactionId << "Error writing '"
-                  << fileName << "'" << std::endl;
+               log() << sessionId << "Error writing '" << fileName << "'" << std::endl;
             }
          }
       }
@@ -271,21 +305,18 @@ void HttpServerSession::operator()(Handle task_handle)
       httpSocket << response;
 
       if (getRequestAction == ProcessGetRequestResult::sendZipFile) {
-         
          if (0 > httpSocket.sendFile(fileToSend)) {
             if (_verboseModeOn)
-               log() << transactionId << "Error sending '"
-                     << fileToSend << "'\n\n";
+               log() << sessionId << "Error sending '" << fileToSend << "'\n\n";
             break;
          }
       }
 
       if (_verboseModeOn)
-         response.dump(log(), transactionId);
+         response.dump(log(), sessionId);
 
-      if (response.isErrorResponse()) {
+      if (response.isErrorResponse())
          break;
-      }
 
       if (!httpRequest->isExpectedContinueResponse()) {
          httpRequest.reset(new (std::nothrow) HttpRequest);
@@ -298,7 +329,7 @@ void HttpServerSession::operator()(Handle task_handle)
 
    getTcpSocketHandle()->shutdown();
 
-   logEnd(transactionId);
+   logEnd(sessionId);
 }
 
 

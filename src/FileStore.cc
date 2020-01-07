@@ -42,12 +42,10 @@ bool FileStore::init() {
 
 /* -------------------------------------------------------------------------- */
 
-bool FileStore::createMruFilesList(TimeOrderedFileList& list)
+bool FileStore::createTimeOrderedFilesList(TimeOrderedFileList& list)
 {
    fs::path dirPath(getPath());
    fs::directory_iterator endIt;
-
-   FilenameMap newCache;
 
    if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
       list.clear();
@@ -65,11 +63,34 @@ bool FileStore::createMruFilesList(TimeOrderedFileList& list)
 
 /* -------------------------------------------------------------------------- */
 
+bool FileStore::createMruFilesList(std::list<std::string>& mrufiles) {
+   TimeOrderedFileList timeOrderedFileList;
+
+   if (!createTimeOrderedFilesList(timeOrderedFileList)) {
+      return false;
+   }
+
+   int fileCnt = 0;
+
+   for (auto it = timeOrderedFileList.rbegin();
+      it != timeOrderedFileList.rend() && fileCnt < _mrufilesN;
+      ++it,
+      ++fileCnt)
+   {
+      mrufiles.push_back(it->second.filename().string());
+   }
+
+   return true;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
 bool FileStore::createJsonMruFilesList(std::string& json)
 {
    TimeOrderedFileList timeOrderedFileList;
 
-   if (!createMruFilesList(timeOrderedFileList)) {
+   if (!createTimeOrderedFilesList(timeOrderedFileList)) {
       return false;
    }
 
@@ -78,8 +99,7 @@ bool FileStore::createJsonMruFilesList(std::string& json)
    int fileCnt = 0;
 
    for (auto it = timeOrderedFileList.rbegin();
-      it != timeOrderedFileList.rend() &&
-      fileCnt < _mrufilesN;
+      it != timeOrderedFileList.rend() && fileCnt < _mrufilesN;
       ++it,
       ++fileCnt)
    {
@@ -98,5 +118,6 @@ bool FileStore::createJsonMruFilesList(std::string& json)
    json += "\n]\n";
    return true;
 }
+
 
 

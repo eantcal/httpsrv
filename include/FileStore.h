@@ -57,6 +57,13 @@ public:
    bool createJsonMruFilesList(std::string& json);
 
    /**
+    * Creates a list of mru filenames
+    * @param mrufiles containing the list
+    * @return true if operation succeded, false otherwise
+    */
+   bool createMruFilesList(std::list<std::string>& mrufiles);
+
+   /**
     * Returns the store path
     */
    const std::string& getPath() const noexcept {
@@ -80,7 +87,7 @@ private:
    using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
 
    bool init();
-   bool createMruFilesList(TimeOrderedFileList& list);
+   bool createTimeOrderedFilesList(TimeOrderedFileList& list);
 
 private:
    std::string _path;

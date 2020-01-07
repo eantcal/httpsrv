@@ -202,7 +202,8 @@ public:
       return 
          (getMethod() == HttpRequest::Method::GET && 
           (getUri() == HTTP_SERVER_GET_MRUFILES ||
-           getUri() == HTTP_SERVER_GET_FILES || 
+             getUri() == HTTP_SERVER_GET_MRUFILES_ZIP ||
+             getUri() == HTTP_SERVER_GET_FILES ||
            (getUriArgs().size() == 3 && 
             getUriArgs()[1]== HTTP_URIPFX_FILES) ||
            (getUriArgs().size() == 4 && 

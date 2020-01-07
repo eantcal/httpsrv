@@ -34,6 +34,7 @@
 
 #define HTTP_URIPFX_FILES             "files"
 #define HTTP_URISFX_ZIP               "zip"
+#define MRU_FILES_ZIP_NAME            "mrufiles.zip"
 
 #define HTTP_SERVER_POST_STORE        "/store"
 #define HTTP_SERVER_GET_FILES         "/" HTTP_URIPFX_FILES
