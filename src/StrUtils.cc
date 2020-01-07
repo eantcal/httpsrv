@@ -22,6 +22,7 @@ void StrUtils::removeLastCharIf(std::string& s, char c)
       s = s.substr(0, s.size() - 1);
 }
 
+
 /* -------------------------------------------------------------------------- */
 
 bool StrUtils::splitLineInTokens(const std::string& line,

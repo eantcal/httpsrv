@@ -103,7 +103,7 @@ public:
 
    /**
     * Scan the file system path to populate the map
-    * @param path of local store
+    * @param path of local repository
     * @return true if operation successfully completed, false otherwise
     */
    bool scan(const std::string& path);
@@ -140,7 +140,7 @@ public:
 
    /**
     * Touches an existing file and returns a related stat in JSON format
-    * @param path points to store directory
+    * @param path points directory where the file is located
     * @param id of file
     * @param jsonOutput output JSON string
     * @return true if operation successfully completed, false otherwise

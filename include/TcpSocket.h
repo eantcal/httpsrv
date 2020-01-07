@@ -36,11 +36,15 @@ public:
       DISABLE_SEND_RECV
    };
 
+
+   TcpSocket() = delete;
    TcpSocket(const TcpSocket&) = delete;
    TcpSocket& operator=(const TcpSocket&) = delete;
    ~TcpSocket() = default;
 
+
    using Handle = std::shared_ptr<TcpSocket>;
+
 
    /**
     * Returns the local peer's ipv4 address.
@@ -49,12 +53,14 @@ public:
       return _localIpAddress;
    }
 
+
    /**
     * Returns the local peer's tcp port number
     */
    const TranspPort& getLocalPort() const {
       return _localPort;
    }
+
 
    /**
     * Returns the remote peer's ipv4 address.
@@ -63,12 +69,14 @@ public:
       return _remoteIpAddress;
    }
 
+
    /**
     * Returns the remote peer's tcp port number
     */
    const TranspPort& getRemotePort() const {
       return _remotePort;
    }
+
 
    /**
     * Disables sends or receives on this socket
@@ -83,12 +91,12 @@ public:
       return ::shutdown(getSocketFd(), static_cast<int>(how));
    }
 
+
    /**
     * Sends text on this socket
     */
    TcpSocket& operator<<(const std::string& text);
 
-   TcpSocket() = delete;
 
 private:
    std::string _localIpAddress;
@@ -104,4 +112,3 @@ private:
 /* -------------------------------------------------------------------------- */
 
 #endif // __TCP_SOCKET_H__
-

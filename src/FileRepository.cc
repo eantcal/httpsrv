@@ -8,14 +8,13 @@
 
 /* -------------------------------------------------------------------------- */
 
-#include "FileStore.h"
+#include "FileRepository.h"
 #include "StrUtils.h"
-
 
 
 /* -------------------------------------------------------------------------- */
 
-bool FileStore::init() {
+bool FileRepository::init() {
    std::string storePath;
 
    // Resolve any homedir prefix
@@ -42,7 +41,7 @@ bool FileStore::init() {
 
 /* -------------------------------------------------------------------------- */
 
-bool FileStore::createTimeOrderedFilesList(TimeOrderedFileList& list)
+bool FileRepository::createTimeOrderedFilesList(TimeOrderedFileList& list)
 {
    fs::path dirPath(getPath());
    fs::directory_iterator endIt;
@@ -63,7 +62,7 @@ bool FileStore::createTimeOrderedFilesList(TimeOrderedFileList& list)
 
 /* -------------------------------------------------------------------------- */
 
-bool FileStore::createMruFilesList(std::list<std::string>& mrufiles) {
+bool FileRepository::createMruFilesList(std::list<std::string>& mrufiles) {
    TimeOrderedFileList timeOrderedFileList;
 
    if (!createTimeOrderedFilesList(timeOrderedFileList)) {
@@ -86,7 +85,7 @@ bool FileStore::createMruFilesList(std::list<std::string>& mrufiles) {
 
 /* -------------------------------------------------------------------------- */
 
-bool FileStore::createJsonMruFilesList(std::string& json)
+bool FileRepository::createJsonMruFilesList(std::string& json)
 {
    TimeOrderedFileList timeOrderedFileList;
 

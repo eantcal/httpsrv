@@ -165,10 +165,10 @@ Application::ErrCode Application::run()
       return ErrCode::idFileNameCacheInitError;
    }
 
-   _fileStore = FileStore::make(_localStorePath, _mrufilesN);
+   _FileRepository = FileRepository::make(_localStorePath, _mrufilesN);
    
-   if (!_fileStore ||
-      !_filenameMap->scan(_fileStore->getPath()))
+   if (!_FileRepository ||
+      !_filenameMap->scan(_FileRepository->getPath()))
    {
       _errMessage = "Cannot initialize the local store";
       return ErrCode::fileRepositoryInitError;
@@ -177,7 +177,7 @@ Application::ErrCode Application::run()
    auto& httpSrv = HttpServer::getInstance();
 
    httpSrv.setFilenameMap(_filenameMap);
-   httpSrv.setFileStore(_fileStore);
+   httpSrv.setFileRepository(_FileRepository);
 
    if (!httpSrv.bind(_httpServerPort)) {
       ss << "Error binding server port " << _httpServerPort;

@@ -16,7 +16,7 @@
 /* -------------------------------------------------------------------------- */
 
 #include "HttpServer.h"
-#include "FileStore.h"
+#include "FileRepository.h"
 #include "FilenameMap.h"
 #include "FileUtils.h"
 #include "SysUtils.h"
@@ -86,7 +86,7 @@ private:
 
    int _mrufilesN = MRUFILES_DEF_N;
 
-   FileStore::Handle _fileStore;
+   FileRepository::Handle _FileRepository;
 };
 
 

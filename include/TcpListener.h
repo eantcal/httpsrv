@@ -90,6 +90,7 @@ public:
       return bind("", port);
    }
 
+
    /**
     * Enables the listening mode, to listen for incoming
     * connection attempts.
@@ -100,6 +101,7 @@ public:
    bool listen(int backlog = SOMAXCONN) {
       return ::listen(getSocketFd(), backlog) == 0;
    }
+
 
    /**
     * Extracts the first connection on the queue of pending connections,
@@ -119,4 +121,3 @@ private:
 /* -------------------------------------------------------------------------- */
 
 #endif // __TCP_LISTENER_H__
-

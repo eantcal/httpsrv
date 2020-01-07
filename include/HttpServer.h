@@ -18,7 +18,7 @@
 #include "HttpSocket.h"
 #include "TcpListener.h"
 
-#include "FileStore.h"
+#include "FileRepository.h"
 #include "FilenameMap.h"
 
 #include "config.h"
@@ -76,17 +76,20 @@ public:
 
 
    /**
-    * Gets the file store handle
+    * Gets the file repository handle
     */
-   FileStore::Handle getFileStore() const noexcept {
-      return _fileStore;
+   FileRepository::Handle getFileRepository() const noexcept {
+      return _FileRepository;
    }
 
+
    /**
-    * Set local store handle
+    * Set repository handle
+    * 
+    * @param handle repository handle
     */
-   void setFileStore(FileStore::Handle handle) {
-      _fileStore = handle;
+   void setFileRepository(FileRepository::Handle handle) {
+      _FileRepository = handle;
    }
 
 
@@ -132,6 +135,7 @@ protected:
     * Accepts a new connection from a remote client.
     * This function blocks until connection is established or
     * an error occurs.
+    * 
     * @return a handle to tcp socket
     */
    TcpSocket::Handle accept() {
@@ -145,7 +149,7 @@ private:
    TcpListener::Handle _tcpServer;
    bool _verboseModeOn = true;
    FilenameMap::Handle _filenameMap;
-   FileStore::Handle _fileStore;
+   FileRepository::Handle _FileRepository;
 
    HttpServer() = default;
 

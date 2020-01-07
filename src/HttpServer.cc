@@ -14,7 +14,7 @@
 
 #include "ZipArchive.h"
 #include "HttpServer.h"
-#include "FileStore.h"
+#include "FileRepository.h"
 
 #include "FilenameMap.h"
 
@@ -40,7 +40,7 @@ public:
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle,
       FilenameMap::Handle filenameMap,
-      FileStore::Handle fileStore
+      FileRepository::Handle FileRepository
       )
    {
       return Handle(new (std::nothrow) HttpServerSession(
@@ -48,7 +48,7 @@ public:
          loggerOStream,
          socketHandle,
          filenameMap,
-         fileStore));
+         FileRepository));
    }
 
    HttpServerSession() = delete;
@@ -59,7 +59,7 @@ private:
    std::ostream& _logger;
    TcpSocket::Handle _tcpSocketHandle;
    FilenameMap::Handle _filenameMap;
-   FileStore::Handle _fileStore;
+   FileRepository::Handle _FileRepository;
 
    std::ostream& log() {
       return _logger;
@@ -70,7 +70,7 @@ private:
    }
 
    const std::string& getLocalStorePath() const {
-      return _fileStore->getPath();
+      return _FileRepository->getPath();
    }
 
    HttpServerSession(
@@ -78,12 +78,12 @@ private:
       std::ostream& loggerOStream,
       TcpSocket::Handle socketHandle, 
       FilenameMap::Handle filenameMap,
-      FileStore::Handle fileStore)
+      FileRepository::Handle FileRepository)
       : _verboseModeOn(verboseModeOn)
       , _logger(loggerOStream)
       , _tcpSocketHandle(socketHandle)
       , _filenameMap(filenameMap)
-      , _fileStore(fileStore)
+      , _FileRepository(FileRepository)
    {
    }
 
@@ -160,7 +160,7 @@ private:
       }
       
       if (uri == HTTP_SERVER_GET_MRUFILES) {
-         if (!_fileStore->createJsonMruFilesList(json)) {
+         if (!_FileRepository->createJsonMruFilesList(json)) {
             return ProcessGetRequestResult::sendInternalError;
          }
          return ProcessGetRequestResult::sendMruFiles;
@@ -173,7 +173,7 @@ private:
          }
 
          std::list<std::string> fileList;
-         if (!_fileStore->createMruFilesList(fileList)) {
+         if (!_FileRepository->createMruFilesList(fileList)) {
             return ProcessGetRequestResult::sendInternalError;
          }
    
@@ -401,7 +401,7 @@ bool HttpServer::run()
          *_loggerOStreamPtr,
          handle,
          _filenameMap,
-         _fileStore);
+         _FileRepository);
 
       // Coping the http_server_task handle (shared_ptr) the reference
       // count is automatically increased by one

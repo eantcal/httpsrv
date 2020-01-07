@@ -9,8 +9,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-#ifndef __SYS_UTILS__H__
-#define __SYS_UTILS__H__
+#ifndef __SYS_UTILS_H__
+#define __SYS_UTILS_H__
 
 
 /* -------------------------------------------------------------------------- */
@@ -26,13 +26,7 @@
 #include <WinSock2.h>
 #include <direct.h>
 
-
 #define stat _stat
-
-#define mkdir(__dir, __ignored) _mkdir(__dir)
-enum { S_IRWXU, S_IRWXG, S_IROTH, S_IXOTH };
-
-
 typedef int socklen_t;
 
 
@@ -68,76 +62,66 @@ typedef int errno_t;
 #include <chrono>
 #include <ctime>
 
+
+/* -------------------------------------------------------------------------- */
+
 namespace SysUtils {
 
+   using TimeoutInterval = std::chrono::system_clock::duration;
 
-/* -------------------------------------------------------------------------- */
-
-using TimeoutInterval = std::chrono::system_clock::duration;
-
-/* -------------------------------------------------------------------------- */
-/**
-   * Converts a timeval object into standard duration object
-   *
-   * @param d  Duration
-   * @param tv Timeval source object
-   */
-void convertDurationInTimeval(const TimeoutInterval& d, timeval& tv);
-
-/* -------------------------------------------------------------------------- */
-
-/**
-   * Initializes O/S Libraries. In case of failure
-   * the function returns false
-   *
-   * @return true if operation is sucessfully completed,
-   * false otherwise
-   */
-bool initCommunicationLib();
+   /**
+    * Converts a timeval object into standard duration object
+    *
+    * @param d  Duration
+    * @param tv Timeval source object
+    */
+   void convertDurationInTimeval(const TimeoutInterval& d, timeval& tv);
 
 
-/* -------------------------------------------------------------------------- */
-
-/**
-   * Closes a socket descriptor.
-   *
-   * @return zero on success. On error, -1 is returned
-   */
-int closeSocketFd(int sd);
-
-
-/* -------------------------------------------------------------------------- */
-
-/**
-   * Gets the system time, corrected for the local time zone
-   * Time format is "DoW Mon dd hh:mm:ss yyyy"
-   * Example "Thu Sep 19 10:03:50 2013"
-   *
-   * @param localTime will contain the time
-   */
-void getLocalTime(std::string& localTime);
+   /**
+    * Initializes O/S Libraries. In case of failure
+    * the function returns false
+    *
+    * @return true if operation is sucessfully completed,
+    * false otherwise
+    */
+   bool initCommunicationLib();
 
 
-/* -------------------------------------------------------------------------- */
+   /**
+    * Closes a socket descriptor.
+    *
+    * @return zero on success. On error, -1 is returned
+    */
+   int closeSocketFd(int sd);
 
-/**
-   * Gets the system time, corrected for the local time zone
-   * Time format is "DoW Mon dd hh:mm:ss yyyy"
-   * Example "Thu Sep 19 10:03:50 2013"
-   *
-   * @return the string will contain the time
-   */
-inline std::string getLocalTime()
-{
-   std::string lt;
-   getLocalTime(lt);
-   return lt;
-}
+
+   /**
+    * Gets the system time, corrected for the local time zone
+    * Time format is "DoW Mon dd hh:mm:ss yyyy"
+    * Example "Thu Sep 19 10:03:50 2013"
+    *
+    * @param localTime will contain the time
+    */
+   void getLocalTime(std::string& localTime);
+
+
+   /**
+    * Gets the system time, corrected for the local time zone
+    * Time format is "DoW Mon dd hh:mm:ss yyyy"
+    * Example "Thu Sep 19 10:03:50 2013"
+    *
+    * @return the string will contain the time
+    */
+   inline std::string getLocalTime() {
+      std::string lt;
+      getLocalTime(lt);
+      return lt;
+   }
 
 }
 
 
-
 /* -------------------------------------------------------------------------- */
 
-#endif // __SYS_UTILS__H__
+#endif // !__SYS_UTILS_H__

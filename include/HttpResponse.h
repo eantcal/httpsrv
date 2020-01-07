@@ -32,7 +32,9 @@ public:
    HttpResponse(const HttpResponse&) = default;
    HttpResponse& operator=(const HttpResponse&) = default;
 
+
    using Handle = std::unique_ptr<HttpResponse>;
+
 
    /**
     * Constructs a response to a request.
@@ -53,17 +55,18 @@ public:
 
 
    /**
-    * Prints the response out to os stream.
+    * Writes response into output stream.
     *
-    * @param os The output stream
-    * @param id A string used to identify the response
+    * @param os a given output stream
+    * @param id a string used to identify the response
     * @return the os output stream
     */
    std::ostream& dump(std::ostream& os, const std::string& id = "");
 
 
    /**
-    * Returns ture if the response is 4xx/5xx HTTP response
+    * Returns ture if the response is 4xx/5xx HTTP response,
+    * false otherwise
     */
    bool isErrorResponse() const throw() {
       return _errorResponse;

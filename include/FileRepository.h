@@ -24,23 +24,24 @@ namespace fs = boost::filesystem;
 
 /* -------------------------------------------------------------------------- */
 
-//! Helper class to handle the server local store for uploading files 
+//! Helper class to handle the server local repository for uploading files 
 //! It provides a method to get a JSON formatted list of getMruFilesN() 
 //! mru files.
-class FileStore {
+class FileRepository {
 
 public:
-   using Handle = std::shared_ptr<FileStore>;
+   using Handle = std::shared_ptr<FileRepository>;
+
 
    /** 
-     * Creates a new FileStore object and a related directory
+     * Creates a new FileRepository object and a related directory
      * for a given path.
      * @param path is the directory path
      * @param mruFilesN is a number N of max mrufiles built by
      *       createJsonMruFilesList() method
      */
    static Handle make(const std::string& path, int mrufilesN) {
-      Handle ret(new (std::nothrow) FileStore(path, mrufilesN));
+      Handle ret(new (std::nothrow) FileRepository(path, mrufilesN));
       if (ret) {
          if (!ret->init()) {
             return nullptr;
@@ -49,12 +50,14 @@ public:
       return ret;
    }
 
+
    /**
     * Creates a JSON formatted MRU files list
     * @param json containing the mru files list
     * @return true if operation succeded, false otherwise
     */
    bool createJsonMruFilesList(std::string& json);
+
 
    /**
     * Creates a list of mru filenames
@@ -63,12 +66,14 @@ public:
     */
    bool createMruFilesList(std::list<std::string>& mrufiles);
 
+
    /**
-    * Returns the store path
+    * Returns the repository path
     */
    const std::string& getPath() const noexcept {
       return _path;
    }
+
 
    /**
     * Returns max number of mru files formatted
@@ -77,9 +82,10 @@ public:
    int getMruFilesN() const noexcept {
       return _mrufilesN;
    }
+
    
 private:
-   FileStore(const std::string& path, int mrufilesN) : 
+   FileRepository(const std::string& path, int mrufilesN) : 
       _path(path),
       _mrufilesN(mrufilesN)
    {}

@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_USE_REGEX_;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include; src; PicoSHA2; zip/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include; src; 3pp/PicoSHA2; 3pp/zip/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -108,7 +108,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_USE_REGEX_;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include; src; PicoSHA2; zip/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include; src; 3pp/PicoSHA2; 3pp/zip/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -127,7 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_USE_REGEX_;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include; src; PicoSHA2; zip/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include; src; 3pp/PicoSHA2; 3pp/zip/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -148,7 +148,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_USE_REGEX_;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>include; src; PicoSHA2; zip/src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include; src; 3pp/PicoSHA2; 3pp/zip/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
@@ -163,7 +163,7 @@
     <Text Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\FileStore.h" />
+    <ClInclude Include="include\FileRepository.h" />
     <ClInclude Include="include\FileUtils.h" />
     <ClInclude Include="include\HttpRequest.h" />
     <ClInclude Include="include\HttpResponse.h" />
@@ -177,12 +177,12 @@
     <ClInclude Include="include\HttpServer.h" />
     <ClInclude Include="include\SysUtils.h" />
     <ClInclude Include="include\ZipArchive.h" />
-    <ClInclude Include="PicoSHA2\picosha2.h" />
-    <ClInclude Include="zip\src\zip.h" />
+    <ClInclude Include="3pp\PicoSHA2\picosha2.h" />
+    <ClInclude Include="3pp\zip\src\zip.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\FilenameMap.cc" />
-    <ClCompile Include="src\FileStore.cc" />
+    <ClCompile Include="src\FileRepository.cc" />
     <ClCompile Include="src\HttpRequest.cc" />
     <ClCompile Include="src\HttpResponse.cc" />
     <ClCompile Include="src\HttpSocket.cc" />
@@ -195,7 +195,7 @@
     <ClCompile Include="src\SysUtils.cc" />
     <ClCompile Include="src\TcpListener.cc" />
     <ClCompile Include="src\main.cc" />
-    <ClCompile Include="zip\src\zip.c" />
+    <ClCompile Include="3pp\zip\src\zip.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -40,6 +40,7 @@ void SysUtils::getLocalTime(std::string& localTime)
    StrUtils::removeLastCharIf(localTime, '\n');
 }
 
+
 /* -------------------------------------------------------------------------- */
 
 #ifdef _MSC_VER

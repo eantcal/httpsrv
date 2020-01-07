@@ -49,8 +49,8 @@ private:
 
 public:
     HttpSocket() = default;
-
     HttpSocket(const HttpSocket&) = default;
+
 
     /**
      * Construct the HTTP connection starting from TCP connected-socket handle.
@@ -60,10 +60,12 @@ public:
     {
     }
 
+
     /**
      * Assigns a new TCP connected socket handle to this HTTP socket.
      */
     HttpSocket& operator=(TcpSocket::Handle handle);
+
 
     /**
      * Returns TCP socket handle
@@ -71,6 +73,7 @@ public:
     operator TcpSocket::Handle() const { 
        return _socketHandle; 
     }
+
 
     /**
      * Receives an HTTP request from remote peer.
@@ -81,6 +84,7 @@ public:
         return *this;
     }
 
+
     /**
      * Returns false if last recv/send operation detected
      * that connection was down; true otherwise.
@@ -88,6 +92,7 @@ public:
     explicit operator bool() const { 
        return _connUp; 
     }
+
 
     /**
      * Send a response to remote peer.
@@ -104,12 +109,14 @@ public:
         return _socketHandle->sendFile(fileName);
     }
 
+
     /*
      * Return connection timeout interval in milliseconds
      */
     const int& getConnectionTimeout() const noexcept {
         return _connectionTimeOut;
     }
+
 
     /*
      * Set new connection timeout interval in milliseconds

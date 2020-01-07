@@ -30,10 +30,11 @@ namespace fs = boost::filesystem;
 namespace FileUtils {
 
    /**
-    *  Create a temporary directory
-    *  Returns true if operation successfully completed, false otherwise
+    *  Creates a temporary directory
+    *  @return true if operation successfully completed, false otherwise
     */
    bool createTemporaryDir(fs::path& path);
+
 
    /**
      * Returns file attributes of fileName.
@@ -49,8 +50,9 @@ namespace FileUtils {
       std::string& ext, 
       size_t& fsize);
 
+
    /**
-     * Modifies a file timestamp
+     * Updates a file timestamp to now
      *
      * @param fileName String containing the path of existing or new file
      * @param createNewIfNotExists is optional parameter, when true force
@@ -58,6 +60,7 @@ namespace FileUtils {
      * @return true if operation successfully completed, false otherwise
      */
    bool touch(const std::string& fileName, bool createNewIfNotExists=false);
+
 
    /**
      * Gets full path of existing file or directory
@@ -68,13 +71,15 @@ namespace FileUtils {
      */
    bool getFullPath(const std::string& partialPath, std::string& fullPath);
 
+
    /**
-     * Return true if pathName exists and it is an accessable directory
+     * Returns true if pathName exists and it is an accessable directory
      *
      * @param pathName String containing a path of directory
      * @return true if directory found, false otherwise
      */
    bool directoryExists(const std::string& pathName);
+
 
    /**
      * Creates a new relative directory relativeDirName if not already existant
@@ -86,12 +91,14 @@ namespace FileUtils {
      */
    bool touchDir(const std::string& relativeDirName, std::string& fullPath);
 
+
    /**
      * Returns user's home directory
      *
      * @return string containig user home directory path
      */
    std::string getHomeDir();
+
 
    /**
      * Creates an unique id from a given string

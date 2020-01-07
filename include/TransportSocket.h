@@ -48,6 +48,7 @@ protected:
    {
    }
 
+
 public:
    TransportSocket(const TransportSocket&) = delete;
    TransportSocket& operator=(const TransportSocket&) = delete;
@@ -169,4 +170,3 @@ private:
 /* -------------------------------------------------------------------------- */
 
 #endif // __TRANSPORT_SOCKET_H__
-
