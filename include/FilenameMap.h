@@ -38,22 +38,24 @@ public:
    FilenameMap& operator=(FilenameMap&&) = delete;
 
    /**
-    * Create an object instance
+    * Creates an object instance
     */
    static Handle make() {
       return FilenameMap::Handle(new (std::nothrow) FilenameMap);
    }
 
+
    /**
-    * Thread-safe version of insert
+    * Thread-safe version of insert (thread-safe)
     */
    void locked_insert(const std::string id, const std::string& fileName) {
       std::unique_lock lock(_mtx);
       insert( id, fileName );
    }
 
+
    /**
-    * Insert <id, filename> in the map
+    * Inserts <id, filename> in the map
     * @param id is the map key
     * @param fileName is the value
     */
@@ -61,24 +63,28 @@ public:
       _data.insert({ id, fileName });
    }
 
+
    /**
-    * Clear the cache content
+    * Clears the map content (thread-save)
     */
    void clear() {
       std::unique_lock lock(_mtx);
       _data.clear();
    }
 
+
    /**
-    * Replace the entire cache content
+    * Replaces the entire map content (thread-safe) with
+    * with newCache contant (which will be invalidated)
     */
-   void locked_replace(FilenameMap& newCache) {
+   void locked_replace(FilenameMap&& newCache) {
       std::unique_lock lock(_mtx);
       _data = std::move(newCache._data);
    }
 
+
    /**
-    * Search a filename related to a given id
+    * Searches a filename related to a given id (thread-safe)
     * @param id searched id
     * @param fileName is assigned with corrispondent filename if found
     * @return true if id is found, false otherwise
@@ -93,6 +99,7 @@ public:
       }
       return false;
    }
+
 
    /**
     * Scan the file system path to populate the map
@@ -109,6 +116,7 @@ public:
     * @return true if operation successfully completed, false otherwise
     */
    bool locked_updateMakeJson(const std::string& path, std::string& json);
+
 
    /**
      * Returns file attributes of fileName formatted using a JSON record of
@@ -129,8 +137,9 @@ public:
       const std::string& beginl = "",
       const std::string& endl = "\n");
 
+
    /**
-    * Touch an existing file and return a related stat in JSON format
+    * Touches an existing file and returns a related stat in JSON format
     * @param path points to store directory
     * @param id of file
     * @param jsonOutput output JSON string

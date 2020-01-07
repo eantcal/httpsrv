@@ -9,8 +9,11 @@
 
 /* -------------------------------------------------------------------------- */
 
-#ifndef __FILE_UTILS__H__
-#define __FILE_UTILS__H__
+#ifndef __FILE_UTILS_H__
+#define __FILE_UTILS_H__
+
+
+/* -------------------------------------------------------------------------- */
 
 #include "StrUtils.h"
 #include "FilenameMap.h"
@@ -23,6 +26,7 @@ namespace fs = boost::filesystem;
 
 /* -------------------------------------------------------------------------- */
 
+//! @brief Collection of some f/s utility functions
 namespace FileUtils {
 
    /**
@@ -35,8 +39,8 @@ namespace FileUtils {
      * Returns file attributes of fileName.
      *
      * @param fileName String containing the path of existing file
-     * @param dateTime Time of last modification of file
-     * @param ext File extension or "." if there is no any
+     * @param dateTime is updated with the file timestamp
+     * @param ext is updated with File extension or "." if there is no any
      * @return true if operation successfully completed, false otherwise
      */
    bool fileStat(
@@ -46,10 +50,10 @@ namespace FileUtils {
       size_t& fsize);
 
    /**
-     * Trivial but portable version of basic touch command
+     * Modifies a file timestamp
      *
      * @param fileName String containing the path of existing or new file
-     * @param createNewIfNotExists is optional parameter that if true force
+     * @param createNewIfNotExists is optional parameter, when true force
        *      to create a new file if not already existant
      * @return true if operation successfully completed, false otherwise
      */
@@ -90,7 +94,7 @@ namespace FileUtils {
    std::string getHomeDir();
 
    /**
-     * Create an unique id from a given string
+     * Creates an unique id from a given string
      *
      * @param src Source string
      * @return id
@@ -101,4 +105,4 @@ namespace FileUtils {
 
 /* ------------------------------------------------------------------------- */
 
-#endif // !__FILE_UTILS__H__
+#endif // !__FILE_UTILS_H__

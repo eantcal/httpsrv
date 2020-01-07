@@ -36,7 +36,7 @@ bool FileStore::init() {
 
    _path = storePath;
 
-   return FileUtils::createTemporaryDir(_tempDir);
+   return true;
 }
 
 

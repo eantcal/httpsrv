@@ -25,18 +25,21 @@ namespace fs = boost::filesystem;
 
 class ZipArchive {
 public:
+   //! ctor
    ZipArchive(const std::string& fileName) :
       _fileName(fileName)
    {}
 
+   //! Creates a new zip archive
    bool create() {
       _zipHandler =
          zip_open(_fileName.c_str(), ZIP_DEFAULT_COMPRESSION_LEVEL, 'w');
       return _zipHandler != nullptr;
    }
 
-   bool add(const std::string& fileName, const std::string& zipDirName) {
-      if (0 == zip_entry_open(_zipHandler, zipDirName.c_str())) {
+   //! Add a new file (fileName) as zipEntryName into the zip archive
+   bool add(const std::string& fileName, const std::string& zipEntryName) {
+      if (0 == zip_entry_open(_zipHandler, zipEntryName.c_str())) {
          if (0 == zip_entry_fwrite(_zipHandler, fileName.c_str())) {
             return 0 == zip_entry_close(_zipHandler);
          }
@@ -44,6 +47,7 @@ public:
       return false;
    }
 
+   //! Flush and close zip archive
    void close() {
       if (_zipHandler) {
          zip_close(_zipHandler);
@@ -51,6 +55,7 @@ public:
       }
    }
 
+   //! dtor (calls close())
    ~ZipArchive() {
       close();
    }

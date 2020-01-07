@@ -24,12 +24,21 @@ namespace fs = boost::filesystem;
 
 /* -------------------------------------------------------------------------- */
 
+//! Helper class to handle the server local store for uploading files 
+//! It provides a method to get a JSON formatted list of getMruFilesN() 
+//! mru files.
 class FileStore {
 
 public:
-   using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
    using Handle = std::shared_ptr<FileStore>;
 
+   /** 
+     * Creates a new FileStore object and a related directory
+     * for a given path.
+     * @param path is the directory path
+     * @param mruFilesN is a number N of max mrufiles built by
+     *       createJsonMruFilesList() method
+     */
    static Handle make(const std::string& path, int mrufilesN) {
       Handle ret(new (std::nothrow) FileStore(path, mrufilesN));
       if (ret) {
@@ -40,16 +49,27 @@ public:
       return ret;
    }
 
+   /**
+    * Creates a JSON formatted MRU files list
+    * @param json containing the mru files list
+    * @return true if operation succeded, false otherwise
+    */
    bool createJsonMruFilesList(std::string& json);
 
+   /**
+    * Returns the store path
+    */
    const std::string& getPath() const noexcept {
       return _path;
    }
 
+   /**
+    * Returns max number of mru files formatted
+    * in json output of createJsonMruFilesList
+    */
    int getMruFilesN() const noexcept {
       return _mrufilesN;
    }
-
    
 private:
    FileStore(const std::string& path, int mrufilesN) : 
@@ -57,14 +77,14 @@ private:
       _mrufilesN(mrufilesN)
    {}
 
-   bool init();
+   using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
 
+   bool init();
    bool createMruFilesList(TimeOrderedFileList& list);
 
 private:
    std::string _path;
    int _mrufilesN;
-   fs::path _tempDir;
 };
 
 

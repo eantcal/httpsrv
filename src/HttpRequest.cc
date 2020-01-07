@@ -77,14 +77,14 @@ void HttpRequest::parseHeader(const std::string& header)
          if (prefix == 'C') {
             if (headerName == "CONTENT-LENGTH:") {
                try {
-                  _content_length = std::stoi(tokens[1]);
+                  _contentLength = std::stoi(tokens[1]);
                }
                catch (...) {
-                  _content_length = 0;
+                  _contentLength = 0;
                }
             }
             else if (headerName == "CONTENT-TYPE:") {
-               _content_type = tokens[1];
+               _contentType = tokens[1];
                std::vector<std::string> content_type;
                StrUtils::splitLineInTokens(header, content_type, ";");
                if (!content_type.empty()) {

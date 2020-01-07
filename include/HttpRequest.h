@@ -74,10 +74,6 @@ public:
       return _uri;
    }
 
-   // TODO
-   void setUri(const std::string& uri) {
-      _uri = uri;
-   }
 
    /**
     * Returns the command line URI args (arg1/arg2/.../argN)
@@ -89,42 +85,37 @@ public:
 
    /**
     * Parses the HTTP method.
-    *
-    * @param method input string
+    * @param method is HTTP method string
     */
    void parseMethod(const std::string& method);
 
 
    /**
     * Parses the URI field.
-    *
-    * @param uri The input string to parse
+    * @param uri is HTTP URI to parse
     */
    void parseUri(const std::string& uri) {
       StrUtils::splitLineInTokens(StrUtils::trim(uri), _uriArgs, "/");
-      _uri = uri; // == "/" ? "index.html" : uri;
+      _uri = uri;
    }
 
 
    /**
     * Parses the HTTP version.
-    *
     * @param ver The input string to parse
     */
    void parseVersion(const std::string& ver);
 
 
    /**
-    * Parse line as part of request header
-    *
-    * @param header The header content to add to headers fields
+    * Parses a request header
+    * @param header The header content to be parsed
     */
    void parseHeader(const std::string& header);
 
 
    /**
     * Adds a new line to request data
-    *
     * @param line to add
     */
    void addLine(const std::string& line) {
@@ -133,18 +124,16 @@ public:
 
 
    /**
-    * Get the content length field value
-    *
+    * Gets the content length field value
     * @return content length in bytes
     */
    int getContentLength() const noexcept {
-      return _content_length;
+      return _contentLength;
    }
 
 
    /**
-    * Return true if the request contains "Expect: 100-continue"
-    *
+    * Returns true if the request contains "Expect: 100-continue"
     * @return true if continue request sent by client, false otherwise
     */
    bool isExpectedContinueResponse() const noexcept {
@@ -153,7 +142,7 @@ public:
 
 
    /**
-    * Clean "Expect: 100-continue" flag
+    * Cleans "Expect: 100-continue" flag
     */
    void clearExpectedContinueFlag() noexcept {
       _expected_100_continue = false;
@@ -161,8 +150,7 @@ public:
 
 
    /**
-    * Get the content-disposition fileName attribute content
-    *
+    * Gets the content-disposition fileName attribute content
     * @return string containing any file name posted
     */
    const std::string& getFileName() const noexcept {
@@ -171,16 +159,7 @@ public:
 
 
    /**
-    * Set fileName
-    */
-   void setFileName(const std::string& fileName) noexcept {
-      _filename = fileName;
-   }
-
-
-   /**
-    * Get the content-type multipart boundary
-    *
+    * Gets the content-type multipart boundary
     * @return string containing any boundary string
     */
    const std::string& getBoundary() const noexcept {
@@ -189,16 +168,16 @@ public:
 
 
    /**
-    * Set a body to request
-    *
+    * Sets a body to request
     * @param body is body content
     */
    void setBody(std::string&& body) {
       _body = std::move(body);
    }
 
+
    /**
-    * Get any body
+    * Get any request body (applies to POST method)
     * @param body is body content
     */
    const std::string& getBody() const noexcept {
@@ -215,8 +194,9 @@ public:
     */
    std::ostream& dump(std::ostream& os, const std::string& id = "");
 
+
    /**
-    * Return true if the GET request is valid, false otherwise
+    * Returns true if the GET request is valid, false otherwise
     */
    bool isValidGetRequest() const noexcept {
       return 
@@ -230,6 +210,10 @@ public:
             getUriArgs()[3]== HTTP_URISFX_ZIP)));
    }
 
+
+   /**
+   * Returns true if the POST request is valid, false otherwise
+   */
    bool isValidPostRequest() const noexcept {
       return getMethod() == HttpRequest::Method::POST
          && getUri() == HTTP_SERVER_POST_STORE
@@ -244,8 +228,8 @@ private:
    Version _version = Version::UNKNOWN;
    std::string _uri;
    std::string _body;
-   int _content_length = 0;
-   std::string _content_type;
+   int _contentLength = 0;
+   std::string _contentType;
    std::string _filename;
    std::string _boundary;
    bool _expected_100_continue = false;

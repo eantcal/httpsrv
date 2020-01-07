@@ -61,7 +61,10 @@ public:
     */
    std::ostream& dump(std::ostream& os, const std::string& id = "");
 
-   // TODO
+
+   /**
+    * Returns ture if the response is 4xx/5xx HTTP response
+    */
    bool isErrorResponse() const throw() {
       return _errorResponse;
    }

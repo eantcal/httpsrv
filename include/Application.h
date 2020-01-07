@@ -33,6 +33,7 @@
 
 /* -------------------------------------------------------------------------- */
 
+//! Helper class to manage the application configuration and server startup
 class Application {
 public:
    enum class ErrCode {
@@ -46,15 +47,14 @@ public:
       httpSrvListenError,
       httpSrvStartError,
    };
- 
 
-   //! Get the configuration
+   //! Initializes the application based on input paramters
    Application(int argc, char* argv[], std::ostream& logger);
 
-   //! Apply the configuration and run HTTP Server
+   //! Applies a given configuration and runs HTTP Server
    ErrCode run();
 
-   //! Get an error message
+   //! Gets any specific error message based on run() return-value
    const std::string& getError() const noexcept {
       return _errMessage;
    }
@@ -62,10 +62,6 @@ public:
 private:
    Application(const Application&) = delete;
    Application& operator=(const Application&) = delete;
-
-   bool isValid() const noexcept {
-      return !_error;
-   }
 
    bool showUsage(std::stringstream& os) const;
 
@@ -94,4 +90,6 @@ private:
 };
 
 
-#endif
+/* -------------------------------------------------------------------------- */
+
+#endif //! __APPLICATION_H__

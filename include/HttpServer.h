@@ -56,12 +56,14 @@ public:
       }
    }
 
+
    /**
     * Sets a id/filename cache instance
     */
    void setFilenameMap(FilenameMap::Handle cacheInstance) noexcept {
       _filenameMap = cacheInstance;
    }
+
 
    /**
     * Gets HttpServer object instance reference.
@@ -72,19 +74,21 @@ public:
     */
    static auto getInstance()->HttpServer&;
 
+
    /**
-    * Gets local store handle
+    * Gets the file store handle
     */
    FileStore::Handle getFileStore() const noexcept {
       return _fileStore;
    }
 
    /**
-    * Set local stoer handle
+    * Set local store handle
     */
    void setFileStore(FileStore::Handle handle) {
       _fileStore = handle;
    }
+
 
    /**
     * Gets the port where server is listening
@@ -95,6 +99,7 @@ public:
       return _serverPort;
    }
 
+
    /**
     * Binds the HTTP server to a local TCP port
     *
@@ -103,6 +108,7 @@ public:
     */
    bool bind(TranspPort port);
 
+
    /**
     * Sets the server in listening mode
     *
@@ -110,6 +116,7 @@ public:
     * @return true if operation is successfully completed, false otherwise
     */
    bool listen(int maxConnections);
+
 
    /**
     * Runs the server. This function is blocking for the caller.
