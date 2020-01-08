@@ -192,7 +192,40 @@ if [ $ok = "0" ]; then
 fi
 
 # ------------------------------------------------------------------------------
-# JSON validations and additional TIMESTAMP validations
+# Get mrufiles zip file
+# ------------------------------------------------------------------------------
+ok=0
+rm -f $tmp_dir2/*
+curl --output $tmp_dir2/mrufiles.zip $host_and_port/mrufiles/zip && ok=1 
+
+if [ $ok = "0" ]; then
+  printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
+  exit 1
+fi
+
+ok=0
+cd $tmp_dir2 && unzip ./mrufiles.zip && rm mrufiles.zip && cd - && ok=1
+
+if [ $ok = "0" ]; then
+  printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
+  exit 1
+fi
+
+ok=0
+cd $tmp_dir2
+ls `curl $host_and_port/mrufiles | grep File | sed "s/\"//g" | sed "s/,//g" | awk '{print $2}'` && ok=1
+filescount=`ls *.txt | wc -w`
+cd -
+
+if [ $ok = "1" ] && [ $filescount = "3" ]; then
+  echo "OK    GET /mrufiles/zip" >> $resultfile
+else
+  printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
+  exit 1
+fi
+
+# ------------------------------------------------------------------------------
+# JSON validations 
 # ------------------------------------------------------------------------------
 
 #GET /files
@@ -226,11 +259,15 @@ if [ $ok = "0" ]; then
   exit 1
 fi
 
+# ------------------------------------------------------------------------------
+# TIMESTAMP validations
+# ------------------------------------------------------------------------------
+
 #GET /file/<id>/zip
 #check that the first_id related entry now is into mrufiles list
 #got in a previous GET /file/<id>/id is part of mrufiles.json
 
-#sleep 1
+sleep 1
 
 ok=0
 curl $host_and_port/mrufiles | grep $first_id >/dev/null || ok=1
@@ -257,8 +294,6 @@ echo "TS OK  GET /files/$first_id/zip" >> $resultfile
 
 #GET /file/<id>
 #check that the first_id related entry now is into mrufiles list
-
-sleep 1
 
 ok=1
 curl $host_and_port/mrufiles | grep $second_id && ok=0
@@ -287,6 +322,7 @@ echo "TS OK  GET /files/$second_id" >> $resultfile
 # Show results
 # ------------------------------------------------------------------------------
 
+clear
 echo ------------------------------------
 printf "${GREEN}TEST SUCCEDED${NC}\n"
 echo ------------------------------------

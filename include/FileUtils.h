@@ -107,6 +107,23 @@ namespace FileUtils {
      * @return id
      */
     std::string hashCode(const std::string& src);
+
+
+    /**
+     * Extract low level file descriptor from std::filebuf
+     *
+     * @return the file descriptor
+     */
+    inline
+    int getOsFd(std::filebuf& filebuf) {
+      class _filebuf : public std::filebuf {
+      public:
+        int handle() { return _M_file.fd(); }
+      };
+
+      return static_cast<_filebuf&>(filebuf).handle();
+    }
+
 };
 
 

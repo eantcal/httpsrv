@@ -67,6 +67,10 @@ int TransportSocket::sendFile(const std::string& filepath) noexcept
 
         int size = static_cast<int>(ifs.gcount());
 
+        if (size == 0) {
+            return sent_bytes;
+        }
+        
         if (size > 0) {
             int bsent = 0;
 
