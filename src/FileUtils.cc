@@ -98,8 +98,6 @@ bool FileUtils::touch(const std::string& fileName, bool createNewIfNotExists)
          ofs.seekg(0, ofs.beg);
          ofs.write(&c, 1);
       }
-      ofs.flush();
-      fsync(FileUtils::getOsFd(*ofs.rdbuf()));
       ofs.close();
 
       if (length < 1) {
@@ -109,12 +107,6 @@ bool FileUtils::touch(const std::string& fileName, bool createNewIfNotExists)
    else {
       if (createNewIfNotExists)
          ofs.open(fileName, std::ofstream::out);
-   }
-
-   if (ofs.is_open()) {
-      ofs.flush();
-      fsync(getOsFd(*ofs.rdbuf()));
-      ofs.close();
    }
 
    return !ofs.fail();
