@@ -12,7 +12,6 @@ working_dir="$HOME/.httpsrv"
 # Init
 # ------------------------------------------------------------------------------
 
-# set -x
 
 if ! [ -x "$(command -v curl)" ]; then
   echo 'Error: curl is not installed.' >&2
@@ -45,6 +44,8 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
+set -x
+
 tmp_dir=$(mktemp -d -t resources-XXXXXXXXXX)
 tmp_dir2=$(mktemp -d -t resources-XXXXXXXXXX)
 rm -f $HOME/.httpsrv/File*.txt
@@ -55,8 +56,6 @@ else
   echo "Error: ${tmp_dir} not found. Can not continue." >&2
   exit 1
 fi
-
-
 
 listfile=$tmp_dir"/list.tmp"
 resultfile=$tmp_dir"/result.tmp"
@@ -92,6 +91,7 @@ chk=`cat $listfile | grep id | grep name | grep timestamp | wc -l`
 if [ $chk = "10" ]; then
   echo "OK    POST /store" >> $resultfile
 else
+  set +x
   printf "POST /store ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
@@ -118,11 +118,11 @@ while read p; do
   if [ $ok = "1" ]; then
     echo "OK    GET /files/$id" >> $resultfile
   else
+    set +x
     printf "GET /files/<${id}> ${RED}TEST FAILED${NC}\n" >&2
     exit 1
   fi
 done < $listfile 
-
 
 sed -i "s/\"//g" $allidsfile
 sed -i "s/,//g" $allidsfile
@@ -157,6 +157,7 @@ diff $threeidsfile $sortedmruidsfile && ok=1
 if [ $ok = "1" ]; then
   echo "OK    GET /mrufiles" >> $resultfile
 else
+  set +x
   printf "GET /mrufiles ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
@@ -172,6 +173,7 @@ echo Downloaded $tmp_dir2/$first_id.zip
 if [ $ok = "1" ]; then
   echo "OK    GET /files/$first_id/zip" >> $resultfile
 else
+  set +x
   printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
@@ -181,15 +183,18 @@ ok=0
 cd $tmp_dir2 && unzip $tmp_dir2/$first_id.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
   exit 1
 fi
 
 diff $tmp_dir2/$filename $tmp_dir/$filename || ok=0
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
+
 
 # ------------------------------------------------------------------------------
 # Get mrufiles zip file
@@ -199,6 +204,7 @@ rm -f $tmp_dir2/*
 curl --output $tmp_dir2/mrufiles.zip $host_and_port/mrufiles/zip && ok=1 
 
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
@@ -207,6 +213,7 @@ ok=0
 cd $tmp_dir2 && unzip ./mrufiles.zip && rm mrufiles.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
@@ -220,6 +227,7 @@ cd -
 if [ $ok = "1" ] && [ $filescount = "3" ]; then
   echo "OK    GET /mrufiles/zip" >> $resultfile
 else
+  set +x
   printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
@@ -232,6 +240,7 @@ fi
 ok=0
 curl $host_and_port/files > ${tmp_dir}/files.json && ok=1
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /files ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
@@ -239,6 +248,7 @@ fi
 ok=0
 eval "$jsonvalidator $tmp_dir/files.json && ok=1" >> $resultfile
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /files ${RED}JSON VALIDATION FAILED${NC}\n" >&2
   exit 1
 fi
@@ -248,6 +258,7 @@ fi
 ok=0
 curl $host_and_port/mrufiles > ${tmp_dir}/mrufiles.json && ok=1
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /files ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
@@ -255,6 +266,7 @@ fi
 ok=0
 eval "$jsonvalidator $tmp_dir/mrufiles.json && ok=1" >> $resultfile
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /files ${RED}JSON VALIDATION FAILED${NC}\n" >&2
   exit 1
 fi
@@ -267,66 +279,93 @@ fi
 #check that the first_id related entry now is into mrufiles list
 #got in a previous GET /file/<id>/id is part of mrufiles.json
 
-sleep 1
+sleep 1.5
+touch $working_dir/File01.txt
+touch $working_dir/File02.txt
+touch $working_dir/File03.txt
+sync
 
+id=`echo -n File04.txt | sha256sum  | awk '{print $1}'`
+
+curl 127.0.0.1:8080/mrufiles -v
 ok=0
-curl $host_and_port/mrufiles | grep $first_id >/dev/null || ok=1
+curl $host_and_port/mrufiles | grep $id >/dev/null || ok=1
  if [ $ok = "0" ]; then
+   set +x
    printf "GET /files/$first_id ${RED}%first_id should not be in the mrulist now${NC}\n" >&2
    exit 1
 fi
 
+# make sure timestamp distance at least is 1 sec
+sleep 1.5
+
 ok=0
-curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1
+curl --output $tmp_dir2/$id.zip $host_and_port/files/$id/zip && ok=1
 if [ $ok = "0" ]; then
-  printf "GET /files/$first_id ${RED}VALIDATION FAILED${NC}\n" >&2
+  set +x
+  printf "GET /files/$id ${RED}VALIDATION FAILED${NC}\n" >&2
   exit 1
 fi
 
 ok=0
-curl $host_and_port/mrufiles | grep $first_id >/dev/null && ok=1
+curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  printf "GET /files/$first_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
+  set +x
+  printf "GET /files/$id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
   exit 1
 fi
 
-echo "TS OK  GET /files/$first_id/zip" >> $resultfile
+echo "TS OK  GET /files/$id/zip" >> $resultfile
 
 #GET /file/<id>
 #check that the first_id related entry now is into mrufiles list
 
+id=`echo -n File05.txt | sha256sum  | awk '{print $1}'`
+
 ok=1
-curl $host_and_port/mrufiles | grep $second_id && ok=0
+curl $host_and_port/mrufiles | grep $id && ok=0
  if [ $ok = "0" ]; then
-   printf "GET /files/$second_id ${RED} should not be in the mrulist now${NC}\n" >&2
+   set +x
+   printf "GET /files/$id ${RED} should not be in the mrulist now${NC}\n" >&2
    exit 1
 fi
 
+# make sure timestamp distance at least is 1 sec
+sleep 1.5
+
 ok=0
-curl $host_and_port/files/$second_id && ok=1
+curl $host_and_port/files/$id && ok=1
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /files/$second_id ${RED}VALIDATION FAILED${NC}\n" >&2
   exit 1
 fi
 
 ok=0
-curl $host_and_port/mrufiles | grep $second_id >/dev/null && ok=1
+curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
+  set +x
   printf "GET /files/$second_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
   exit 1
 fi
 
+
 echo "TS OK  GET /files/$second_id" >> $resultfile
+
+set +x
 
 # ------------------------------------------------------------------------------
 # Show results
 # ------------------------------------------------------------------------------
-
 clear
 echo ------------------------------------
 printf "${GREEN}TEST SUCCEDED${NC}\n"
 echo ------------------------------------
 cat $resultfile
 
+
+# ------------------------------------------------------------------------------
+# Cleanup temporary files
+# ------------------------------------------------------------------------------
 rm -rf $tmp_dir
 rm -rf $tmp_dir2
