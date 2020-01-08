@@ -7,8 +7,35 @@ echo -----------------------
 host_and_port="localhost:8080"
 
 # ------------------------------------------------------------------------------
-# Create a temporary dir and initializes some file vars
+# Init
 # ------------------------------------------------------------------------------
+
+if ! [ -x "$(command -v curl)" ]; then
+  echo 'Error: curl is not installed.' >&2
+  exit 1
+fi
+
+if ! [ -x "$(command -v sed)" ]; then
+  echo 'Error: sed is not installed.' >&2
+  exit 1
+fi
+
+
+if ! [ -x "$(command -v awk)" ]; then
+  echo 'Error: awk is not installed.' >&2
+  exit 1
+fi
+
+if ! [ -x "$(command -v unzip)" ]; then
+  echo 'Error: unzip is not installed.' >&2
+  exit 1
+fi
+
+jsonvalidator="jsonlint-php"
+if ! [ -x "$(command -v ${jsonvalidator})" ]; then
+  echo 'Error: ' ${jsonvalidator} ' is not installed.' >&2
+  exit 1
+fi
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -20,7 +47,7 @@ tmp_dir2=$(mktemp -d -t resources-XXXXXXXXXX)
 if [ -d "$tmp_dir" ]; then
   echo "Created ${tmp_dir}..."
 else
-  echo "Error: ${tmp_dir} not found. Can not continue."
+  echo "Error: ${tmp_dir} not found. Can not continue." >&2
   exit 1
 fi
 
@@ -51,16 +78,15 @@ echo $listcontent | sed -r "s/\}/\\n/g" > $listfile
 chk=`cat $listfile | grep id | grep name | grep timestamp | wc -l`
 
 if [ $chk = "10" ]; then
-  echo "[OK] POST /store" >> $resultfile
+  echo "OK    POST /store" >> $resultfile
 else
-  printf "POST /store ${RED}TEST FAILED${NC}\n"
+  printf "POST /store ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
 
 sed -i "s/\"//g" $listfile
 sed -i "s/,//g" $listfile
 sed -i '/^$/d' $listfile
-
 
 # ------------------------------------------------------------------------------
 # Get the list of ids in the local temporary dir
@@ -74,12 +100,13 @@ while read p; do
   curl $host_and_port/files/`echo "$p" | awk '{print $3}';` | grep id | awk '{print $2}' >> $allidsfile && ok=1
 
   id=`echo $p | awk '{print $3 " for " $5}';`
-  last_id=`echo $p | awk '{print $3}'`
+  [[ ! -z "$first_id" ]] && [[ -z "$second_id" ]] && second_id=`echo $p | awk '{print $3}'`
+  [[ -z "$first_id" ]] && first_id=`echo $p | awk '{print $3}'`
 
   if [ $ok = "1" ]; then
-    echo "[OK]  GET /files/$id" >> $resultfile
+    echo "OK    GET /files/$id" >> $resultfile
   else
-    printf "GET /files/<${id}> ${RED}TEST FAILED${NC}\n"
+    printf "GET /files/<${id}> ${RED}TEST FAILED${NC}\n" >&2
     exit 1
   fi
 done < $listfile 
@@ -116,9 +143,9 @@ ok=0
 diff $threeidsfile $sortedmruidsfile && ok=1
 
 if [ $ok = "1" ]; then
-  echo "[OK]  GET /mrufiles" >> $resultfile
+  echo "OK    GET /mrufiles" >> $resultfile
 else
-  printf "GET /mrufiles ${RED}TEST FAILED${NC}\n"
+  printf "GET /mrufiles ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
 
@@ -127,31 +154,126 @@ fi
 # Get a single zip file
 # ------------------------------------------------------------------------------
 ok=0
-curl $host_and_port/files/$last_id/zip --output $tmp_dir2/$last_id.zip && ok=1
-echo Downloaded $tmp_dir2/$last_id.zip
+curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip  && ok=1
+echo Downloaded $tmp_dir2/$first_id.zip
 
 if [ $ok = "1" ]; then
-  echo "[OK]  GET /files/$last_id/zip" >> $resultfile
+  echo "OK    GET /files/$first_id/zip" >> $resultfile
 else
-  printf "GET /files/$last_id/zip ${RED}TEST FAILED${NC}\n"
+  printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
 
-filename=`zipinfo $tmp_dir2/$last_id.zip | grep File | awk '{ print $9 }'`
+filename=`zipinfo $tmp_dir2/$first_id.zip | grep File | awk '{ print $9 }'`
 ok=0
-cd $tmp_dir2 && unzip $tmp_dir2/$last_id.zip && cd - && ok=1
+cd $tmp_dir2 && unzip $tmp_dir2/$first_id.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
-  printf "GET /files/$last_id/zip ${RED}TEST FAILED${NC}\n"
+  printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
   exit 1
 fi
 
 diff $tmp_dir2/$filename $tmp_dir/$filename || ok=0
 if [ $ok = "0" ]; then
-  printf "GET /files/$last_id/zip ${RED}TEST FAILED${NC}\n"
+  printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n" >&2
   exit 1
 fi
 
+# ------------------------------------------------------------------------------
+# JSON validations and additional TIMESTAMP validations
+# ------------------------------------------------------------------------------
+
+#GET /files
+ok=0
+curl $host_and_port/files > ${tmp_dir}/files.json && ok=1
+if [ $ok = "0" ]; then
+  printf "GET /files ${RED}TEST FAILED${NC}\n" >&2
+  exit 1
+fi
+
+ok=0
+eval "$jsonvalidator $tmp_dir/files.json && ok=1" >> $resultfile
+if [ $ok = "0" ]; then
+  printf "GET /files ${RED}JSON VALIDATION FAILED${NC}\n" >&2
+  exit 1
+fi
+
+
+#GET /mrufiles
+ok=0
+curl $host_and_port/mrufiles > ${tmp_dir}/mrufiles.json && ok=1
+if [ $ok = "0" ]; then
+  printf "GET /files ${RED}TEST FAILED${NC}\n" >&2
+  exit 1
+fi
+
+ok=0
+eval "$jsonvalidator $tmp_dir/mrufiles.json && ok=1" >> $resultfile
+if [ $ok = "0" ]; then
+  printf "GET /files ${RED}JSON VALIDATION FAILED${NC}\n" >&2
+  exit 1
+fi
+
+#GET /file/<id>/zip
+#check that the first_id related entry now is into mrufiles list
+#got in a previous GET /file/<id>/id is part of mrufiles.json
+
+sleep 1
+
+ok=0
+curl localhost:8080/mrufiles | grep $first_id >/dev/null || ok=1
+ if [ $ok = "0" ]; then
+   printf "GET /files/$first_id ${RED}%first_id should not be in the mrulist now${NC}\n" >&2
+   exit 1
+fi
+
+sleep 1
+
+ok=0
+curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1
+if [ $ok = "0" ]; then
+  printf "GET /files/$first_id ${RED}VALIDATION FAILED${NC}\n" >&2
+  exit 1
+fi
+
+ok=0
+curl $host_and_port/mrufiles | grep $first_id & >/dev/null & ok=1
+if [ $ok = "0" ]; then
+  printf "GET /files/$first_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
+  exit 1
+fi
+
+echo "TS OK  GET /files/$first_id/zip" >> $resultfile
+
+#GET /file/<id>
+#check that the first_id related entry now is into mrufiles list
+
+sleep 1
+
+ok=0
+curl $host_and_port/mrufiles | grep $second_id || ok=1
+ if [ $ok = "0" ]; then
+   printf "GET /files/$second_id ${RED} should not be in the mrulist now${NC}\n" >&2
+   exit 1
+fi
+
+sleep 1
+
+ok=0
+curl $host_and_port/files/$second_id && ok=1
+if [ $ok = "0" ]; then
+  printf "GET /files/$second_id ${RED}VALIDATION FAILED${NC}\n" >&2
+  exit 1
+fi
+
+ok=0
+curl $host_and_port/mrufiles | grep $second_id && ok=1
+if [ $ok = "0" ]; then
+  printf "GET /files/$second_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
+  exit 1
+fi
+
+echo "TS OK  GET /files/$second_id" >> $resultfile
 
 # ------------------------------------------------------------------------------
 # Show results
