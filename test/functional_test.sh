@@ -10,6 +10,8 @@ host_and_port="localhost:8080"
 # Init
 # ------------------------------------------------------------------------------
 
+# set -x
+
 if ! [ -x "$(command -v curl)" ]; then
   echo 'Error: curl is not installed.' >&2
   exit 1
@@ -58,10 +60,15 @@ mruidsfile=$tmp_dir"/mruids.tmp"
 threeidsfile=$tmp_dir"/threeids.tmp"
 sortedmruidsfile=$tmp_dir"/sortedmruids.tmp"
 
+#Create a bunch of text files with different growing sizes
+CONTENT=""
 echo "Creating 10 files in $tmp_dir ..."
 for i in {01..10}
 do
-    echo hello > "$tmp_dir/File${i}.txt"
+    ADDCONTENT=" Content"
+    CONTENT+=$ADDCONTENT
+    echo $CONTENT
+    echo $CONTENT > "$tmp_dir/File${i}.txt"
 done
 
 rm -f $resultfile
@@ -154,7 +161,7 @@ fi
 # Get a single zip file
 # ------------------------------------------------------------------------------
 ok=0
-curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip  && ok=1
+curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1 2>/dev/null
 echo Downloaded $tmp_dir2/$first_id.zip
 
 if [ $ok = "1" ]; then
@@ -221,7 +228,7 @@ fi
 sleep 1
 
 ok=0
-curl localhost:8080/mrufiles | grep $first_id >/dev/null || ok=1
+curl $host_and_port/mrufiles | grep $first_id >/dev/null || ok=1
  if [ $ok = "0" ]; then
    printf "GET /files/$first_id ${RED}%first_id should not be in the mrulist now${NC}\n" >&2
    exit 1
@@ -237,7 +244,7 @@ if [ $ok = "0" ]; then
 fi
 
 ok=0
-curl $host_and_port/mrufiles | grep $first_id & >/dev/null & ok=1
+curl $host_and_port/mrufiles | grep $first_id >/dev/null && ok=1
 if [ $ok = "0" ]; then
   printf "GET /files/$first_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
   exit 1
@@ -250,8 +257,8 @@ echo "TS OK  GET /files/$first_id/zip" >> $resultfile
 
 sleep 1
 
-ok=0
-curl $host_and_port/mrufiles | grep $second_id || ok=1
+ok=1
+curl $host_and_port/mrufiles | grep $second_id && ok=0
  if [ $ok = "0" ]; then
    printf "GET /files/$second_id ${RED} should not be in the mrulist now${NC}\n" >&2
    exit 1
@@ -267,7 +274,7 @@ if [ $ok = "0" ]; then
 fi
 
 ok=0
-curl $host_and_port/mrufiles | grep $second_id && ok=1
+curl $host_and_port/mrufiles | grep $second_id >/dev/null && ok=1
 if [ $ok = "0" ]; then
   printf "GET /files/$second_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
   exit 1
