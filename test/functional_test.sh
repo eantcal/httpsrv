@@ -108,8 +108,6 @@ sed -i "s/\"//g" $mruidsfile
 sed -i "s/,//g" $mruidsfile
 sed -i '/^$/d' $mruidsfile
  
-rm -f sorted_$mruidsfile
-
 cp $mruidsfile $sortedmruidsfile
 cat $sortedmruidsfile | awk '{print $2}' > $mruidsfile
 cat $mruidsfile | sort > $sortedmruidsfile
