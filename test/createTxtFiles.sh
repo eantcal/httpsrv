@@ -8,6 +8,10 @@ echo -----------------------
 # Create a temporary dir and initializes some file vars
 # ------------------------------------------------------------------------------
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
 tmp_dir=$(mktemp -d -t resources-XXXXXXXXXX)
 
 if [ -d "$tmp_dir" ]; then
@@ -44,9 +48,9 @@ echo $listcontent | sed -r "s/\}/\\n/g" > $listfile
 chk=`cat $listfile | grep id | grep name | grep timestamp | wc -l`
 
 if [ $chk = "10" ]; then
-  echo "POST /store TEST PASSED" >> $resultfile
+  echo "[OK] POST /store" >> $resultfile
 else
-  echo "POST /store TEST FAILED"
+  printf "POST /store ${RED}TEST FAILED${NC}\n"
   exit 1
 fi
 
@@ -66,14 +70,15 @@ while read p; do
   ok=0
   curl localhost:8080/files/`echo "$p" | awk '{print $3}';` | grep id | awk '{print $2}' >> $allidsfile && ok=1
 
+  id=`echo $p | awk '{print $3 " for " $5}';`
+
   if [ $ok = "1" ]; then
-    id=`echo $p | awk '{print $3 " for " $5}';`
-    echo "GET  /files/$id TEST PASSED" >> $resultfile
+    echo "[OK]  GET /files/$id" >> $resultfile
   else
-    echo "GET  /files/<id> TEST FAILED"
+    printf "GET /files/<${id}> ${RED}TEST FAILED${NC}\n"
     exit 1
   fi
-done < $listfile
+done < $listfile 
 
 sed -i "s/\"//g" $allidsfile
 sed -i "s/,//g" $allidsfile
@@ -108,9 +113,9 @@ ok=0
 diff $threeidsfile $sortedmruidsfile && ok=1
 
 if [ $ok = "1" ]; then
-  echo "GET  /mrufiles TEST PASSED" >> $resultfile
+  echo "[OK]  GET /mrufiles" >> $resultfile
 else
-  echo "GET  /mrufiles TEST FAILED"
+  printf "GET /mrufiles ${RED}TEST FAILED${NC}\n"
   exit 1
 fi
 
@@ -119,7 +124,7 @@ fi
 # ------------------------------------------------------------------------------
 
 echo ------------------------------------
-echo "TEST SUCCEDED"
+printf "${GREEN}TEST SUCCEDED${NC}\n"
 echo ------------------------------------
 cat $resultfile
 
