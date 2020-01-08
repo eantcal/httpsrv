@@ -4,6 +4,8 @@ echo -----------------------
 echo httpsrv functional test
 echo -----------------------
 
+host_and_port="localhost:8080"
+
 # ------------------------------------------------------------------------------
 # Create a temporary dir and initializes some file vars
 # ------------------------------------------------------------------------------
@@ -13,6 +15,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 tmp_dir=$(mktemp -d -t resources-XXXXXXXXXX)
+tmp_dir2=$(mktemp -d -t resources-XXXXXXXXXX)
 
 if [ -d "$tmp_dir" ]; then
   echo "Created ${tmp_dir}..."
@@ -41,7 +44,7 @@ rm -f $resultfile
 # ------------------------------------------------------------------------------
 
 echo "Upload files into store via the http server"
-listcontent=`find $tmp_dir -type f -name *.txt -exec curl -F name=@{} localhost:8080/store \;`
+listcontent=`find $tmp_dir -type f -name *.txt -exec curl -F name=@{} $host_and_port/store \;`
 
 echo $listcontent | sed -r "s/\}/\\n/g" > $listfile
 
@@ -68,9 +71,10 @@ rm -f $allidsfile
 echo "Searching for 3 most recent files in $tmp_dir"
 while read p; do
   ok=0
-  curl localhost:8080/files/`echo "$p" | awk '{print $3}';` | grep id | awk '{print $2}' >> $allidsfile && ok=1
+  curl $host_and_port/files/`echo "$p" | awk '{print $3}';` | grep id | awk '{print $2}' >> $allidsfile && ok=1
 
   id=`echo $p | awk '{print $3 " for " $5}';`
+  last_id=`echo $p | awk '{print $3}'`
 
   if [ $ok = "1" ]; then
     echo "[OK]  GET /files/$id" >> $resultfile
@@ -79,6 +83,7 @@ while read p; do
     exit 1
   fi
 done < $listfile 
+
 
 sed -i "s/\"//g" $allidsfile
 sed -i "s/,//g" $allidsfile
@@ -98,7 +103,7 @@ rm -f $mruidsfile
 # Query the server for getting the mrufiles
 # ------------------------------------------------------------------------------
 
-curl localhost:8080/mrufiles | grep id >> $mruidsfile
+curl $host_and_port/mrufiles | grep id >> $mruidsfile
 sed -i "s/\"//g" $mruidsfile
 sed -i "s/,//g" $mruidsfile
 sed -i '/^$/d' $mruidsfile
@@ -119,6 +124,37 @@ else
   exit 1
 fi
 
+
+# ------------------------------------------------------------------------------
+# Get a single zip file
+# ------------------------------------------------------------------------------
+ok=0
+curl $host_and_port/files/$last_id/zip --output $tmp_dir2/$last_id.zip && ok=1
+echo Downloaded $tmp_dir2/$last_id.zip
+
+if [ $ok = "1" ]; then
+  echo "[OK]  GET /files/$last_id/zip" >> $resultfile
+else
+  printf "GET /files/$last_id/zip ${RED}TEST FAILED${NC}\n"
+  exit 1
+fi
+
+filename=`zipinfo $tmp_dir2/$last_id.zip | grep File | awk '{ print $9 }'`
+ok=0
+cd $tmp_dir2 && unzip $tmp_dir2/$last_id.zip && cd - && ok=1
+
+if [ $ok = "0" ]; then
+  printf "GET /files/$last_id/zip ${RED}TEST FAILED${NC}\n"
+  exit 1
+fi
+
+diff $tmp_dir2/$filename $tmp_dir/$filename || ok=0
+if [ $ok = "0" ]; then
+  printf "GET /files/$last_id/zip ${RED}TEST FAILED${NC}\n"
+  exit 1
+fi
+
+
 # ------------------------------------------------------------------------------
 # Show results
 # ------------------------------------------------------------------------------
@@ -129,3 +165,4 @@ echo ------------------------------------
 cat $resultfile
 
 rm -rf $tmp_dir
+rm -rf $tmp_dir2
