@@ -4,7 +4,9 @@ echo -----------------------
 echo httpsrv functional test
 echo -----------------------
 
+# Server is expected to run with the following configuration
 host_and_port="localhost:8080"
+working_dir="$HOME/.httpsrv"
 
 # ------------------------------------------------------------------------------
 # Init
@@ -45,6 +47,7 @@ NC='\033[0m' # No Color
 
 tmp_dir=$(mktemp -d -t resources-XXXXXXXXXX)
 tmp_dir2=$(mktemp -d -t resources-XXXXXXXXXX)
+rm -f $HOME/.httpsrv/File*.txt
 
 if [ -d "$tmp_dir" ]; then
   echo "Created ${tmp_dir}..."
@@ -52,6 +55,8 @@ else
   echo "Error: ${tmp_dir} not found. Can not continue." >&2
   exit 1
 fi
+
+
 
 listfile=$tmp_dir"/list.tmp"
 resultfile=$tmp_dir"/result.tmp"
@@ -124,7 +129,7 @@ sed -i "s/,//g" $allidsfile
 sed -i '/^$/d' $allidsfile
 
 # ------------------------------------------------------------------------------
-# Select 3 mru from local list
+# Select 3 mru from local repository
 # ------------------------------------------------------------------------------
 
 tail -n 3 $allidsfile | sort > $threeidsfile
@@ -161,7 +166,7 @@ fi
 # Get a single zip file
 # ------------------------------------------------------------------------------
 ok=0
-curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1 2>/dev/null
+curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1 
 echo Downloaded $tmp_dir2/$first_id.zip
 
 if [ $ok = "1" ]; then
@@ -225,7 +230,7 @@ fi
 #check that the first_id related entry now is into mrufiles list
 #got in a previous GET /file/<id>/id is part of mrufiles.json
 
-sleep 1
+#sleep 1
 
 ok=0
 curl $host_and_port/mrufiles | grep $first_id >/dev/null || ok=1
@@ -233,8 +238,6 @@ curl $host_and_port/mrufiles | grep $first_id >/dev/null || ok=1
    printf "GET /files/$first_id ${RED}%first_id should not be in the mrulist now${NC}\n" >&2
    exit 1
 fi
-
-sleep 1
 
 ok=0
 curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1
@@ -263,8 +266,6 @@ curl $host_and_port/mrufiles | grep $second_id && ok=0
    printf "GET /files/$second_id ${RED} should not be in the mrulist now${NC}\n" >&2
    exit 1
 fi
-
-sleep 1
 
 ok=0
 curl $host_and_port/files/$second_id && ok=1

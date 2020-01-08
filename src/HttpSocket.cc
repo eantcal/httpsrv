@@ -14,6 +14,7 @@
 #include "SysUtils.h"
 
 #include <vector>
+#include <thread>
 
 
 /* -------------------------------------------------------------------------- */
@@ -178,6 +179,12 @@ HttpSocket& HttpSocket::operator<<(const HttpResponse& response)
          _connUp = false;
          break;
       }
+      if (sent == 0) {
+         // tx queue congested, wait for a while
+         std::this_thread::sleep_for(std::chrono::seconds(1));
+         continue;
+      }
+
       to_send -= sent;
    }
 

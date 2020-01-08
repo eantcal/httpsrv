@@ -177,7 +177,7 @@ private:
             return ProcessGetRequestResult::sendInternalError;
          }
    
-         tempDir += MRU_FILES_ZIP_NAME;
+         tempDir /= MRU_FILES_ZIP_NAME;
          ZipArchive zipArchive(tempDir.string());
          if (!zipArchive.create()) {
             return ProcessGetRequestResult::sendInternalError;
@@ -220,7 +220,7 @@ private:
             return ProcessGetRequestResult::sendInternalError;
          }
          
-         tempDir += fileName + ".zip";
+         tempDir /= fileName + ".zip";
          fs::path src(getLocalStorePath());
          src /= fileName;
 
@@ -301,9 +301,10 @@ void HttpServerSession::operator()(Handle task_handle)
          jsonResponse.empty() ? "" : ".json",
          fileToSend);
 
-      // Send the response to remote peer
+      // Send the response header and any not empty json content to remote peer
       httpSocket << response;
 
+      // Any binary content is sent after response header
       if (getRequestAction == ProcessGetRequestResult::sendZipFile) {
          if (0 > httpSocket.sendFile(fileToSend)) {
             if (_verboseModeOn)
