@@ -8,8 +8,8 @@
 
 /* -------------------------------------------------------------------------- */
 
-#ifndef __FILE_STORE_H__
-#define __FILE_STORE_H__
+#ifndef __FILE_REPOSITORY_H__
+#define __FILE_REPOSITORY_H__
 
 #include "FileUtils.h"
 #include "FilenameMap.h"
@@ -99,4 +99,4 @@ private:
 
 /* ------------------------------------------------------------------------- */
 
-#endif // !__FILE_STORE_H__
+#endif // !__FILE_REPOSITORY_H__

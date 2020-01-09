@@ -93,10 +93,9 @@ done
 rm -f $resultfile
 
 # ------------------------------------------------------------------------------
-# Uploading all the files via http
+# Uploading all the files via http onto remote repository
 # ------------------------------------------------------------------------------
 
-echo "Upload files into store via the http server"
 listcontent=`find $tmp_dir -type f -name *.txt -exec curl -F file=@{} $host_and_port/store \;`
 
 echo $listcontent | sed -r "s/\}/\\n/g" > $listfile

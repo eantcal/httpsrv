@@ -1,23 +1,22 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
 #include "Application.h"
 
-
 /* -------------------------------------------------------------------------- */
 
-bool Application::showUsage(std::stringstream& os) const {
+bool Application::showUsage(std::stringstream &os) const
+{
    if (_showVer)
       os << HTTP_SERVER_NAME << " " << _maj_ver << "." << _min_ver
-      << "\n";
+         << "\n";
 
    if (!_showHelp)
       return _showVer;
@@ -32,7 +31,7 @@ bool Application::showUsage(std::stringstream& os) const {
       << MRUFILES_DEF_N << ") \n";
    os << "\t\t-w | --storedir <working_dir_path>\n";
    os << "\t\t\tSet a local working directory (default is "
-      << HTTP_SERVER_LOCAL_STORE_PATH << ") \n";
+      << HTTP_SERVER_LOCAL_REPOSITORY_PATH << ") \n";
    os << "\t\t-vv | --verbose\n";
    os << "\t\t\tEnable logging on stderr\n";
    os << "\t\t-v | --version\n";
@@ -43,17 +42,16 @@ bool Application::showUsage(std::stringstream& os) const {
    return true;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
 Application::Application(
-   int argc, 
-   char* argv[], 
-   std::ostream& logger) 
-:
-   _logger(logger)
+    int argc,
+    char *argv[],
+    std::ostream &logger)
+    : 
+    _logger(logger)
 {
-   assert (argc>0);
+   assert(argc > 0);
 
    _progName = argv[0];
    _commandLine = _progName;
@@ -61,58 +59,75 @@ Application::Application(
    if (argc <= 1)
       return;
 
-   enum class State { OPTION, PORT, WEBROOT, MRUFILES_N } state = 
-      State::OPTION;
+   enum class State
+   {
+      OPTION,
+      PORT,
+      WEBROOT,
+      MRUFILES_N
+   } 
+   state = State::OPTION;
 
-   for (int idx = 1; idx < argc; ++idx) {
+   for (int idx = 1; idx < argc; ++idx)
+   {
       std::string sarg = argv[idx];
 
       _commandLine += " ";
       _commandLine += sarg;
 
-      switch (state) {
+      switch (state)
+      {
       case State::OPTION:
-         if (sarg == "--port" || sarg == "-p") {
+         if (sarg == "--port" || sarg == "-p")
+         {
             state = State::PORT;
          }
-         else if (sarg == "--mrufiles" || sarg == "-n") {
+         else if (sarg == "--mrufiles" || sarg == "-n")
+         {
             state = State::MRUFILES_N;
          }
-         else if (sarg == "--storedir" || sarg == "-w") {
+         else if (sarg == "--storedir" || sarg == "-w")
+         {
             state = State::WEBROOT;
          }
-         else if (sarg == "--help" || sarg == "-h") {
+         else if (sarg == "--help" || sarg == "-h")
+         {
             _showHelp = true;
             state = State::OPTION;
          }
-         else if (sarg == "--version" || sarg == "-v") {
+         else if (sarg == "--version" || sarg == "-v")
+         {
             _showVer = true;
             state = State::OPTION;
          }
-         else if (sarg == "--verbose" || sarg == "-vv") {
+         else if (sarg == "--verbose" || sarg == "-vv")
+         {
             _verboseModeOn = true;
             state = State::OPTION;
          }
-         else {
-            _errMessage = "Unknown option '" + sarg
-               + "', try with --help or -h";
+         else
+         {
+            _errMessage = "Unknown option '" + sarg 
+                        + "', try with --help or -h";
             _error = true;
             return;
          }
          break;
 
       case State::WEBROOT:
-         _localStorePath = sarg;
+         _localRepositoryPath = sarg;
          state = State::OPTION;
          break;
 
       case State::PORT:
-         try {
+         try
+         {
             _httpServerPort = std::stoi(sarg);
             if (_httpServerPort < 1)
                throw 0;
          }
-         catch (...) {
+         catch (...)
+         {
             _errMessage = "Invalid port number";
             _error = true;
             return;
@@ -121,12 +136,14 @@ Application::Application(
          break;
 
       case State::MRUFILES_N:
-         try {
+         try
+         {
             _mrufilesN = std::stoi(sarg);
-            if (_mrufilesN < 1 || _mrufilesN>MRUFILES_MAX_N)
+            if (_mrufilesN < 1 || _mrufilesN > MRUFILES_MAX_N)
                throw 0;
          }
-         catch (...) {
+         catch (...)
+         {
             _errMessage = "Invalid mrufiles number";
             _error = true;
             return;
@@ -137,55 +154,58 @@ Application::Application(
    }
 }
 
-
 /* -------------------------------------------------------------------------- */
 
 Application::ErrCode Application::run()
 {
-   if (_error) {
+   if (_error)
       return ErrCode::commandLineError;
-   }
 
    std::stringstream ss;
-   if (showUsage(ss)) {
+   if (showUsage(ss))
+   {
       _errMessage = ss.str();
       return ErrCode::commandLineError;
    }
 
    // Initialize any O/S specific libraries
-   if (!SysUtils::initCommunicationLib()) {
+   if (!SysUtils::initCommunicationLib())
+   {
       _errMessage = "Cannot initialize communication library";
       return ErrCode::commLibError;
    }
 
    // Creates or validates (if already existant) a repository for text file
    _filenameMap = FilenameMap::make();
-   if (!_filenameMap) {
-      _errMessage = "Cannot initialize the filename cache";
-      return ErrCode::idFileNameCacheInitError;
+   if (!_filenameMap)
+   {
+      _errMessage = "Cannot initialize the filename map";
+      return ErrCode::idFileNameMapInitError;
    }
 
-   _FileRepository = FileRepository::make(_localStorePath, _mrufilesN);
-   
+   _FileRepository = FileRepository::make(_localRepositoryPath, _mrufilesN);
+
    if (!_FileRepository ||
-      !_filenameMap->scan(_FileRepository->getPath()))
+       !_filenameMap->scan(_FileRepository->getPath()))
    {
-      _errMessage = "Cannot initialize the local store";
+      _errMessage = "Cannot initialize the local repository";
       return ErrCode::fileRepositoryInitError;
    }
 
-   auto& httpSrv = HttpServer::getInstance();
+   auto &httpSrv = HttpServer::getInstance();
 
    httpSrv.setFilenameMap(_filenameMap);
    httpSrv.setFileRepository(_FileRepository);
 
-   if (!httpSrv.bind(_httpServerPort)) {
+   if (!httpSrv.bind(_httpServerPort))
+   {
       ss << "Error binding server port " << _httpServerPort;
       _errMessage = ss.str();
       return ErrCode::httpSrvBindError;
    }
 
-   if (!httpSrv.listen(HTTP_SERVER_BACKLOG)) {
+   if (!httpSrv.listen(HTTP_SERVER_BACKLOG))
+   {
       ss << "Error trying to listen to server port "
          << _httpServerPort;
 
@@ -196,17 +216,19 @@ Application::ErrCode Application::run()
 
    httpSrv.setupLogger(_verboseModeOn ? &_logger : nullptr);
 
-   if (_verboseModeOn) {
+   if (_verboseModeOn)
+   {
       std::cout << SysUtils::getLocalTime() << std::endl
-         << "Command line :'" << _commandLine << "'"
-         << std::endl
-         << HTTP_SERVER_NAME << " is listening on TCP port "
-         << _httpServerPort << std::endl
-         << "Working directory is '" << _localStorePath << "'" 
-         << std::endl;
+                << "Command line :'" << _commandLine << "'"
+                << std::endl
+                << HTTP_SERVER_NAME << " is listening on TCP port "
+                << _httpServerPort << std::endl
+                << "Working directory is '" << _localRepositoryPath << "'"
+                << std::endl;
    }
 
-   if (!HttpServer::getInstance().run()) {
+   if (!HttpServer::getInstance().run())
+   {
       _errMessage = "Error starting the server";
       return ErrCode::httpSrvStartError;
    }

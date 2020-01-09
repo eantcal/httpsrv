@@ -1,8 +1,8 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
 
@@ -26,10 +26,10 @@
 #include <sys/stat.h>
 #endif
 
-
 /* -------------------------------------------------------------------------- */
 
-bool FileUtils::createTemporaryDir(fs::path& path) {
+bool FileUtils::createTemporaryDir(fs::path &path)
+{
    auto tmp_dir = fs::temp_directory_path();
    std::random_device dev;
    std::mt19937 prng(dev());
@@ -37,29 +37,39 @@ bool FileUtils::createTemporaryDir(fs::path& path) {
    std::stringstream ss;
    ss << std::hex << rand(prng);
    path = tmp_dir / ss.str();
-   return (fs::create_directory(path));
-}
 
+   bool ret = false;
+
+   try {
+      ret = fs::create_directory(path);
+   }
+   catch (...)
+   {
+   }
+
+   return ret;
+}
 
 /* -------------------------------------------------------------------------- */
 
 bool FileUtils::fileStat(
-   const std::string& fileName,
-   std::string& dateTime,
-   std::string& ext,
-   size_t& fsize)
+    const std::string &fileName,
+    std::string &dateTime,
+    std::string &ext,
+    size_t &fsize)
 {
-   struct stat rstat = { 0 };
+   struct stat rstat = {0};
    int ret = stat(fileName.c_str(), &rstat);
 
-   if (ret >= 0) {
+   if (ret >= 0)
+   {
       dateTime = ctime(&rstat.st_atime);
       fsize = rstat.st_size;
 
       std::string::size_type pos = fileName.rfind('.');
       ext = pos != std::string::npos
-         ? fileName.substr(pos, fileName.size() - pos)
-         : ".";
+                ? fileName.substr(pos, fileName.size() - pos)
+                : ".";
 
       StrUtils::removeLastCharIf(dateTime, '\n');
 
@@ -69,30 +79,30 @@ bool FileUtils::fileStat(
    return false;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-std::string FileUtils::hashCode(const std::string& src)
+std::string FileUtils::hashCode(const std::string &src)
 {
    std::string id;
    picosha2::hash256_hex_string(src, id);
    return id;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-bool FileUtils::touch(const std::string& fileName, bool createNewIfNotExists)
+bool FileUtils::touch(const std::string &fileName, bool createNewIfNotExists)
 {
    std::fstream ofs;
    ofs.open(fileName, std::ofstream::out | std::ofstream::in);
 
-   if (ofs) {
+   if (ofs)
+   {
       ofs.seekg(0, ofs.end);
       auto length = ofs.tellg();
       ofs.seekg(0, ofs.beg);
 
-      if (length > 0) {
+      if (length > 0)
+      {
          char c = 0;
          ofs.read(&c, 1);
          ofs.seekg(0, ofs.beg);
@@ -100,11 +110,13 @@ bool FileUtils::touch(const std::string& fileName, bool createNewIfNotExists)
       }
       ofs.close();
 
-      if (length < 1) {
+      if (length < 1)
+      {
          ofs.open(fileName, std::ofstream::out);
       }
    }
-   else {
+   else
+   {
       if (createNewIfNotExists)
          ofs.open(fileName, std::ofstream::out);
    }
@@ -112,18 +124,20 @@ bool FileUtils::touch(const std::string& fileName, bool createNewIfNotExists)
    return !ofs.fail();
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-std::string FileUtils::getHomeDir() {
-   const char* homedir = nullptr;
+std::string FileUtils::getHomeDir()
+{
+   const char *homedir = nullptr;
 #ifdef WIN32
-   if ((homedir = getenv("USERPROFILE")) == nullptr) {
+   if ((homedir = getenv("USERPROFILE")) == nullptr)
+   {
       homedir = ".";
    }
    return homedir;
 #else
-   if ((homedir = getenv("HOME")) == nullptr) {
+   if ((homedir = getenv("HOME")) == nullptr)
+   {
       homedir = getpwuid(getuid())->pw_dir;
    }
 
@@ -131,21 +145,22 @@ std::string FileUtils::getHomeDir() {
 #endif
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-bool FileUtils::getFullPath(const std::string& partialPath, std::string& fullPath)
+bool FileUtils::getFullPath(const std::string &partialPath, std::string &fullPath)
 {
 #ifdef WIN32
    char full[_MAX_PATH];
 
-   if (_fullpath(full, partialPath.c_str(), _MAX_PATH) != 0) {
+   if (_fullpath(full, partialPath.c_str(), _MAX_PATH) != 0)
+   {
       fullPath = full;
       return true;
    }
 #else
    auto actualpath = realpath(partialPath.c_str(), 0);
-   if (actualpath) {
+   if (actualpath)
+   {
       fullPath = actualpath;
       free(actualpath);
       return true;
@@ -155,30 +170,30 @@ bool FileUtils::getFullPath(const std::string& partialPath, std::string& fullPat
    return false;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-bool FileUtils::directoryExists(const std::string& pathName)
+bool FileUtils::directoryExists(const std::string &pathName)
 {
    fs::path dirPath(pathName);
    return fs::exists(dirPath) && fs::is_directory(dirPath);
 }
 
-
 /* -------------------------------------------------------------------------- */
 
 bool FileUtils::touchDir(
-   const std::string& relativeDirName,
-   std::string& fullPath)
+    const std::string &relativeDirName,
+    std::string &fullPath)
 {
-   // Create a new support directory if it does not exist
-#ifdef WIN32
-   _mkdir(relativeDirName.c_str());
-#else
-   mkdir(relativeDirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-#endif
+   try
+   {
+      // Create a new support directory if it does not exist
+      boost::filesystem::path dir(relativeDirName);
+      boost::filesystem::create_directories(dir);
+   }
+   catch (...)
+   {
+   }
 
-   return
-      FileUtils::directoryExists(relativeDirName) &&
-      FileUtils::getFullPath(relativeDirName, fullPath);
+   return FileUtils::directoryExists(relativeDirName) &&
+          FileUtils::getFullPath(relativeDirName, fullPath);
 }

@@ -15,10 +15,11 @@
 
 bool FileRepository::init()
 {
-   std::string storePath;
+   std::string repositoryPath;
 
    // Resolve any homedir prefix
    std::string resPath;
+
    if (!_path.empty())
    {
       size_t prefixSize = _path.size() > 1 ? 2 : 1;
@@ -28,15 +29,24 @@ bool FileRepository::init()
          resPath += "/";
          resPath += _path.substr(prefixSize, _path.size() - prefixSize);
       }
+      else
+      {
+         resPath = _path;
+      }
    }
 
-   if (!FileUtils::touchDir(resPath, storePath))
+   if (!FileUtils::touchDir(resPath, repositoryPath))
+      return false;
+
+   try
    {
-      storePath.clear();
+      fs::path cPath(repositoryPath);
+      _path = fs::canonical(cPath).string();
+   }
+   catch (...)
+   {
       return false;
    }
-
-   _path = storePath;
 
    return true;
 }
@@ -54,9 +64,7 @@ bool FileRepository::createTimeOrderedFilesList(TimeOrderedFileList &list)
       for (fs::directory_iterator it(dirPath); it != endIt; ++it)
       {
          if (fs::is_regular_file(it->status()))
-         {
             list.insert({fs::last_write_time(it->path()), *it});
-         }
       }
       return true;
    }

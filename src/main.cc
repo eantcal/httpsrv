@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
    case Application::ErrCode::commandLineError:
    case Application::ErrCode::fileRepositoryInitError:
-   case Application::ErrCode::idFileNameCacheInitError:
+   case Application::ErrCode::idFileNameMapInitError:
    case Application::ErrCode::httpSrvBindError:
    case Application::ErrCode::httpSrvListenError:
    case Application::ErrCode::httpSrvStartError:

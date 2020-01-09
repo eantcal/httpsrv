@@ -40,7 +40,7 @@ public:
       commandLineError,
       showVersionUsage,
       fileRepositoryInitError,
-      idFileNameCacheInitError,
+      idFileNameMapInitError,
       commLibError,
       httpSrvBindError,
       httpSrvListenError,
@@ -71,7 +71,7 @@ private:
 
    std::string _progName;
    std::string _commandLine;
-   std::string _localStorePath = HTTP_SERVER_LOCAL_STORE_PATH;
+   std::string _localRepositoryPath = HTTP_SERVER_LOCAL_REPOSITORY_PATH;
 
    TcpSocket::TranspPort _httpServerPort = HTTP_SERVER_PORT;
 

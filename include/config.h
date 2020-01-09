@@ -17,9 +17,9 @@
 #define __HTTP_CONFIG_H__
 
 #ifdef WIN32
-#define HTTP_SERVER_LOCAL_STORE_PATH "~/httpsrv"
+#define HTTP_SERVER_LOCAL_REPOSITORY_PATH "~/httpsrv"
 #else
-#define HTTP_SERVER_LOCAL_STORE_PATH "~/.httpsrv"
+#define HTTP_SERVER_LOCAL_REPOSITORY_PATH "~/.httpsrv"
 #endif
 #define HTTP_SERVER_PORT 8080
 #define HTTP_SERVER_NAME "httpsrv"
