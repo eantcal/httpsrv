@@ -9,36 +9,27 @@ host_and_port="localhost:8080"
 working_dir="$HOME/.httpsrv"
 
 # ------------------------------------------------------------------------------
-# Init
+# Checks needed tools are there 
 # ------------------------------------------------------------------------------
 
+checkCommand() {
+    commandName=$1
+    if ! [ -x "$(command -v $commandName)" ]; then
+      echo 'Error: $commandName is not installed.' >&2
+      exit 1
+    fi
+}
 
-if ! [ -x "$(command -v curl)" ]; then
-  echo 'Error: curl is not installed.' >&2
-  exit 1
-fi
-
-if ! [ -x "$(command -v sed)" ]; then
-  echo 'Error: sed is not installed.' >&2
-  exit 1
-fi
-
-
-if ! [ -x "$(command -v awk)" ]; then
-  echo 'Error: awk is not installed.' >&2
-  exit 1
-fi
-
-if ! [ -x "$(command -v unzip)" ]; then
-  echo 'Error: unzip is not installed.' >&2
-  exit 1
-fi
+checkCommand "curl"
+checkCommand "sed"
+checkCommand "awk"
+checkCommand "unzip"
+checkCommand "sha256sum"
 
 jsonvalidator="jsonlint-php"
-if ! [ -x "$(command -v ${jsonvalidator})" ]; then
-  echo 'Error: ' ${jsonvalidator} ' is not installed.' >&2
-  exit 1
-fi
+checkCommand $jsonvalidator
+
+
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
