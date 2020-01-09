@@ -20,12 +20,23 @@
 
 /* -------------------------------------------------------------------------- */
 
-void HttpResponse::formatError(int code, const std::string& msg)
+void HttpResponse::formatError(int code)
 {
+   auto it = _errTbl.find(code);
+
+   std::string msg;
+   
+   if (it != _errTbl.end()) {
+      msg = it->second;
+   }
+   else {
+      code = 500;
+      msg = "Internal Server Error";
+   }
    std::string scode = std::to_string(code);
 
    std::string error_html = "<html><head><title>" + scode + " " + msg
-      + "</title></head>" + "<body>Sorry, I can't do that</body></html>\r\n";
+      + "</title></head>" + "<body>" + msg + "</body></html>\r\n";
 
    _response = HTTP_SERVER_VER " " + scode + " " + msg + "\r\n";
    _response += "Date: " + SysUtils::getLocalTime() + "\r\n";
@@ -59,7 +70,7 @@ void HttpResponse::formatPositiveResponse(
    _response
       += it != _mimeTbl.end() ? it->second : "application/octet-stream";
 
-   // Close the rensponse header by using the sequence CRFL twice
+   // Close the rensponse header by using the sequence CRLF twice
    _response += "\r\n\r\n";
 
    _errorResponse = false;
@@ -84,7 +95,7 @@ HttpResponse::HttpResponse(
    const std::string& fileToSend)
 {
    if (request.getMethod() == HttpRequest::Method::UNKNOWN) {
-      formatError(403, "Forbidden");
+      formatError(501); // Not implemented
       return;
    }
 
@@ -94,10 +105,10 @@ HttpResponse::HttpResponse(
       }
       else {
          if (request.getUri() != HTTP_SERVER_POST_STORE) {
-            formatError(400, "Bad Request Error");
+            formatError(400); // Bad Request Error 
          }
          else if (body.empty()) {
-            formatError(500, "Internal Server Error");
+            formatError(500); // "Internal Server Error"
          }
          else {
             formatPositiveResponse(
@@ -109,30 +120,25 @@ HttpResponse::HttpResponse(
          }
       }
    }
-   else { // GET/HEAD
-      if (request.isValidGetRequest()) {
-         if (body.empty()) {
-            std::string fileTime, fileExt;
-            size_t contentLen = 0;
+   else { // GET  
+      if (body.empty()) {
+         std::string fileTime, fileExt;
+         size_t contentLen = 0;
 
-            if (FileUtils::fileStat(fileToSend, fileTime, fileExt, contentLen)) {
-               formatPositiveResponse(fileTime, fileExt, contentLen);
-            }
-            else {
-              formatError(404, "Not Found");
-            }
+         if (FileUtils::fileStat(fileToSend, fileTime, fileExt, contentLen)) {
+            formatPositiveResponse(fileTime, fileExt, contentLen);
          }
          else {
-            formatPositiveResponse(
-               SysUtils::getLocalTime(),
-               std::string(bodyFormat),
-               body.size());
-
-            _response += body;
+           formatError(404); //"Not Found"
          }
       }
       else {
-         formatError(400, "Bad Request Error");
+         formatPositiveResponse(
+            SysUtils::getLocalTime(),
+            std::string(bodyFormat),
+            body.size());
+
+         _response += body;
       }
    }
 }
@@ -149,6 +155,17 @@ std::ostream& HttpResponse::dump(std::ostream& os, const std::string& id)
 
    return os;
 }
+
+/* -------------------------------------------------------------------------- */
+
+std::unordered_map<int, std::string> HttpResponse::_errTbl = {
+   { 400, "Bad Request" },
+   { 403, "Forbidden" },
+   { 404, "Not Found" },
+   { 406, "Not Acceptable" },
+   { 500, "Internal Server Error" },
+   { 501, "Not Implemented" },
+};
 
 
 /* -------------------------------------------------------------------------- */

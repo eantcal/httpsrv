@@ -82,7 +82,7 @@ rm -f $resultfile
 # ------------------------------------------------------------------------------
 
 echo "Upload files into store via the http server"
-listcontent=`find $tmp_dir -type f -name *.txt -exec curl -F name=@{} $host_and_port/store \;`
+listcontent=`find $tmp_dir -type f -name *.txt -exec curl -F file=@{} $host_and_port/store \;`
 
 echo $listcontent | sed -r "s/\}/\\n/g" > $listfile
 
@@ -315,7 +315,7 @@ if [ $ok = "0" ]; then
   exit 1
 fi
 
-echo "TS OK  GET /files/$id/zip" >> $resultfile
+echo "TS-OK  GET /files/$id/zip" >> $resultfile
 
 #GET /file/<id>
 #check that the first_id related entry now is into mrufiles list
@@ -350,7 +350,70 @@ if [ $ok = "0" ]; then
 fi
 
 
-echo "TS OK  GET /files/$second_id" >> $resultfile
+echo "TS-OK  GET /files/$second_id" >> $resultfile
+
+# ------------------------------------------------------------------------------
+# Big File Test
+# ------------------------------------------------------------------------------
+
+bigFileSrc="/usr/share/dict/words"
+bigFileName="bigFile.txt"
+
+cp -f $bigFileSrc $tmp_dir/$bigFileName
+
+bigfileid=`echo -n ${bigFileName} | sha256sum  | awk '{print $1}'`
+
+ok=0
+cd $tmp_dir && curl -F file=@${bigFileName} $host_and_port/store > $bigFileName.json && cd - && ok=1
+if [ $ok = "0" ]; then
+  set +x
+  printf "POST $bigFileName/store ${RED}Cannot transfer ${tmp_dir}/${bigFileName} ${NC}\n" >&2
+  exit 1
+fi
+
+ok=0
+grep $bigfileid $tmp_dir/$bigFileName.json && ok=1
+if [ $ok = "0" ]; then
+  set +x
+  printf "POST $bigFileName/store ${RED}Invalid response for ${tmp_dir}/${bigFileName} ${NC}\n" >&2
+  exit 1
+fi
+
+echo "BF-OK POST store/$bigFileName" >> $resultfile
+
+# ------------------------------------------------------------------------------
+# Evil Requests
+# ------------------------------------------------------------------------------
+
+sendWrongRequest() {
+  uriToSend=$1
+  errorExpected=$2
+
+  ok=0
+  curl $host_and_port/$uriToSend > $tmp_dir/err.html && ok=1
+
+  if [ $ok = "0" ]; then
+    set +x
+    printf "GET $uriToSend ${RED}Error in Server Response${NC}\n" >&2
+    exit 1
+  fi
+
+  ok=0
+  grep "$errorExpected" $tmp_dir/err.html && ok=1
+
+  if [ $ok = "0" ]; then
+    set +x
+    printf "GET $uriToSend ${RED}Wrong error message detected${NC}\n" >&2
+    exit 1
+  fi
+
+  echo "INVRQ GET $uriToSend (server answered with error which is OK)" >> $resultfile
+}
+
+sendWrongRequest mrufiles/ThisIsInvalid     "400 Bad Request"
+sendWrongRequest files/InvalidID            "404 Not Found"
+sendWrongRequest files/invalidID/zip        "404 Not Found" 
+sendWrongRequest mrufiles/zip/thisIsInvalid "400 Bad Request"
 
 set +x
 

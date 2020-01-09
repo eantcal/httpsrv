@@ -52,7 +52,7 @@ public:
    }
 
    HttpServerSession() = delete;
-   void operator()(Handle task_handle);
+   void operator()(Handle taskHandle);
 
 private:
    bool _verboseModeOn = true;
@@ -250,9 +250,9 @@ private:
 // Handles the HTTP server request
 // This method executes in a specific thread context for
 // each accepted HTTP request
-void HttpServerSession::operator()(Handle task_handle)
+void HttpServerSession::operator()(Handle taskHandle)
 {
-   (void)task_handle;   
+   (void)taskHandle;   
 
    auto sessionId = logBegin();
 
@@ -278,7 +278,9 @@ void HttpServerSession::operator()(Handle task_handle)
       std::string fileToSend;
       ProcessGetRequestResult getRequestAction = ProcessGetRequestResult::none;
 
-      if (httpRequest->isValidPostRequest()) {
+      HttpResponse::Handle response;
+
+      if (httpRequest->isExpectedContinueResponse() || httpRequest->isValidPostRequest()) {
          auto fileName = httpRequest->getFileName();
 
          if (_verboseModeOn)
@@ -290,19 +292,27 @@ void HttpServerSession::operator()(Handle task_handle)
             }
          }
       }
-      else if (httpRequest->getMethod() == HttpRequest::Method::GET) {
+      else if (httpRequest->isValidGetRequest()) {
          getRequestAction = processGetRequest(*httpRequest, jsonResponse, fileToSend);
       }
+      else {
+         response = std::move(std::make_unique<HttpResponse>(400)); // Bad Request
+      }
+         
+      if (! response) {
+         // Format a response to previous HTTP request, unless a bad
+         // request was detected
+         response= std::move(std::make_unique<HttpResponse>(
+            *httpRequest,
+            jsonResponse,
+            jsonResponse.empty() ? "" : ".json",
+            fileToSend));
+      }
 
-      // Format a response to previous HTTP request
-      HttpResponse response(
-         *httpRequest,
-         jsonResponse,
-         jsonResponse.empty() ? "" : ".json",
-         fileToSend);
+      assert(response);
 
       // Send the response header and any not empty json content to remote peer
-      httpSocket << response;
+      httpSocket << *response;
 
       // Any binary content is sent after response header
       if (getRequestAction == ProcessGetRequestResult::sendZipFile) {
@@ -314,9 +324,9 @@ void HttpServerSession::operator()(Handle task_handle)
       }
 
       if (_verboseModeOn)
-         response.dump(log(), sessionId);
+         response->dump(log(), sessionId);
 
-      if (response.isErrorResponse())
+      if (response->isErrorResponse())
          break;
 
       if (!httpRequest->isExpectedContinueResponse()) {

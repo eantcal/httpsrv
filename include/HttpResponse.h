@@ -18,7 +18,8 @@
 
 #include <unordered_map>
 #include <string>
-
+#include <cassert>
+#include <memory>
 
 /* -------------------------------------------------------------------------- */
 
@@ -45,7 +46,13 @@ public:
       const std::string& bodyFormat,
       const std::string& fileToSend);
 
-
+   /**
+    * Constructs an error response to a request.
+    */
+   HttpResponse(int errorCode) {
+      formatError(errorCode);
+   }
+      
    /**
     * Returns the content of response status line and response headers.
     */
@@ -74,12 +81,13 @@ public:
 
 private:
    static std::unordered_map<std::string, std::string> _mimeTbl;
+   static std::unordered_map<int, std::string> _errTbl;
 
    std::string _response;
    bool _errorResponse = false;
 
    // Format an error response
-   void formatError(int code, const std::string& msg);
+   void formatError(int code);
 
    // Format an positive response
    void formatPositiveResponse(
