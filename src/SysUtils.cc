@@ -53,7 +53,7 @@ void SysUtils::getLocalTime(std::string &localTime)
 
 bool SysUtils::initCommunicationLib()
 {
-   // Socket library initialization
+   // Windows Socket library initialization
    WORD wVersionRequested = WINSOCK_VERSION;
    WSADATA wsaData = {0};
 
@@ -80,6 +80,8 @@ int SysUtils::closeSocketFd(int sd)
 
 bool SysUtils::initCommunicationLib()
 {
+   // Prevents a SIGPIPE if it tried to write to a socket that had been 
+   // shutdown for writing or isn't connected 
    signal(SIGPIPE, SIG_IGN);
    return true;
 }

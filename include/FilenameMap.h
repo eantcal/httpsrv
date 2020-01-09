@@ -73,12 +73,12 @@ public:
 
    /**
     * Replaces the entire map content (thread-safe) with
-    * with newCache contant (which will be invalidated)
+    * with a given map contant (which will be invalidated)
     */
-   void locked_replace(FilenameMap &&newCache)
+   void locked_replace(FilenameMap &&newMap)
    {
       std::unique_lock lock(_mtx);
-      _data = std::move(newCache._data);
+      _data = std::move(newMap._data);
    }
 
    /**
