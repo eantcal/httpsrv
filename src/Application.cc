@@ -197,12 +197,13 @@ Application::ErrCode Application::run()
    httpSrv.setupLogger(_verboseModeOn ? &_logger : nullptr);
 
    if (_verboseModeOn) {
-      std::clog << SysUtils::getLocalTime() << std::endl
+      std::cout << SysUtils::getLocalTime() << std::endl
          << "Command line :'" << _commandLine << "'"
          << std::endl
          << HTTP_SERVER_NAME << " is listening on TCP port "
          << _httpServerPort << std::endl
-         << "Working directory is '" << _localStorePath << "'\n";
+         << "Working directory is '" << _localStorePath << "'" 
+         << std::endl;
    }
 
    if (!HttpServer::getInstance().run()) {

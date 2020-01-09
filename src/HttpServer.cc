@@ -135,13 +135,14 @@ private:
             "[" + SysUtils::getLocalTime() + "] ";
 
          log() << sessionId << "---- HTTP SERVER SESSION STARTS" << std::endl;
+         log().flush();
       }
       return sessionId;
    }
 
    void logEnd(const std::string& sessionId) {
       if (_verboseModeOn) {
-         log() << sessionId << "---- HTTP SERVER SESSION ENDS" << std::endl;
+         log() << sessionId << "---- HTTP SERVER SESSION ENDS" << std::endl << std::endl;
          log().flush();
       }
    }
@@ -283,12 +284,15 @@ void HttpServerSession::operator()(Handle taskHandle)
       if (httpRequest->isExpectedContinueResponse() || httpRequest->isValidPostRequest()) {
          auto fileName = httpRequest->getFileName();
 
-         if (_verboseModeOn)
+         if (_verboseModeOn) {
             log() << sessionId << "Writing '" << fileName << "'" << std::endl;
+            log().flush();
+         }
 
          if (!writePostedFile(fileName, httpRequest->getBody(), jsonResponse)) {
             if (_verboseModeOn) {
                log() << sessionId << "Error writing '" << fileName << "'" << std::endl;
+               log().flush();
             }
          }
       }
@@ -317,8 +321,11 @@ void HttpServerSession::operator()(Handle taskHandle)
       // Any binary content is sent after response header
       if (getRequestAction == ProcessGetRequestResult::sendZipFile) {
          if (0 > httpSocket.sendFile(fileToSend)) {
-            if (_verboseModeOn)
-               log() << sessionId << "Error sending '" << fileToSend << "'\n\n";
+            if (_verboseModeOn) {
+               log() << sessionId << "Error sending '" << fileToSend 
+                     << "'" << std::endl << std::endl;
+               log().flush();
+            }
             break;
          }
       }

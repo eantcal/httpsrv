@@ -19,7 +19,7 @@
  */
 int main(int argc, char* argv[])
 {
-   Application application(argc, argv, std::clog);
+   Application application(argc, argv, std::cout);
    auto errCode = application.run();
 
    switch (errCode) {

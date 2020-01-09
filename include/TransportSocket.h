@@ -62,6 +62,7 @@ public:
       return _socket > 0;
    }
 
+
    /**
     * Determines the readability status of this socket
     *

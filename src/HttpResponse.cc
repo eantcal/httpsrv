@@ -152,6 +152,7 @@ std::ostream& HttpResponse::dump(std::ostream& os, const std::string& id)
    ss = "<<< RESPONSE " + id + "\n";
    ss += _response;
    os << ss << "\n";
+   os.flush();
 
    return os;
 }
