@@ -65,7 +65,7 @@ public:
     * @return the handle to a new listenr object instance
     */
    static Handle create() {
-      return Handle(new TcpListener());
+      return Handle(new (std::nothrow) TcpListener());
    }
 
 

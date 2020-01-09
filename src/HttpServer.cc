@@ -314,6 +314,8 @@ void HttpServerSession::operator()(Handle taskHandle)
       }
 
       assert(response);
+      if (!response)
+         break;
 
       // Send the response header and any not empty json content to remote peer
       httpSocket << *response;
@@ -339,6 +341,8 @@ void HttpServerSession::operator()(Handle taskHandle)
       if (!httpRequest->isExpectedContinueResponse()) {
          httpRequest.reset(new (std::nothrow) HttpRequest);
          assert(httpRequest);
+         if (!httpRequest)
+            break;
       }
       else {
          httpRequest->clearExpectedContinueFlag();
@@ -361,6 +365,7 @@ auto HttpServer::getInstance() -> HttpServer&
 {
    if (!_instance) {
       _instance = new (std::nothrow) HttpServer();
+      assert(_instance);
       if (!_instance) {
          // no memory, fatal error
          exit(1);
@@ -376,10 +381,10 @@ auto HttpServer::getInstance() -> HttpServer&
 bool HttpServer::bind(TranspPort port)
 {
    _tcpServer = TcpListener::create();
+   assert(_tcpServer);
 
-   if (!_tcpServer) {
+   if (!_tcpServer)
       return false;
-   }
 
    return _tcpServer->bind(port);
 }

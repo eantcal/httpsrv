@@ -72,7 +72,7 @@ public:
 
 
    /**
-    * Returns ture if the response is 4xx/5xx HTTP response,
+    * Returns ture if HTTP error code is 4xx/5xx,
     * false otherwise
     */
    bool isErrorResponse() const throw() {
