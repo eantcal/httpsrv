@@ -50,7 +50,7 @@ std::ostream &HttpRequest::dump(std::ostream &os, const std::string &id)
    for (auto e : getHeaderList())
       ss += e;
 
-   os << ss << "\n";
+   os << ss << std::endl;
 
    return os;
 }
@@ -73,6 +73,7 @@ void HttpRequest::parseHeader(const std::string &header)
       {
          if (prefix == 'C')
          {
+            // Parse the Content-Length header
             if (headerName == "CONTENT-LENGTH:")
             {
                try
@@ -84,6 +85,11 @@ void HttpRequest::parseHeader(const std::string &header)
                   _contentLength = 0;
                }
             }
+            // Parse the content type searching for the boundary marker
+            // which looks like as in the following example:
+            //
+            // Content-Type: multipart/form-data; boundary=-----490a4289f7afa3e5
+            //
             else if (headerName == "CONTENT-TYPE:")
             {
                _contentType = tokens[1];
@@ -106,6 +112,12 @@ void HttpRequest::parseHeader(const std::string &header)
                   }
                }
             }
+            //  Parse multipart content an search for content disposition:
+            //  From such header get the filename field used to store file content
+            //  Such header looks like in the following example:
+            //
+            //  Content-Disposition: form-data; name="file"; filename="File02.txt"
+            //
             else if (headerName == "CONTENT-DISPOSITION:")
             {
                std::vector<std::string> htoken;
@@ -134,6 +146,9 @@ void HttpRequest::parseHeader(const std::string &header)
                }
             }
          }
+         // Parse the Expect header, to identify the request to 
+         // send 100-Continue to the client in order to get the
+         // rest of multi-part header/body
          else
          {
             if (headerName == "EXPECT:" && tokens[1][0] == '1')

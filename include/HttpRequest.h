@@ -158,7 +158,7 @@ public:
    }
 
    /**
-    * Gets the content-disposition fileName attribute content
+    * Gets the content-disposition 'filename' attribute content
     * @return string containing any file name posted
     */
    const std::string &getFileName() const noexcept
