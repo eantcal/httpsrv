@@ -9,7 +9,7 @@ host_and_port="localhost:8080"
 working_dir="$HOME/.httpsrv"
 
 # ------------------------------------------------------------------------------
-# Checks needed tools are there 
+# Utils
 # ------------------------------------------------------------------------------
 
 checkCommand() {
@@ -20,6 +20,32 @@ checkCommand() {
     fi
 }
 
+
+cleanUpFile () {
+  fileToClean=$1
+
+  sed -i "s/\"//g" $fileToClean
+  sed -i "s/,//g" $fileToClean
+  sed -i '/^$/d' $fileToClean
+}
+
+fail() {
+  failMsg=$1
+   
+  set +x
+  printf "$failMsg" >&2
+  exit 1
+}
+
+success() {
+  echo "$1" >> $resultfile
+}
+
+
+# ------------------------------------------------------------------------------
+# Checks needed tools are there 
+# ------------------------------------------------------------------------------
+
 checkCommand "curl"
 checkCommand "sed"
 checkCommand "awk"
@@ -29,13 +55,11 @@ checkCommand "sha256sum"
 jsonvalidator="jsonlint-php"
 checkCommand $jsonvalidator
 
-
-
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-set -x
+#set -x
 
 tmp_dir=$(mktemp -d -t resources-XXXXXXXXXX)
 tmp_dir2=$(mktemp -d -t resources-XXXXXXXXXX)
@@ -80,16 +104,12 @@ echo $listcontent | sed -r "s/\}/\\n/g" > $listfile
 chk=`cat $listfile | grep id | grep name | grep timestamp | wc -l`
 
 if [ $chk = "10" ]; then
-  echo "OK    POST /store" >> $resultfile
+  success "OK    POST /store"
 else
-  set +x
-  printf "POST /store ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
+  fail "POST /store ${RED}TEST FAILED${NC}\n" 
 fi
 
-sed -i "s/\"//g" $listfile
-sed -i "s/,//g" $listfile
-sed -i '/^$/d' $listfile
+cleanUpFile $listfile
 
 # ------------------------------------------------------------------------------
 # Get the list of ids in the local temporary dir
@@ -107,17 +127,13 @@ while read p; do
   [[ -z "$first_id" ]] && first_id=`echo $p | awk '{print $3}'`
 
   if [ $ok = "1" ]; then
-    echo "OK    GET /files/$id" >> $resultfile
+    success "OK    GET /files/$id"
   else
-    set +x
-    printf "GET /files/<${id}> ${RED}TEST FAILED${NC}\n" >&2
-    exit 1
+    fail "GET /files/<${id}> ${RED}TEST FAILED${NC}\n"
   fi
 done < $listfile 
 
-sed -i "s/\"//g" $allidsfile
-sed -i "s/,//g" $allidsfile
-sed -i '/^$/d' $allidsfile
+cleanUpFile $allidsfile
 
 # ------------------------------------------------------------------------------
 # Select 3 mru from local repository
@@ -134,11 +150,9 @@ rm -f $mruidsfile
 # ------------------------------------------------------------------------------
 
 curl $host_and_port/mrufiles | grep id >> $mruidsfile
-sed -i "s/\"//g" $mruidsfile
-sed -i "s/,//g" $mruidsfile
-sed -i '/^$/d' $mruidsfile
- 
-cp $mruidsfile $sortedmruidsfile
+cleanUpFile $mruidsfile
+
+cp -f $mruidsfile $sortedmruidsfile
 cat $sortedmruidsfile | awk '{print $2}' > $mruidsfile
 cat $mruidsfile | sort > $sortedmruidsfile
 
@@ -146,11 +160,9 @@ ok=0
 diff $threeidsfile $sortedmruidsfile && ok=1
 
 if [ $ok = "1" ]; then
-  echo "OK    GET /mrufiles" >> $resultfile
+  success "OK    GET /mrufiles" 
 else
-  set +x
-  printf "GET /mrufiles ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /mrufiles ${RED}TEST FAILED${NC}\n"
 fi
 
 
@@ -159,14 +171,11 @@ fi
 # ------------------------------------------------------------------------------
 ok=0
 curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1 
-echo Downloaded $tmp_dir2/$first_id.zip
 
 if [ $ok = "1" ]; then
-  echo "OK    GET /files/$first_id/zip" >> $resultfile
+  success "OK    GET /files/$first_id/zip" 
 else
-  set +x
-  printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
 fi
 
 filename=`zipinfo $tmp_dir2/$first_id.zip | grep File | awk '{ print $9 }'`
@@ -174,16 +183,12 @@ ok=0
 cd $tmp_dir2 && unzip $tmp_dir2/$first_id.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
-  exit 1
+  fail "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
 fi
 
 diff $tmp_dir2/$filename $tmp_dir/$filename || ok=0
 if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
 fi
 
 
@@ -195,18 +200,14 @@ rm -f $tmp_dir2/*
 curl --output $tmp_dir2/mrufiles.zip $host_and_port/mrufiles/zip && ok=1 
 
 if [ $ok = "0" ]; then
-  set +x
-  printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n"
 fi
 
 ok=0
 cd $tmp_dir2 && unzip ./mrufiles.zip && rm mrufiles.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
-  set +x
-  printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n"
 fi
 
 ok=0
@@ -216,51 +217,35 @@ filescount=`ls *.txt | wc -w`
 cd -
 
 if [ $ok = "1" ] && [ $filescount = "3" ]; then
-  echo "OK    GET /mrufiles/zip" >> $resultfile
+  success "OK    GET /mrufiles/zip"
 else
-  set +x
-  printf "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n"
 fi
 
 # ------------------------------------------------------------------------------
 # JSON validations 
 # ------------------------------------------------------------------------------
 
-#GET /files
-ok=0
-curl $host_and_port/files > ${tmp_dir}/files.json && ok=1
-if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
-fi
+function getRequest() {
+  getRequestType=$1
 
-ok=0
-eval "$jsonvalidator $tmp_dir/files.json && ok=1" >> $resultfile
-if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files ${RED}JSON VALIDATION FAILED${NC}\n" >&2
-  exit 1
-fi
+  ok=0
+  curl $host_and_port/$getRequestType > $tmp_dir/$getRequestType.json && ok=1
+  if [ $ok = "0" ]; then
+    fail "GET /$getRequestType ${RED}TEST FAILED${NC}\n"
+  fi
 
+  ok=0
+  eval "$jsonvalidator $tmp_dir/$getRequestType.json && ok=1" 2>/dev/null 
+  if [ $ok = "0" ]; then
+    fail "GET /$getRequestType ${RED}JSON VALIDATION FAILED${NC}\n"
+  fi
 
-#GET /mrufiles
-ok=0
-curl $host_and_port/mrufiles > ${tmp_dir}/mrufiles.json && ok=1
-if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files ${RED}TEST FAILED${NC}\n" >&2
-  exit 1
-fi
+  success "OK    GET /$getRequestType JSON Validation"
+}
 
-ok=0
-eval "$jsonvalidator $tmp_dir/mrufiles.json && ok=1" >> $resultfile
-if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files ${RED}JSON VALIDATION FAILED${NC}\n" >&2
-  exit 1
-fi
+getRequest files
+getRequest mrufiles
 
 # ------------------------------------------------------------------------------
 # TIMESTAMP validations
@@ -278,13 +263,10 @@ sync
 
 id=`echo -n File04.txt | sha256sum  | awk '{print $1}'`
 
-curl 127.0.0.1:8080/mrufiles -v
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null || ok=1
- if [ $ok = "0" ]; then
-   set +x
-   printf "GET /files/$first_id ${RED}%first_id should not be in the mrulist now${NC}\n" >&2
-   exit 1
+if [ $ok = "0" ]; then
+   fail "GET /files/$first_id ${RED}%first_id should not be in the mrulist now${NC}\n"
 fi
 
 # make sure timestamp distance at least is 1 sec
@@ -293,20 +275,16 @@ sleep 1.5
 ok=0
 curl --output $tmp_dir2/$id.zip $host_and_port/files/$id/zip && ok=1
 if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files/$id ${RED}VALIDATION FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /files/$id ${RED}VALIDATION FAILED${NC}\n" 
 fi
 
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files/$id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /files/$id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n"
 fi
 
-echo "TS-OK  GET /files/$id/zip" >> $resultfile
+success "TS-OK  GET /files/$id/zip"
 
 #GET /file/<id>
 #check that the first_id related entry now is into mrufiles list
@@ -316,9 +294,7 @@ id=`echo -n File05.txt | sha256sum  | awk '{print $1}'`
 ok=1
 curl $host_and_port/mrufiles | grep $id && ok=0
  if [ $ok = "0" ]; then
-   set +x
-   printf "GET /files/$id ${RED} should not be in the mrulist now${NC}\n" >&2
-   exit 1
+   fail "GET /files/$id ${RED} should not be in the mrulist now${NC}\n"
 fi
 
 # make sure timestamp distance at least is 1 sec
@@ -327,21 +303,17 @@ sleep 1.5
 ok=0
 curl $host_and_port/files/$id && ok=1
 if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files/$second_id ${RED}VALIDATION FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /files/$second_id ${RED}VALIDATION FAILED${NC}\n"
 fi
 
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  set +x
-  printf "GET /files/$second_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n" >&2
-  exit 1
+  fail "GET /files/$second_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n"
 fi
 
 
-echo "TS-OK  GET /files/$second_id" >> $resultfile
+success "TS-OK  GET /files/$second_id"
 
 # ------------------------------------------------------------------------------
 # Big File Test
@@ -357,20 +329,16 @@ bigfileid=`echo -n ${bigFileName} | sha256sum  | awk '{print $1}'`
 ok=0
 cd $tmp_dir && curl -F file=@${bigFileName} $host_and_port/store > $bigFileName.json && cd - && ok=1
 if [ $ok = "0" ]; then
-  set +x
-  printf "POST $bigFileName/store ${RED}Cannot transfer ${tmp_dir}/${bigFileName} ${NC}\n" >&2
-  exit 1
+  fail "POST $bigFileName/store ${RED}Cannot transfer ${tmp_dir}/${bigFileName} ${NC}\n"
 fi
 
 ok=0
 grep $bigfileid $tmp_dir/$bigFileName.json && ok=1
 if [ $ok = "0" ]; then
-  set +x
-  printf "POST $bigFileName/store ${RED}Invalid response for ${tmp_dir}/${bigFileName} ${NC}\n" >&2
-  exit 1
+  fail "POST $bigFileName/store ${RED}Invalid response for ${tmp_dir}/${bigFileName} ${NC}\n"
 fi
 
-echo "BF-OK POST store/$bigFileName" >> $resultfile
+success "BF-OK POST store/$bigFileName"
 
 # ------------------------------------------------------------------------------
 # Evil Requests
@@ -384,21 +352,17 @@ sendWrongRequest() {
   curl $host_and_port/$uriToSend > $tmp_dir/err.html && ok=1
 
   if [ $ok = "0" ]; then
-    set +x
-    printf "GET $uriToSend ${RED}Error in Server Response${NC}\n" >&2
-    exit 1
+    fail "GET $uriToSend ${RED}Error in Server Response${NC}\n"
   fi
 
   ok=0
   grep "$errorExpected" $tmp_dir/err.html && ok=1
 
   if [ $ok = "0" ]; then
-    set +x
-    printf "GET $uriToSend ${RED}Wrong error message detected${NC}\n" >&2
-    exit 1
+    fail "GET $uriToSend ${RED}Wrong error message detected${NC}\n"
   fi
 
-  echo "INVRQ GET $uriToSend (server answered with error which is OK)" >> $resultfile
+  success "INVRQ GET $uriToSend (server answered with error which is OK)"
 }
 
 sendWrongRequest mrufiles/ThisIsInvalid     "400 Bad Request"
