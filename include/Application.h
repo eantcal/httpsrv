@@ -1,17 +1,15 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
 #ifndef __APPLICATION_H__
 #define __APPLICATION_H__
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -30,13 +28,14 @@
 
 #include "config.h"
 
-
 /* -------------------------------------------------------------------------- */
 
 //! Helper class to manage the application configuration and server startup
-class Application {
+class Application
+{
 public:
-   enum class ErrCode {
+   enum class ErrCode
+   {
       success,
       commandLineError,
       showVersionUsage,
@@ -49,23 +48,24 @@ public:
    };
 
    //! Initializes the application based on input paramters
-   Application(int argc, char* argv[], std::ostream& logger);
+   Application(int argc, char *argv[], std::ostream &logger);
 
    //! Applies a given configuration and runs HTTP Server
    ErrCode run();
 
    //! Gets any specific error message based on run() return-value
-   const std::string& getError() const noexcept {
+   const std::string &getError() const noexcept
+   {
       return _errMessage;
    }
 
 private:
-   Application(const Application&) = delete;
-   Application& operator=(const Application&) = delete;
+   Application(const Application &) = delete;
+   Application &operator=(const Application &) = delete;
 
-   bool showUsage(std::stringstream& os) const;
+   bool showUsage(std::stringstream &os) const;
 
-   std::ostream& _logger;
+   std::ostream &_logger;
 
    FilenameMap::Handle _filenameMap;
 
@@ -88,7 +88,6 @@ private:
 
    FileRepository::Handle _FileRepository;
 };
-
 
 /* -------------------------------------------------------------------------- */
 

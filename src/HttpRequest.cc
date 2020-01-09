@@ -1,20 +1,18 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
 #include "HttpRequest.h"
 
-
 /* -------------------------------------------------------------------------- */
 
-void HttpRequest::parseMethod(const std::string& method)
+void HttpRequest::parseMethod(const std::string &method)
 {
    if (method == "GET")
       _method = Method::GET;
@@ -26,10 +24,9 @@ void HttpRequest::parseMethod(const std::string& method)
       _method = Method::UNKNOWN;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-void HttpRequest::parseVersion(const std::string& ver)
+void HttpRequest::parseVersion(const std::string &ver)
 {
    const size_t vstrlen = sizeof("HTTP/x.x") - 1;
    std::string v = ver.size() > vstrlen ? ver.substr(0, vstrlen) : ver;
@@ -42,10 +39,9 @@ void HttpRequest::parseVersion(const std::string& ver)
       _version = Version::UNKNOWN;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-std::ostream& HttpRequest::dump(std::ostream& os, const std::string& id)
+std::ostream &HttpRequest::dump(std::ostream &os, const std::string &id)
 {
    std::string ss;
 
@@ -59,63 +55,75 @@ std::ostream& HttpRequest::dump(std::ostream& os, const std::string& id)
    return os;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-void HttpRequest::parseHeader(const std::string& header)
+void HttpRequest::parseHeader(const std::string &header)
 {
    const auto prefix = ::toupper(header.c_str()[0]);
 
-   if (prefix == 'C' || prefix == 'E') {
+   if (prefix == 'C' || prefix == 'E')
+   {
       std::vector<std::string> tokens;
 
       StrUtils::splitLineInTokens(header, tokens, " ");
 
       const auto headerName = StrUtils::uppercase(tokens[0]);
 
-      if (tokens.size() >= 2) {
-         if (prefix == 'C') {
-            if (headerName == "CONTENT-LENGTH:") {
-               try {
+      if (tokens.size() >= 2)
+      {
+         if (prefix == 'C')
+         {
+            if (headerName == "CONTENT-LENGTH:")
+            {
+               try
+               {
                   _contentLength = std::stoi(tokens[1]);
                }
-               catch (...) {
+               catch (...)
+               {
                   _contentLength = 0;
                }
             }
-            else if (headerName == "CONTENT-TYPE:") {
+            else if (headerName == "CONTENT-TYPE:")
+            {
                _contentType = tokens[1];
                std::vector<std::string> content_type;
                StrUtils::splitLineInTokens(header, content_type, ";");
-               if (!content_type.empty()) {
+               if (!content_type.empty())
+               {
                   const std::string searched_prefix = "boundary=";
 
-                  for (const auto& item : content_type) {
+                  for (const auto &item : content_type)
+                  {
                      auto field = StrUtils::trim(item);
                      if (field.size() > searched_prefix.size() &&
-                        field.substr(0, searched_prefix.size()) == searched_prefix)
+                         field.substr(0, searched_prefix.size()) == searched_prefix)
                      {
                         _boundary = field.substr(
-                           searched_prefix.size(), field.size() - searched_prefix.size());
+                            searched_prefix.size(), field.size() - searched_prefix.size());
                         break;
                      }
                   }
                }
             }
-            else if (headerName == "CONTENT-DISPOSITION:") {
+            else if (headerName == "CONTENT-DISPOSITION:")
+            {
                std::vector<std::string> htoken;
                StrUtils::splitLineInTokens(header, htoken, ";");
 
-               if (!htoken.empty()) {
+               if (!htoken.empty())
+               {
                   const std::string searched_prefix = "filename=\"";
 
-                  for (const auto& item : htoken) {
+                  for (const auto &item : htoken)
+                  {
                      auto field = StrUtils::trim(item);
                      if (field.size() > searched_prefix.size() &&
-                        field.substr(0, searched_prefix.size()) == searched_prefix)
+                         field.substr(0, searched_prefix.size()) == searched_prefix)
                      {
                         _filename.clear();
-                        for (auto i = searched_prefix.size(); i < field.size(); ++i) {
+                        for (auto i = searched_prefix.size(); i < field.size(); ++i)
+                        {
                            if (field[i] == '\"')
                               break;
                            _filename += field[i];
@@ -126,8 +134,10 @@ void HttpRequest::parseHeader(const std::string& header)
                }
             }
          }
-         else {
-            if (headerName == "EXPECT:" && tokens[1][0] == '1') {
+         else
+         {
+            if (headerName == "EXPECT:" && tokens[1][0] == '1')
+            {
                const auto value = StrUtils::uppercase(StrUtils::trim(tokens[1]));
                _expected_100_continue = value == "100-CONTINUE";
             }

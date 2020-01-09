@@ -1,26 +1,23 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
 #ifndef __ID_FILENAME_MAP_H__
 #define __ID_FILENAME_MAP_H__
 
-
 /* -------------------------------------------------------------------------- */
 
 #include <unordered_map>
-#include <mutex>  // For std::unique_lock
+#include <mutex> // For std::unique_lock
 #include <shared_mutex>
 #include <string>
 #include <memory>
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -28,60 +25,61 @@
  * Thread-safe id/filename map used to resolve a filename
  * for a given id
  */
-class FilenameMap {
+class FilenameMap
+{
 public:
    using Handle = std::shared_ptr<FilenameMap>;
 
-   FilenameMap(const FilenameMap&) = delete;
-   FilenameMap(FilenameMap&&) = delete;
-   FilenameMap& operator=(const FilenameMap&) = delete;
-   FilenameMap& operator=(FilenameMap&&) = delete;
+   FilenameMap(const FilenameMap &) = delete;
+   FilenameMap(FilenameMap &&) = delete;
+   FilenameMap &operator=(const FilenameMap &) = delete;
+   FilenameMap &operator=(FilenameMap &&) = delete;
 
    /**
     * Creates an object instance
     */
-   static Handle make() {
+   static Handle make()
+   {
       return FilenameMap::Handle(new (std::nothrow) FilenameMap);
    }
-
 
    /**
     * Thread-safe version of insert (thread-safe)
     */
-   void locked_insert(const std::string id, const std::string& fileName) {
+   void locked_insert(const std::string id, const std::string &fileName)
+   {
       std::unique_lock lock(_mtx);
-      insert( id, fileName );
+      insert(id, fileName);
    }
-
 
    /**
     * Inserts <id, filename> in the map
     * @param id is the map key
     * @param fileName is the value
     */
-   void insert(const std::string id, const std::string& fileName) {
-      _data.insert({ id, fileName });
+   void insert(const std::string id, const std::string &fileName)
+   {
+      _data.insert({id, fileName});
    }
-
 
    /**
     * Clears the map content (thread-save)
     */
-   void clear() {
+   void clear()
+   {
       std::unique_lock lock(_mtx);
       _data.clear();
    }
-
 
    /**
     * Replaces the entire map content (thread-safe) with
     * with newCache contant (which will be invalidated)
     */
-   void locked_replace(FilenameMap&& newCache) {
+   void locked_replace(FilenameMap &&newCache)
+   {
       std::unique_lock lock(_mtx);
       _data = std::move(newCache._data);
    }
-
 
    /**
     * Searches a filename related to a given id (thread-safe)
@@ -89,25 +87,25 @@ public:
     * @param fileName is assigned with corrispondent filename if found
     * @return true if id is found, false otherwise
     */
-   bool locked_search(const std::string& id, std::string& fileName) const {
+   bool locked_search(const std::string &id, std::string &fileName) const
+   {
       std::shared_lock lock(_mtx);
 
       auto it = _data.find(id);
-      if (it != _data.end()) {
+      if (it != _data.end())
+      {
          fileName = it->second;
          return true;
       }
       return false;
    }
 
-
    /**
     * Scan the file system path to populate the map
     * @param path of local repository
     * @return true if operation successfully completed, false otherwise
     */
-   bool scan(const std::string& path);
-
+   bool scan(const std::string &path);
 
    /**
     * Scans the repository to update a given filenameMap
@@ -115,8 +113,7 @@ public:
     * @param json is the JSON formatted text matching the cache content
     * @return true if operation successfully completed, false otherwise
     */
-   bool locked_updateMakeJson(const std::string& path, std::string& json);
-
+   bool locked_updateMakeJson(const std::string &path, std::string &json);
 
    /**
      * Returns file attributes of fileName formatted using a JSON record of
@@ -130,13 +127,12 @@ public:
      * @return true if operation successfully completed, false otherwise
      */
    static bool jsonStat(
-      const std::string& filePath,
-      const std::string& fileName,
-      const std::string& id,
-      std::string& jsonOutput,
-      const std::string& beginl = "",
-      const std::string& endl = "\n");
-
+       const std::string &filePath,
+       const std::string &fileName,
+       const std::string &id,
+       std::string &jsonOutput,
+       const std::string &beginl = "",
+       const std::string &endl = "\n");
 
    /**
     * Touches an existing file and returns a related stat in JSON format
@@ -146,11 +142,10 @@ public:
     * @return true if operation successfully completed, false otherwise
     */
    bool jsonStatFileUpdateTS(
-      const std::string& path,
-      const std::string& id,
-      std::string& json,
-      bool updateTimeStamp);
-
+       const std::string &path,
+       const std::string &id,
+       std::string &json,
+       bool updateTimeStamp);
 
    FilenameMap() = default;
 
@@ -159,7 +154,6 @@ private:
    mutable std::shared_mutex _mtx;
    data_t _data;
 };
-
 
 /* -------------------------------------------------------------------------- */
 

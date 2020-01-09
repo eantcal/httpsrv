@@ -1,11 +1,10 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -13,30 +12,31 @@
 
 #include <iostream>
 
-
 /* -------------------------------------------------------------------------- */
 
-void StrUtils::removeLastCharIf(std::string& s, char c)
+void StrUtils::removeLastCharIf(std::string &s, char c)
 {
    while (!s.empty() && s.c_str()[s.size() - 1] == c)
       s = s.substr(0, s.size() - 1);
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-bool StrUtils::splitLineInTokens(const std::string& line,
-   std::vector<std::string>& tokens, const std::string& sep)
+bool StrUtils::splitLineInTokens(
+    const std::string &line,
+    std::vector<std::string> &tokens, const std::string &sep)
 {
    if (line.empty() || line.size() < sep.size())
       return false;
 
    std::string subline = line;
 
-   while (!subline.empty()) {
+   while (!subline.empty())
+   {
       size_t pos = subline.find(sep);
 
-      if (pos == std::string::npos) {
+      if (pos == std::string::npos)
+      {
          tokens.push_back(subline);
          return true;
       }
@@ -51,10 +51,9 @@ bool StrUtils::splitLineInTokens(const std::string& line,
    return true;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-std::string StrUtils::trim(const std::string& str)
+std::string StrUtils::trim(const std::string &str)
 {
    const auto strBegin = str.find_first_not_of(" \t\r\n");
    if (strBegin == std::string::npos)
@@ -67,4 +66,3 @@ std::string StrUtils::trim(const std::string& str)
 }
 
 /* -------------------------------------------------------------------------- */
-

@@ -1,11 +1,10 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -23,14 +22,17 @@
 
 /* -------------------------------------------------------------------------- */
 
-bool FilenameMap::scan(const std::string& path)
+bool FilenameMap::scan(const std::string &path)
 {
    fs::path dirPath(path);
    fs::directory_iterator endIt;
 
-   if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
-      for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
-         if (fs::is_regular_file(it->status())) {
+   if (fs::exists(dirPath) && fs::is_directory(dirPath))
+   {
+      for (fs::directory_iterator it(dirPath); it != endIt; ++it)
+      {
+         if (fs::is_regular_file(it->status()))
+         {
             std::string jsonEntry;
             auto fName = it->path().filename().string();
             auto id = FileUtils::hashCode(fName);
@@ -43,12 +45,11 @@ bool FilenameMap::scan(const std::string& path)
    return false;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
 bool FilenameMap::locked_updateMakeJson(
-   const std::string& path,
-   std::string& json)
+    const std::string &path,
+    std::string &json)
 {
    fs::path dirPath(path);
    fs::directory_iterator endIt;
@@ -57,13 +58,17 @@ bool FilenameMap::locked_updateMakeJson(
 
    json = "[\n";
 
-   if (fs::exists(dirPath) && fs::is_directory(dirPath)) {
-      for (fs::directory_iterator it(dirPath); it != endIt; ++it) {
-         if (fs::is_regular_file(it->status())) {
+   if (fs::exists(dirPath) && fs::is_directory(dirPath))
+   {
+      for (fs::directory_iterator it(dirPath); it != endIt; ++it)
+      {
+         if (fs::is_regular_file(it->status()))
+         {
             std::string jsonEntry;
             auto fName = it->path().filename().string();
             auto id = FileUtils::hashCode(fName);
-            if (FilenameMap::jsonStat(it->path().string(), fName, id, jsonEntry, "  ", ",\n")) {
+            if (FilenameMap::jsonStat(it->path().string(), fName, id, jsonEntry, "  ", ",\n"))
+            {
                newCache.insert(id, fName);
                json += jsonEntry;
             }
@@ -83,39 +88,38 @@ bool FilenameMap::locked_updateMakeJson(
    return false;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
 bool FilenameMap::jsonStatFileUpdateTS(
-   const std::string& path,
-   const std::string& id,
-   std::string& json,
-   bool updateTimeStamp)
+    const std::string &path,
+    const std::string &id,
+    std::string &json,
+    bool updateTimeStamp)
 {
    std::string fName;
-   if (!locked_search(id, fName)) {
+
+   if (!locked_search(id, fName))
       return false;
-   }
+
    std::string filePath = path + "/" + fName;
 
    if (updateTimeStamp)
       FileUtils::touch(filePath, false /*== do not create if it does not exist*/);
-   
+
    return jsonStat(filePath, fName, id, json);
 }
-
 
 /* -------------------------------------------------------------------------- */
 
 bool FilenameMap::jsonStat(
-   const std::string& filePath,  // actual file path (including name)
-   const std::string& fileName,  // filename field of JSON output
-   const std::string& id,        // id field of JSON output
-   std::string& jsonOutput,
-   const std::string& beginl,
-   const std::string& endl)
+    const std::string &filePath, // actual file path (including name)
+    const std::string &fileName, // filename field of JSON output
+    const std::string &id,       // id field of JSON output
+    std::string &jsonOutput,
+    const std::string &beginl,
+    const std::string &endl)
 {
-   struct stat rstat = { 0 };
+   struct stat rstat = {0};
    const int ret = stat(filePath.c_str(), &rstat);
 
    if (ret < 0)

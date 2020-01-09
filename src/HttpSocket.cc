@@ -1,11 +1,10 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -16,27 +15,33 @@
 #include <vector>
 #include <thread>
 
-
 /* -------------------------------------------------------------------------- */
 
-HttpSocket& HttpSocket::operator=(TcpSocket::Handle handle)
+HttpSocket &HttpSocket::operator=(TcpSocket::Handle handle)
 {
    _socketHandle = handle;
    return *this;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-bool HttpSocket::recv(HttpRequest::Handle& handle)
+bool HttpSocket::recv(HttpRequest::Handle &handle)
 {
    char c = 0;
    int ret = 1;
 
-   enum class CrLfSeq { CR1, LF1, CR2, LF2, IDLE } crlf_st = CrLfSeq::IDLE;
+   enum class CrLfSeq
+   {
+      CR1,
+      LF1,
+      CR2,
+      LF2,
+      IDLE
+   } crlf_st = CrLfSeq::IDLE;
 
    auto feed_crlf_fsm = [&crlf_st](char c) {
-      switch (crlf_st) {
+      switch (crlf_st)
+      {
       case CrLfSeq::IDLE:
          crlf_st = (c == '\r') ? CrLfSeq::CR1 : CrLfSeq::IDLE;
          break;
@@ -62,12 +67,14 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
    bool boundary_maker = false;
    bool timeout = false;
 
-   while (ret > 0 && _connUp && _socketHandle) {
+   while (ret > 0 && _connUp && _socketHandle)
+   {
       std::chrono::milliseconds msec(getConnectionTimeout());
 
       auto recvEv = _socketHandle->waitForRecvEvent(msec);
 
-      switch (recvEv) {
+      switch (recvEv)
+      {
       case TransportSocket::RecvEvent::RECV_ERROR:
          _connUp = false;
          break;
@@ -83,49 +90,60 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
 
       ret = _socketHandle->recv(&c, 1);
 
-      if (ret > 0) {
+      if (ret > 0)
+      {
          line += c;
       }
-      else if (ret <= 0) {
+      else if (ret <= 0)
+      {
          _connUp = false;
          break;
       }
 
       feed_crlf_fsm(c);
 
-      if (!receivingBody && crlf_st == CrLfSeq::LF2) {
+      if (!receivingBody && crlf_st == CrLfSeq::LF2)
+      {
          if (line == "\r\n")
             line.clear();
 
-         if (!handle->isExpectedContinueResponse()) {
+         if (!handle->isExpectedContinueResponse())
+         {
             receivingBody = handle->getBoundary().empty() || boundary_maker;
          }
          else
             break;
       }
 
-      if ((crlf_st == CrLfSeq::LF1 || crlf_st == CrLfSeq::LF2) && !line.empty()) {
-         if (!handle->getBoundary().empty()) {
+      if ((crlf_st == CrLfSeq::LF1 || crlf_st == CrLfSeq::LF2) && !line.empty())
+      {
+         if (!handle->getBoundary().empty())
+         {
             const std::string boundary_begin = "--" + handle->getBoundary();
             const std::string boundary_end = "--" + handle->getBoundary() + "--";
 
             const std::string trimmedLine = StrUtils::trim(line);
 
-            if (!receivingBody && !boundary_maker && trimmedLine == boundary_begin) {
+            if (!receivingBody && !boundary_maker && trimmedLine == boundary_begin)
+            {
                boundary_maker = true;
             }
-            else if (receivingBody && boundary_maker && trimmedLine == boundary_end) {
+            else if (receivingBody && boundary_maker && trimmedLine == boundary_end)
+            {
                receivingBody = false;
                line.clear();
             }
          }
 
-         if (!line.empty()) {
-            if (!receivingBody) {
+         if (!line.empty())
+         {
+            if (!receivingBody)
+            {
                handle->parseHeader(line);
                handle->addLine(line);
             }
-            else {
+            else
+            {
                body += line;
             }
 
@@ -134,18 +152,21 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
       }
    }
 
-   if (ret < 0 || !_socketHandle || handle->getHeaderList().empty()) {
+   if (ret < 0 || !_socketHandle || handle->getHeaderList().empty())
+   {
       return false;
    }
 
    std::string request = *handle->getHeaderList().cbegin();
    std::vector<std::string> tokens;
 
-   if (!StrUtils::splitLineInTokens(request, tokens, " ")) {
+   if (!StrUtils::splitLineInTokens(request, tokens, " "))
+   {
       return false;
    }
 
-   if (tokens.size() != 3) {
+   if (tokens.size() != 3)
+   {
       return false;
    }
 
@@ -165,21 +186,25 @@ bool HttpSocket::recv(HttpRequest::Handle& handle)
    return true;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-HttpSocket& HttpSocket::operator<<(const HttpResponse& response)
+HttpSocket &HttpSocket::operator<<(const HttpResponse &response)
 {
-   const std::string& response_txt = response;
+   const std::string &response_txt = response;
    size_t to_send = response_txt.size();
 
-   while (to_send > 0) {
+   while (to_send > 0)
+   {
       int sent = _socketHandle->send(response);
-      if (sent < 0) {
+      
+      if (sent < 0)
+      {
          _connUp = false;
          break;
       }
-      if (sent == 0) {
+
+      if (sent == 0)
+      {
          // tx queue congested, wait for a while
          std::this_thread::sleep_for(std::chrono::seconds(1));
          continue;
@@ -190,4 +215,3 @@ HttpSocket& HttpSocket::operator<<(const HttpResponse& response)
 
    return *this;
 }
-

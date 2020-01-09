@@ -284,7 +284,7 @@ if [ $ok = "0" ]; then
   fail "GET /files/$id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n"
 fi
 
-success "TS-OK  GET /files/$id/zip"
+success "TS-OK GET /files/$id/zip"
 
 #GET /file/<id>
 #check that the first_id related entry now is into mrufiles list
@@ -313,7 +313,7 @@ if [ $ok = "0" ]; then
 fi
 
 
-success "TS-OK  GET /files/$second_id"
+success "TS-OK GET /files/$second_id"
 
 # ------------------------------------------------------------------------------
 # Big File Test

@@ -1,11 +1,10 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -15,34 +14,31 @@
 #include <string.h>
 #include <thread>
 
-
 /* -------------------------------------------------------------------------- */
 
 TcpListener::TcpListener()
-   : TransportSocket(int(::socket(AF_INET, SOCK_STREAM, 0)))
-   , _status(isValid() ? Status::VALID : Status::INVALID)
+    : TransportSocket(int(::socket(AF_INET, SOCK_STREAM, 0))),
+      _status(isValid() ? Status::VALID : Status::INVALID)
 {
    memset(&_local_ip_port_sa_in, 0, sizeof(_local_ip_port_sa_in));
 }
 
-
 /* -------------------------------------------------------------------------- */
 
-bool TcpListener::bind(const std::string& ip, const TranspPort& port)
+bool TcpListener::bind(const std::string &ip, const TranspPort &port)
 {
    if (getSocketFd() <= 0)
       return false;
 
-   sockaddr_in& sin = _local_ip_port_sa_in;
+   sockaddr_in &sin = _local_ip_port_sa_in;
 
    sin.sin_family = AF_INET;
    sin.sin_addr.s_addr = ip.empty() ? INADDR_ANY : inet_addr(ip.c_str());
    sin.sin_port = htons(port);
 
    return 0 ==
-      ::bind(getSocketFd(), reinterpret_cast<const sockaddr*>(&sin), sizeof(sin));
+      ::bind(getSocketFd(), reinterpret_cast<const sockaddr *>(&sin), sizeof(sin));
 }
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -51,19 +47,18 @@ TcpSocket::Handle TcpListener::accept()
    if (getStatus() != Status::VALID)
       return TcpSocket::Handle();
 
-   sockaddr remote_sockaddr = { 0 };
+   sockaddr remote_sockaddr = {0};
 
-   struct sockaddr* local_sockaddr
-      = reinterpret_cast<struct sockaddr*>(&_local_ip_port_sa_in);
+   struct sockaddr *local_sockaddr = reinterpret_cast<struct sockaddr *>(&_local_ip_port_sa_in);
 
    socklen_t sockaddrlen = sizeof(struct sockaddr);
 
    SocketFd sd = int(::accept(getSocketFd(), &remote_sockaddr, &sockaddrlen));
 
-   TcpSocket::Handle handle = TcpSocket::Handle(sd > 0
-      ? new TcpSocket(sd, local_sockaddr, &remote_sockaddr)
-      : nullptr);
+   TcpSocket::Handle handle = TcpSocket::Handle(
+       sd > 0
+           ? new TcpSocket(sd, local_sockaddr, &remote_sockaddr)
+           : nullptr);
 
    return handle;
 }
-

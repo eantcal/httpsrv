@@ -1,17 +1,15 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
 #ifndef __HTTP_SERVER_H__
 #define __HTTP_SERVER_H__
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -26,44 +24,45 @@
 #include <iostream>
 #include <string>
 
-
 /* -------------------------------------------------------------------------- */
 
 /**
  * The top-level class of the HTTP server.
  */
-class HttpServer {
+class HttpServer
+{
 public:
    using TranspPort = TcpListener::TranspPort;
 
 public:
-   HttpServer(const HttpServer&) = delete;
-   HttpServer& operator=(const HttpServer&) = delete;
-
+   HttpServer(const HttpServer &) = delete;
+   HttpServer &operator=(const HttpServer &) = delete;
 
    /**
     * Sets a loggerOStream enabling the verbose mode.
     *
     * @param pointer to ostream used for logging
     */
-   void setupLogger(std::ostream* loggerOStream = nullptr) {
-      if (loggerOStream) {
+   void setupLogger(std::ostream *loggerOStream = nullptr)
+   {
+      if (loggerOStream)
+      {
          _loggerOStreamPtr = loggerOStream;
          _verboseModeOn = true;
       }
-      else {
+      else
+      {
          _verboseModeOn = false;
       }
    }
 
-
    /**
     * Sets a id/filename cache instance
     */
-   void setFilenameMap(FilenameMap::Handle cacheInstance) noexcept {
+   void setFilenameMap(FilenameMap::Handle cacheInstance) noexcept
+   {
       _filenameMap = cacheInstance;
    }
-
 
    /**
     * Gets HttpServer object instance reference.
@@ -72,36 +71,35 @@ public:
     *
     * @return the HttpServer reference
     */
-   static auto getInstance()->HttpServer&;
-
+   static auto getInstance() -> HttpServer &;
 
    /**
     * Gets the file repository handle
     */
-   FileRepository::Handle getFileRepository() const noexcept {
+   FileRepository::Handle getFileRepository() const noexcept
+   {
       return _FileRepository;
    }
-
 
    /**
     * Set repository handle
     * 
     * @param handle repository handle
     */
-   void setFileRepository(FileRepository::Handle handle) {
+   void setFileRepository(FileRepository::Handle handle)
+   {
       _FileRepository = handle;
    }
-
 
    /**
     * Gets the port where server is listening
     *
     * @return the port number
     */
-   TranspPort getLocalPort() const {
+   TranspPort getLocalPort() const
+   {
       return _serverPort;
    }
-
 
    /**
     * Binds the HTTP server to a local TCP port
@@ -111,7 +109,6 @@ public:
     */
    bool bind(TranspPort port);
 
-
    /**
     * Sets the server in listening mode
     *
@@ -119,7 +116,6 @@ public:
     * @return true if operation is successfully completed, false otherwise
     */
    bool listen(int maxConnections);
-
 
    /**
     * Runs the server. This function is blocking for the caller.
@@ -129,7 +125,6 @@ public:
     */
    bool run();
 
-
 protected:
    /**
     * Accepts a new connection from a remote client.
@@ -138,13 +133,14 @@ protected:
     * 
     * @return a handle to tcp socket
     */
-   TcpSocket::Handle accept() {
+   TcpSocket::Handle accept()
+   {
       return _tcpServer ? _tcpServer->accept() : nullptr;
    }
 
 private:
-   std::ostream* _loggerOStreamPtr = &std::clog;
-   static HttpServer* _instance;
+   std::ostream *_loggerOStreamPtr = &std::clog;
+   static HttpServer *_instance;
    TranspPort _serverPort = HTTP_SERVER_PORT;
    TcpListener::Handle _tcpServer;
    bool _verboseModeOn = true;
@@ -152,9 +148,7 @@ private:
    FileRepository::Handle _FileRepository;
 
    HttpServer() = default;
-
 };
-
 
 /* -------------------------------------------------------------------------- */
 

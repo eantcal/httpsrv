@@ -1,11 +1,10 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
@@ -21,17 +20,16 @@
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 
-
 /* -------------------------------------------------------------------------- */
 
-//! Helper class to handle the server local repository for uploading files 
-//! It provides a method to get a JSON formatted list of getMruFilesN() 
+//! Helper class to handle the server local repository for uploading files
+//! It provides a method to get a JSON formatted list of getMruFilesN()
 //! mru files.
-class FileRepository {
+class FileRepository
+{
 
 public:
    using Handle = std::shared_ptr<FileRepository>;
-
 
    /** 
      * Creates a new FileRepository object and a related directory
@@ -40,66 +38,64 @@ public:
      * @param mruFilesN is a number N of max mrufiles built by
      *       createJsonMruFilesList() method
      */
-   static Handle make(const std::string& path, int mrufilesN) {
+   static Handle make(const std::string &path, int mrufilesN)
+   {
       Handle ret(new (std::nothrow) FileRepository(path, mrufilesN));
-      if (ret) {
-         if (!ret->init()) {
-            return nullptr;
-         }
-      }
-      return ret;
-   }
+      assert(ret);
 
+      if (!ret)
+         return nullptr;
+
+      return ret->init() ? ret : nullptr;
+   }
 
    /**
     * Creates a JSON formatted MRU files list
     * @param json containing the mru files list
     * @return true if operation succeded, false otherwise
     */
-   bool createJsonMruFilesList(std::string& json);
-
+   bool createJsonMruFilesList(std::string &json);
 
    /**
     * Creates a list of mru filenames
     * @param mrufiles containing the list
     * @return true if operation succeded, false otherwise
     */
-   bool createMruFilesList(std::list<std::string>& mrufiles);
-
+   bool createMruFilesList(std::list<std::string> &mrufiles);
 
    /**
     * Returns the repository path
     */
-   const std::string& getPath() const noexcept {
+   const std::string &getPath() const noexcept
+   {
       return _path;
    }
-
 
    /**
     * Returns max number of mru files formatted
     * in json output of createJsonMruFilesList
     */
-   int getMruFilesN() const noexcept {
+   int getMruFilesN() const noexcept
+   {
       return _mrufilesN;
    }
 
-   
 private:
-   FileRepository(const std::string& path, int mrufilesN) : 
+   FileRepository(const std::string &path, int mrufilesN) : 
       _path(path),
       _mrufilesN(mrufilesN)
-   {}
+   {
+   }
 
    using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
 
    bool init();
-   bool createTimeOrderedFilesList(TimeOrderedFileList& list);
+   bool createTimeOrderedFilesList(TimeOrderedFileList &list);
 
 private:
    std::string _path;
    int _mrufilesN;
 };
-
 
 /* ------------------------------------------------------------------------- */
 

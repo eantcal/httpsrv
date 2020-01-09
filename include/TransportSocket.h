@@ -1,40 +1,42 @@
 //
 // This file is part of httpsrv
 // Copyright (c) Antonino Calderone (antonino.calderone@gmail.com)
-// All rights reserved.  
-// Licensed under the MIT License. 
+// All rights reserved.
+// Licensed under the MIT License.
 // See COPYING file in the project root for full license information.
 //
-
 
 /* -------------------------------------------------------------------------- */
 
 #ifndef __TRANSPORT_SOCKET_H__
 #define __TRANSPORT_SOCKET_H__
 
-
 /* -------------------------------------------------------------------------- */
 
 #include "config.h"
 #include "SysUtils.h"
 
-
 #include <chrono>
 #include <cstdint>
 #include <fstream>
-
 
 /* -------------------------------------------------------------------------- */
 
 /**
  * Provides socket functionality
  */
-class TransportSocket {
+class TransportSocket
+{
 
 public:
    using TranspPort = uint16_t;
    using SocketFd = int;
-   enum class RecvEvent { RECV_ERROR, TIMEOUT, RECV_DATA };
+   enum class RecvEvent
+   {
+      RECV_ERROR,
+      TIMEOUT,
+      RECV_DATA
+   };
    using TimeoutInterval = std::chrono::system_clock::duration;
 
 protected:
@@ -43,25 +45,23 @@ protected:
     * descriptor (@see ::socket())
     * @param sd native socket descriptor
     */
-   TransportSocket(const SocketFd& sd) noexcept
-      : _socket(sd)
+   TransportSocket(const SocketFd &sd) noexcept
+       : _socket(sd)
    {
    }
 
-
 public:
-   TransportSocket(const TransportSocket&) = delete;
-   TransportSocket& operator=(const TransportSocket&) = delete;
+   TransportSocket(const TransportSocket &) = delete;
+   TransportSocket &operator=(const TransportSocket &) = delete;
    virtual ~TransportSocket();
-
 
    /**
     * Returns true if socket is valid, false otherwise.
     */
-   bool isValid() const noexcept {
+   bool isValid() const noexcept
+   {
       return _socket > 0;
    }
-
 
    /**
     * Determines the readability status of this socket
@@ -82,16 +82,15 @@ public:
     *         RecvEvent::TIMEOUT if the time limit expired or
     *         RecvEvent::RECV_ERROR if an error occurred
     */
-   RecvEvent waitForRecvEvent(const TimeoutInterval& timeout);
-
+   RecvEvent waitForRecvEvent(const TimeoutInterval &timeout);
 
    /**
     * Returns the socket descriptor for this socket
     */
-   const SocketFd& getSocketFd() const noexcept {
+   const SocketFd &getSocketFd() const noexcept
+   {
       return _socket;
    }
-
 
    /**
     * Sends data on a connected socket
@@ -109,10 +108,10 @@ public:
     *              can be retrieved by calling errno
     *
     */
-   int send(const char* buf, int len, int flags = 0) noexcept {
+   int send(const char *buf, int len, int flags = 0) noexcept
+   {
       return ::send(getSocketFd(), buf, len, flags);
    }
-
 
    /**
     * Receives data from a connected socket
@@ -130,10 +129,10 @@ public:
     *              Otherwise, -1 is returned, and a specific error code
     *             can be retrieved by calling errno
     */
-   int recv(char* buf, int len, int flags = 0) noexcept {
+   int recv(char *buf, int len, int flags = 0) noexcept
+   {
       return ::recv(getSocketFd(), buf, len, flags);
    }
-
 
    /**
     * Sends text on a connected socket
@@ -145,10 +144,10 @@ public:
     *              Otherwise, -1 is returned, and a specific error code
     *              can be retrieved by errno
     */
-   int send(const std::string& text) noexcept {
+   int send(const std::string &text) noexcept
+   {
       return send(text.c_str(), int(text.size()));
    }
-
 
    /**
     * Sends a file on a connected socket
@@ -160,13 +159,15 @@ public:
     *              Otherwise, -1 is returned, and a specific error code
     *              can be retrieved by errno
     */
-   int sendFile(const std::string& filepath) noexcept;
+   int sendFile(const std::string &filepath) noexcept;
 
 private:
    SocketFd _socket = 0;
-   enum { TX_BUFFER_SIZE = HTTP_SERVER_TX_BUF_SIZE };
+   enum
+   {
+      TX_BUFFER_SIZE = HTTP_SERVER_TX_BUF_SIZE
+   };
 };
-
 
 /* -------------------------------------------------------------------------- */
 
