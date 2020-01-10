@@ -140,6 +140,10 @@ void HttpRequest::parseHeader(const std::string &header)
 
                            /*
                            Escape punctuation characters:
+                          
+                           Even if RFC6266 - Appendix D reccomends not to use them
+                           CURL and other clients might use escape in quoted string,
+                           so we try to fix it by removing such useless character (here)
 
                            \" = quotation mark (backslash not required for '"')
                            \' = apostrophe (backslash not required for "'")

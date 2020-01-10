@@ -10,7 +10,8 @@
 
 #include "StrUtils.h"
 
-#include <iostream>
+#include <sstream>
+#include <iomanip>
 
 /* -------------------------------------------------------------------------- */
 
@@ -66,3 +67,33 @@ std::string StrUtils::trim(const std::string &str)
 }
 
 /* -------------------------------------------------------------------------- */
+
+std::string StrUtils::escapeJson(const std::string& str) 
+{
+    std::ostringstream ss;
+
+    for (const auto & ch : str) 
+    {
+        switch (ch) {
+           case '\\': ss << "\\\\"; break;
+           case '"': ss << "\\\""; break;
+           case '\t': ss << "\\t"; break;
+           case '\r': ss << "\\r"; break;
+           case '\b': ss << "\\b"; break;
+           case '\n': ss << "\\n"; break;
+           case '\f': ss << "\\f"; break;
+           default:
+               if ('\x00' <= ch && ch <= '\x1f') 
+               {
+                   ss << "\\u"
+                     << std::hex << std::setw(4) 
+                     << std::setfill('0') << int(ch);
+               } 
+               else 
+               {
+                   ss << ch;
+               }
+        }
+    }
+    return ss.str();
+}

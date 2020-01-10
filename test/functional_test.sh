@@ -37,7 +37,7 @@ fail() {
   failMsg=$1
    
   set +x
-  printf "[$RED Error $NC] $failMsg" >&2
+  printf "\n[$RED Error $NC] $failMsg\n" >&2
   exit 1
 }
 
@@ -56,6 +56,7 @@ checkCommand "sed"
 checkCommand "awk"
 checkCommand "unzip"
 checkCommand "sha256sum"
+checkCommand "diff"
 
 jsonvalidator="jsonlint-php"
 checkCommand $jsonvalidator
@@ -107,7 +108,7 @@ chk=`cat $listfile | grep id | grep name | grep timestamp | wc -l`
 if [ $chk = "$NUMOFFILES" ]; then
   success "POST /store: all $NUMOFFILES files uploaded without errors"
 else
-  fail "POST /store: Expected $NUMOFFILES notifications\n" 
+  fail "POST /store: Expected $NUMOFFILES notifications" 
 fi
 
 cleanUpFile $listfile
@@ -130,7 +131,7 @@ while read p; do
   if [ $ok = "1" ]; then
     success "GET /files/$id: succeded"
   else
-    fail "GET /files/<${id}>: can't get a correct answer\n"
+    fail "GET /files/<${id}>: can't get a correct answer"
   fi
 done < $listfile 
 
@@ -164,7 +165,7 @@ diff $threeidsfile $sortedmruidsfile && ok=1
 if [ $ok = "1" ]; then
   success "GET /mrufiles: Get OK, content validated" 
 else
-  fail "GET /mrufiles: response and actual f/s files look different\n"
+  fail "GET /mrufiles: response and actual f/s files look different"
 fi
 
 
@@ -177,7 +178,7 @@ curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1
 if [ $ok = "1" ]; then
   success "GET /files/$first_id/zip: zip file downloaded" 
 else
-  fail "GET /files/$first_id/zip: Can't download the zip file\n"
+  fail "GET /files/$first_id/zip: Can't download the zip file"
 fi
 
 filename=`zipinfo $tmp_dir2/$first_id.zip | grep File | awk '{ print $9 }'`
@@ -185,12 +186,12 @@ ok=0
 cd $tmp_dir2 && unzip $tmp_dir2/$first_id.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
-  fail "GET /files/$first_id/zip: failed downloading the zip file\n"
+  fail "GET /files/$first_id/zip: failed downloading the zip file"
 fi
 
 diff $tmp_dir2/$filename $tmp_dir/$filename || ok=0
 if [ $ok = "0" ]; then
-  fail "GET /files/$first_id/zip: unexpected zip archive content\n"
+  fail "GET /files/$first_id/zip: unexpected zip archive content"
 fi
 
 
@@ -202,7 +203,7 @@ rm -f $tmp_dir2/*
 curl --output $tmp_dir2/mrufiles.zip $host_and_port/mrufiles/zip && ok=1 
 
 if [ $ok = "0" ]; then
-  fail "GET /mrufiles/zip: Can't download the mrufiles archive\n"
+  fail "GET /mrufiles/zip: Can't download the mrufiles archive"
 fi
 
 ok=0
@@ -210,7 +211,7 @@ cd $tmp_dir2 && unzip ./mrufiles.zip && rm mrufiles.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
   cd -
-  fail "GET /mrufiles/zip: Failed uncompress the mrufiles.zip\n"
+  fail "GET /mrufiles/zip: Failed uncompress the mrufiles.zip"
 fi
 
 ok=0
@@ -222,7 +223,7 @@ cd -
 if [ $ok = "1" ] && [ $filescount = "3" ]; then
   success "GET /mrufiles/zip: mrufiles entry count verified"
 else
-  fail "GET /mrufiles/zip: Unexpected number of entries in mrufiles.zip archive\n"
+  fail "GET /mrufiles/zip: Unexpected number of entries in mrufiles.zip archive"
 fi
 
 # ------------------------------------------------------------------------------
@@ -236,13 +237,13 @@ function getRequest() {
   ok=0
   curl $host_and_port/$getRequestType > $tmp_dir/$getRequestType.json && ok=1
   if [ $ok = "0" ]; then
-    fail "GET /$getRequestType: Can't get an answer\n"
+    fail "GET /$getRequestType: Can't get an answer"
   fi
 
   ok=0
   eval "$jsonvalidator $tmp_dir/$getRequestType.json && ok=1" 2>/dev/null 
   if [ $ok = "0" ]; then
-    fail "GET /$getRequestType: Can't validate JSON\n"
+    fail "GET /$getRequestType: Can't validate JSON"
   fi
 
   success "GET /$getRequestType: JSON Valid"
@@ -270,7 +271,7 @@ id=`echo -n File04.txt | sha256sum  | awk '{print $1}'`
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null || ok=1
 if [ $ok = "0" ]; then
-   fail "GET /files/$first_id: %first_id should not be in the mrulist now\n"
+   fail "GET /files/$first_id: %first_id should not be in the mrulist now"
 fi
 
 # make sure timestamp distance at least is 1 sec
@@ -279,13 +280,13 @@ sleep 1.5
 ok=0
 curl --output $tmp_dir2/$id.zip $host_and_port/files/$id/zip && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id: Can't download zip file\n" 
+  fail "GET /files/$id: Can't download zip file" 
 fi
 
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id: Can't get the mru list\n"
+  fail "GET /files/$id: Can't get the mru list"
 fi
 
 success "GET /files/$id/zip: Timestamp updated correctly"
@@ -298,7 +299,7 @@ id=`echo -n File05.txt | sha256sum  | awk '{print $1}'`
 ok=1
 curl $host_and_port/mrufiles | grep $id && ok=0
  if [ $ok = "0" ]; then
-   fail "GET /files/$id: the id is not supposed to be in the MRU list\n"
+   fail "GET /files/$id: the id is not supposed to be in the MRU list"
 fi
 
 # make sure timestamp distance at least is 1 sec
@@ -307,13 +308,13 @@ sleep 1.5
 ok=0
 curl $host_and_port/files/$id > $tmp_dir/aFile.json && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$second_id: Can't get the file descriptor\n"
+  fail "GET /files/$second_id: Can't get the file descriptor"
 fi
 
 ok=0
 eval "$jsonvalidator $tmp_dir/aFile.json && ok=1" 2>/dev/null 
 if [ $ok = "0" ]; then
-  fail "GET /files/$id : Can't validate the JSON output\n"
+  fail "GET /files/$id : Can't validate the JSON output"
 else
   success "GET /files/$id: JSON response for single id is Valid"
 fi
@@ -321,7 +322,7 @@ fi
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$second_id: Can't get the mru list\n"
+  fail "GET /files/$second_id: Can't get the mru list"
 fi
 
 
@@ -341,13 +342,13 @@ bigfileid=`echo -n ${bigFileName} | sha256sum  | awk '{print $1}'`
 ok=0
 cd $tmp_dir && curl -F file=@${bigFileName} $host_and_port/store > $bigFileName.json && cd - && ok=1
 if [ $ok = "0" ]; then
-  fail "POST $bigFileName/store: Cannot transfer ${tmp_dir}/${bigFileName}\n"
+  fail "POST $bigFileName/store: Cannot transfer ${tmp_dir}/${bigFileName}"
 fi
 
 ok=0
 grep $bigfileid $tmp_dir/$bigFileName.json && ok=1
 if [ $ok = "0" ]; then
-  fail "POST $bigFileName/store: Invalid response for ${tmp_dir}/${bigFileName}\n"
+  fail "POST $bigFileName/store: Invalid response for ${tmp_dir}/${bigFileName}"
 fi
 
 success "POST store/$bigFileName: the 'big file' has been uploaded correctly"
@@ -366,13 +367,13 @@ zerofileid=`echo -n ${zeroFileName} | sha256sum  | awk '{print $1}'`
 ok=0
 cd $tmp_dir && curl -F file=@${zeroFileName} $host_and_port/store > $zeroFileName.json && cd - && ok=1
 if [ $ok = "0" ]; then
-  fail "POST $zeroFileName/store: Cannot transfer ${tmp_dir}/${zeroFileName}\n"
+  fail "POST $zeroFileName/store: Cannot transfer ${tmp_dir}/${zeroFileName}"
 fi
 
 ok=0
 grep $zerofileid $tmp_dir/$zeroFileName.json && grep '"size": 0,' $tmp_dir/$zeroFileName.json && ok=1
 if [ $ok = "0" ]; then
-  fail "POST $zeroFileName/store: Invalid response for ${tmp_dir}/${zeroFileName}\n"
+  fail "POST $zeroFileName/store: Invalid response for ${tmp_dir}/${zeroFileName}"
 fi
 
 rm -f $tmp_dir/$zeroFileName
@@ -380,18 +381,18 @@ rm -f $tmp_dir/$zeroFileName
 ok=0
 curl --output $tmp_dir/$zerofileid.zip $host_and_port/files/$zerofileid/zip && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id/zip: Zero size file download failed\n" 
+  fail "GET /files/$id/zip: Zero size file download failed" 
 fi
 
 ok=0
 cd $tmp_dir && unzip $tmp_dir/$zerofileid.zip && cd - && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id/zip: Zip file not found\n" 
+  fail "GET /files/$id/zip: Zip file not found" 
 fi
 
 FILESIZE=$(stat -c%s "$zeroFileName")
 if [ $FILESIZE -ne "0" ]; then
-  fail "GET /files/$id/zip: Zip file size $FILESIZE != 0\n" 
+  fail "GET /files/$id/zip: Zip file size $FILESIZE != 0" 
 fi
 
 success "POST store/$zeroFileName: zero-size file is handled correctly"
@@ -408,14 +409,14 @@ sendWrongRequest() {
   curl $host_and_port/$uriToSend > $tmp_dir/err.html && ok=1
 
   if [ $ok = "0" ]; then
-    fail "GET $uriToSend: Error in Server Response\n"
+    fail "GET $uriToSend: Error in Server Response"
   fi
 
   ok=0
   grep "$errorExpected" $tmp_dir/err.html && ok=1
 
   if [ $ok = "0" ]; then
-    fail "GET $uriToSend: Wrong error message detected\n"
+    fail "GET $uriToSend: Wrong error message detected"
   fi
 
   success "GET $uriToSend: expected HTTP error checked"
@@ -425,6 +426,58 @@ sendWrongRequest mrufiles/ThisIsInvalid     "400 Bad Request"
 sendWrongRequest files/InvalidID            "404 Not Found"
 sendWrongRequest files/invalidID/zip        "404 Not Found" 
 sendWrongRequest mrufiles/zip/thisIsInvalid "400 Bad Request"
+
+
+# ------------------------------------------------------------------------------
+# Check if we are happy with puntuactors chars, and spaces, escapes, etc.
+# Since we do not support a complete set of UTF-8 in such implementation 
+# the following file name is strange enough for our purposes
+# ------------------------------------------------------------------------------
+strangeFname="StrangeName \!@#$%^&*()'\"\\,><~.txt"
+cd $tmp_dir
+id=`echo -n $strangeFname | sha256sum  | awk '{print $1}'`
+touch $strangeFname # creating an empty unusual named file!
+ok=0
+curl -F file=@$strangeFname $host_and_port/store > strange.json && ok=1
+
+if [ $ok = "0" ]; then
+  cd -
+  fail "POST $strangeFname: File not uploaded"
+fi
+
+ok = 0
+grep $id $tmp_dir/strange.json && ok=1
+
+if [ $ok = "0" ]; then
+  cd -
+  fail "POST $strangeFname: $id does not match with JSON content"
+fi
+
+cd -
+success "POST $strangeFname: File uploaded"
+
+ok = 0
+cd $tmp_dir2
+curl $host_and_port/files/$id > strange.json && diff $tmp_dir/strange.json . && ok=1
+if [ $ok = "0" ]; then
+  cd -
+  fail "GET files/$id: $strangeFname JSON descriptor does't match with POST one"
+fi
+
+ok = 0
+rm -f strange.zip
+curl $host_and_port/files/$id/zip --output strange.zip && ok=1
+if [ $ok = "0" ]; then
+  cd -
+  fail "GET files/$id/zip: $strangeFname JSON descriptor does't match with POST one"
+fi
+success "GET files/$id/zip: zipped $strangeFname downloaded"
+
+ok = 0
+rm -f $strangeFname
+unzip strange.zip && ls $strangeFname && ok=1
+
+success "GET files/$id/zip: $strangeFname successfully uncompressed"
 
 set +x
 

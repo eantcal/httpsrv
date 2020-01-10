@@ -153,8 +153,10 @@ bool FilenameMap::jsonStat(
 
    std::stringstream oss;
    oss << beginl << "{" << std::endl;
+   // we don't need to escape the is while does contain any control/puntuactor char by contract
    oss << beginl << "  \"id\": \"" << id << "\"," << std::endl;
-   oss << beginl << "  \"name\": \"" << fileName << "\"," << std::endl;
+   // while we need to escape the filename otherwhise resulting JSON could be invalid
+   oss << beginl << "  \"name\": \"" << StrUtils::escapeJson(fileName) << "\"," << std::endl;
    oss << beginl << "  \"size\": " << rstat.st_size << "," << std::endl;
    oss << beginl << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
    oss << beginl << "}" << endl;
