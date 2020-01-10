@@ -94,7 +94,7 @@ done
 rm -f $resultfile
 
 # ------------------------------------------------------------------------------
-# Uploading all the files via http onto remote repository
+# Upload $NUMOFFILES files via http onto remote repository
 # ------------------------------------------------------------------------------
 
 listcontent=`find $tmp_dir -type f -name *.txt -exec curl -F file=@{} $host_and_port/store \;`
@@ -146,7 +146,8 @@ rm -f $mruidsfile
 
 
 # ------------------------------------------------------------------------------
-# Query the server for getting the mrufiles
+# Query the server for getting the mrufiles and check if the content matches
+# with 3 mru repository files
 # ------------------------------------------------------------------------------
 
 curl $host_and_port/mrufiles | grep id >> $mruidsfile
@@ -223,7 +224,8 @@ else
 fi
 
 # ------------------------------------------------------------------------------
-# JSON validations 
+# Verify the JSON validity of JSON httpsrv resposese to fils and mrufils 
+# command 
 # ------------------------------------------------------------------------------
 
 function getRequest() {
@@ -238,7 +240,7 @@ function getRequest() {
   ok=0
   eval "$jsonvalidator $tmp_dir/$getRequestType.json && ok=1" 2>/dev/null 
   if [ $ok = "0" ]; then
-    fail "GET /$getRequestType ${RED}JSON VALIDATION FAILED${NC}\n"
+    fail "GET /$getRequestType ${RED}Can't validate the JSON outcome${NC}\n"
   fi
 
   success "OK    GET /$getRequestType JSON Validation"
@@ -275,13 +277,13 @@ sleep 1.5
 ok=0
 curl --output $tmp_dir2/$id.zip $host_and_port/files/$id/zip && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id ${RED}VALIDATION FAILED${NC}\n" 
+  fail "GET /files/$id ${RED}Can't download zip file${NC}\n" 
 fi
 
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n"
+  fail "GET /files/$id ${RED}Can't get the mru list${NC}\n"
 fi
 
 success "TS-OK GET /files/$id/zip"
@@ -294,22 +296,30 @@ id=`echo -n File05.txt | sha256sum  | awk '{print $1}'`
 ok=1
 curl $host_and_port/mrufiles | grep $id && ok=0
  if [ $ok = "0" ]; then
-   fail "GET /files/$id ${RED} should not be in the mrulist now${NC}\n"
+   fail "GET /files/$id ${RED} The id is not supposed to be in the MRU list${NC}\n"
 fi
 
 # make sure timestamp distance at least is 1 sec
 sleep 1.5
 
 ok=0
-curl $host_and_port/files/$id && ok=1
+curl $host_and_port/files/$id > $tmp_dir/aFile.json && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$second_id ${RED}VALIDATION FAILED${NC}\n"
+  fail "GET /files/$second_id ${RED}Can't get the file descriptor${NC}\n"
+fi
+
+ok=0
+eval "$jsonvalidator $tmp_dir/aFile.json && ok=1" 2>/dev/null 
+if [ $ok = "0" ]; then
+  fail "GET /files/$id  ${RED}Can't validate the JSON output${NC}\n"
+else
+  success "OK    GET /files/$id (JSON for single query) is Valid"
 fi
 
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$second_id ${RED}TIMESTAMP VALIDATION FAILED${NC}\n"
+  fail "GET /files/$second_id ${RED}Can't get the mru list${NC}\n"
 fi
 
 
