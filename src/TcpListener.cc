@@ -20,24 +20,7 @@ TcpListener::TcpListener()
     : TransportSocket(int(::socket(AF_INET, SOCK_STREAM, 0))),
       _status(isValid() ? Status::VALID : Status::INVALID)
 {
-   memset(&_local_ip_port_sa_in, 0, sizeof(_local_ip_port_sa_in));
-}
-
-/* -------------------------------------------------------------------------- */
-
-bool TcpListener::bind(const std::string &ip, const TranspPort &port)
-{
-   if (getSocketFd() <= 0)
-      return false;
-
-   sockaddr_in &sin = _local_ip_port_sa_in;
-
-   sin.sin_family = AF_INET;
-   sin.sin_addr.s_addr = ip.empty() ? INADDR_ANY : inet_addr(ip.c_str());
-   sin.sin_port = htons(port);
-
-   return 0 ==
-      ::bind(getSocketFd(), reinterpret_cast<const sockaddr *>(&sin), sizeof(sin));
+   // _local_ip_port_sa_in is inizialized by TransportSocket ctor
 }
 
 /* -------------------------------------------------------------------------- */

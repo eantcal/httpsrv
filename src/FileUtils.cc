@@ -187,8 +187,8 @@ bool FileUtils::touchDir(
    try
    {
       // Create a new support directory if it does not exist
-      boost::filesystem::path dir(relativeDirName);
-      boost::filesystem::create_directories(dir);
+      fs::path dir(relativeDirName);
+      fs::create_directories(dir);
    }
    catch (...)
    {

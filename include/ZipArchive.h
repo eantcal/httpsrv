@@ -16,8 +16,8 @@
 #include "zip.h"
 #include <string>
 
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
+#include "FileUtils.h"
+
 
 /* -------------------------------------------------------------------------- */
 

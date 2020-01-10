@@ -48,6 +48,7 @@ protected:
    TransportSocket(const SocketFd &sd) noexcept
        : _socket(sd)
    {
+      memset(&_local_ip_port_sa_in, 0, sizeof(_local_ip_port_sa_in));
    }
 
 public:
@@ -161,12 +162,33 @@ public:
     */
    int sendFile(const std::string &filepath) noexcept;
 
+   /**
+   * Associates a local IPv4 address and TCP port with this
+   * connection.
+   *
+   * @param ip The IPv4 address of local interface to bind to
+   * @param port The port to bind to
+   * @return false if operation fails, true otherwise
+   */
+   bool bind(const std::string& ip, const TranspPort& port);
+
+   /**
+    * Associates a local TCP port with this connection.
+    *
+    * @param port The port to bind to
+    * @return false if operation fails, true otherwise
+    */
+   bool bind(const TranspPort& port)
+   {
+      return bind("", port);
+   }
+
 private:
    SocketFd _socket = 0;
-   enum
-   {
-      TX_BUFFER_SIZE = HTTP_SERVER_TX_BUF_SIZE
-   };
+   enum { TX_BUFFER_SIZE = HTTP_SERVER_TX_BUF_SIZE };
+
+protected:
+   sockaddr_in _local_ip_port_sa_in;
 };
 
 /* -------------------------------------------------------------------------- */

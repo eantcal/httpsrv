@@ -70,26 +70,7 @@ public:
       return Handle(new (std::nothrow) TcpListener());
    }
 
-   /**
-    * Associates a local IPv4 address and TCP port with this
-    * connection.
-    *
-    * @param ip The IPv4 address of local interface to bind to
-    * @param port The port to bind to
-    * @return false if operation fails, true otherwise
-    */
-   bool bind(const std::string &ip, const TranspPort &port);
-
-   /**
-    * Associates a local TCP port with this connection.
-    *
-    * @param port The port to bind to
-    * @return false if operation fails, true otherwise
-    */
-   bool bind(const TranspPort &port)
-   {
-      return bind("", port);
-   }
+  
 
    /**
     * Enables the listening mode, to listen for incoming
@@ -113,8 +94,9 @@ public:
 
 private:
    std::atomic<Status> _status;
-   sockaddr_in _local_ip_port_sa_in;
    TcpListener();
+
+
 };
 
 /* -------------------------------------------------------------------------- */
