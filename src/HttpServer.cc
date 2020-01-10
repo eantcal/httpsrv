@@ -318,18 +318,18 @@ void HttpServerSession::operator()(Handle taskHandle)
       }
       else
       {
-         response = std::move(std::make_unique<HttpResponse>(400)); // Bad Request
+         response = std::make_unique<HttpResponse>(400); // Bad Request
       }
 
       if (!response)
       {
          // Format a response to previous HTTP request, unless a bad
          // request was detected
-         response = std::move(std::make_unique<HttpResponse>(
+         response = std::make_unique<HttpResponse>(
              *httpRequest,
              jsonResponse,
              jsonResponse.empty() ? "" : ".json",
-             fileToSend));
+             fileToSend);
       }
 
       assert(response);
