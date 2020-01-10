@@ -112,7 +112,7 @@ void HttpRequest::parseHeader(const std::string &header)
                   }
                }
             }
-            //  Parse multipart content an search for content disposition:
+            //  Parse multipart content and search for content disposition:
             //  From such header get the filename field used to store file content
             //  Such header looks like in the following example:
             //
