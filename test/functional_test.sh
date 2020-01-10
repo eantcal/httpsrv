@@ -60,7 +60,7 @@ checkCommand "sha256sum"
 jsonvalidator="jsonlint-php"
 checkCommand $jsonvalidator
 
-#set -x
+set -x
 
 tmp_dir=$(mktemp -d -t resources-XXXXXXXXXX)
 tmp_dir2=$(mktemp -d -t resources-XXXXXXXXXX)

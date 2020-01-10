@@ -136,10 +136,29 @@ void HttpRequest::parseHeader(const std::string &header)
                         _filename.clear();
                         for (auto i = searched_prefix.size(); i < field.size(); ++i)
                         {
-                           if (field[i] == '\"')
+                           const bool escape = field[i-1]=='\\';
+
+                           /*
+                           Escape punctuation characters:
+
+                           \" = quotation mark (backslash not required for '"')
+                           \' = apostrophe (backslash not required for "'")
+                           \? = question mark (used to avoid trigraphs)
+                           \\ = backslash
+                           */
+                           const auto ch=field[i];
+                           bool punctuation = escape && (ch=='\"' || ch=='\'' || ch=='\?' || ch=='\\'); 
+
+                           if (escape && punctuation && !_filename.empty()) {
+                              _filename.resize(_filename.size()-1); // remove last backslash
+                              _filename += ch; // replace it with punctuation
+                           }
+                           else if (ch == '\"')
                               break;
-                           _filename += field[i];
+                           else   
+                              _filename += ch;
                         }
+
                         break;
                      }
                   }
