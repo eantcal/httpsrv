@@ -10,6 +10,10 @@
 
 #include "SysUtils.h"
 #include "StrUtils.h"
+#include <sstream>
+#include <iomanip>
+#include <ctime>
+
 
 /* -------------------------------------------------------------------------- */
 
@@ -32,10 +36,12 @@ void SysUtils::convertDurationInTimeval(const TimeoutInterval &d, timeval &tv)
 
 void SysUtils::getUtcTime(std::string &retTime)
 {
-   time_t ltime;
-   ltime = ::time(NULL); // get current calendar time
-   retTime = ::asctime(::gmtime(&ltime));
-   StrUtils::removeLastCharIf(retTime, '\n');
+   std::stringstream ss;
+   std::time_t t = std::time(nullptr);
+   std::tm tm = *std::gmtime(&t);
+
+   ss << std::put_time(&tm, "%c %Z");
+   retTime = ss.str();
 }
 
 /* -------------------------------------------------------------------------- */
