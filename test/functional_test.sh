@@ -78,11 +78,12 @@ allidsfile=$tmp_dir"/allids.tmp"
 mruidsfile=$tmp_dir"/mruids.tmp"
 threeidsfile=$tmp_dir"/threeids.tmp"
 sortedmruidsfile=$tmp_dir"/sortedmruids.tmp"
+NUMOFFILES=50
 
 #Create a bunch of text files with different growing sizes
 CONTENT=""
-echo "Creating 10 files in $tmp_dir ..."
-for i in {01..10}
+echo "Creating $NUMOFFILES files in $tmp_dir ..."
+for i in `seq -f "%02g" 1 $NUMOFFILES`
 do
     ADDCONTENT=" Content"
     CONTENT+=$ADDCONTENT
@@ -102,10 +103,10 @@ echo $listcontent | sed -r "s/\}/\\n/g" > $listfile
 
 chk=`cat $listfile | grep id | grep name | grep timestamp | wc -l`
 
-if [ $chk = "10" ]; then
+if [ $chk = "$NUMOFFILES" ]; then
   success "OK    POST /store"
 else
-  fail "POST /store ${RED}TEST FAILED${NC}\n" 
+  fail "POST /store ${RED}Expected $NUMOFFILES notifications${NC}\n" 
 fi
 
 cleanUpFile $listfile
@@ -338,6 +339,51 @@ if [ $ok = "0" ]; then
 fi
 
 success "BF-OK POST store/$bigFileName"
+
+
+set -x
+# ------------------------------------------------------------------------------
+# Zero File Test
+# ------------------------------------------------------------------------------
+
+zeroFileName="zeroFile.txt"
+
+touch $tmp_dir/$zeroFileName
+
+zerofileid=`echo -n ${zeroFileName} | sha256sum  | awk '{print $1}'`
+
+ok=0
+cd $tmp_dir && curl -F file=@${zeroFileName} $host_and_port/store > $zeroFileName.json && cd - && ok=1
+if [ $ok = "0" ]; then
+  fail "POST $zeroFileName/store ${RED}Cannot transfer ${tmp_dir}/${zeroFileName} ${NC}\n"
+fi
+
+ok=0
+grep $zerofileid $tmp_dir/$zeroFileName.json && grep '"size": 0,' $tmp_dir/$zeroFileName.json && ok=1
+if [ $ok = "0" ]; then
+  fail "POST $zeroFileName/store ${RED}Invalid response for ${tmp_dir}/${zeroFileName} ${NC}\n"
+fi
+
+rm -f $tmp_dir/$zeroFileName
+
+ok=0
+curl --output $tmp_dir/$zerofileid.zip $host_and_port/files/$zerofileid/zip && ok=1
+if [ $ok = "0" ]; then
+  fail "GET /files/$id/zip ${RED}Zero size file download failed${NC}\n" 
+fi
+
+ok=0
+cd $tmp_dir && unzip $tmp_dir/$zerofileid.zip && cd - && ok=1
+if [ $ok = "0" ]; then
+  fail "GET /files/$id/zip ${RED}Zip file not found${NC}\n" 
+fi
+
+FILESIZE=$(stat -c%s "$zeroFileName")
+if [ $FILESIZE -ne "0" ]; then
+  fail "GET /files/$id/zip ${RED}Zip file size $FILESIZE != 0 ${NC}\n" 
+fi
+
+success "ZF-OK POST store/$zeroFileName"
 
 # ------------------------------------------------------------------------------
 # Evil Requests
