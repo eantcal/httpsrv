@@ -26,7 +26,7 @@
 /* -------------------------------------------------------------------------- */
 
 /**
- * Encapsulates HTTP style request, consisting of a request line,
+ * Encapsulates HTTP request, consisting of a request line,
  * some headers, and a content body
  */
 class HttpRequest

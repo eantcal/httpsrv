@@ -23,7 +23,7 @@
 /* -------------------------------------------------------------------------- */
 
 /**
- * Encapsulates HTTP style response, consisting of a status line,
+ * Encapsulates HTTP response, consisting of a status line,
  * some headers, and a content body.
  */
 class HttpResponse
@@ -36,7 +36,11 @@ public:
    using Handle = std::unique_ptr<HttpResponse>;
 
    /**
-    * Constructs a response to a request.
+    * Constructs a response to a given request.
+    * @param request is the request
+    * @param body is optional body content
+    * @param bodyFormat is optional body format
+    * @param fileToSend is optional file name to send
     */
    HttpResponse(
        const HttpRequest &request,
@@ -45,7 +49,7 @@ public:
        const std::string &fileToSend);
 
    /**
-    * Constructs an error response to a request.
+    * Constructs an error response depending on given errorCode.
     */
    HttpResponse(int errorCode)
    {
@@ -55,7 +59,7 @@ public:
    /**
     * Returns the content of response status line and response headers.
     */
-   operator const std::string &() const
+   operator const std::string& () const
    {
       return _response;
    }

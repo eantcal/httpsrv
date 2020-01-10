@@ -382,7 +382,7 @@ cat $resultfile
 
 
 # ------------------------------------------------------------------------------
-# Cleanup temporary files
+# Cleanup temporary directories and related files
 # ------------------------------------------------------------------------------
 rm -rf $tmp_dir
 rm -rf $tmp_dir2

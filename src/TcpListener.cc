@@ -49,7 +49,8 @@ TcpSocket::Handle TcpListener::accept()
 
    sockaddr remote_sockaddr = {0};
 
-   struct sockaddr *local_sockaddr = reinterpret_cast<struct sockaddr *>(&_local_ip_port_sa_in);
+   struct sockaddr *local_sockaddr = 
+      reinterpret_cast<struct sockaddr *>(&_local_ip_port_sa_in);
 
    socklen_t sockaddrlen = sizeof(struct sockaddr);
 
