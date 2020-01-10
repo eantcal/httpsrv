@@ -1,0 +1,3582 @@
+Fri Jan 10 14:16:43 2020 GMT
+Command line :'./httpsrv -vv'
+httpsrv is listening on TCP port 8080
+Working directory is '~/.httpsrv'
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 244
+Content-Type: multipart/form-data; boundary=------------------------4bb423089a321b44
+--------------------------4bb423089a321b44
+Content-Disposition: form-data; name="file"; filename="File07.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File07.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa",
+  "name": "File07.txt",
+  "size": 56,
+  "timestamp": "2020-01-10T14:16:50.252365Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 324
+Content-Type: multipart/form-data; boundary=------------------------da26300957a6efb4
+--------------------------da26300957a6efb4
+Content-Disposition: form-data; name="file"; filename="File17.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File17.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "4decf93557b8faa2ca4692a17dcb71dd687b7689756ea76cc9466b7894979f50",
+  "name": "File17.txt",
+  "size": 136,
+  "timestamp": "2020-01-10T14:16:50.276365Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 276
+Content-Type: multipart/form-data; boundary=------------------------8708955a432bbb51
+--------------------------8708955a432bbb51
+Content-Disposition: form-data; name="file"; filename="File11.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File11.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "baf5b2462303852f2e428d947dd065ccc5499c20a8bee89e59cc581f6c34332b",
+  "name": "File11.txt",
+  "size": 88,
+  "timestamp": "2020-01-10T14:16:50.300365Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 308
+Content-Type: multipart/form-data; boundary=------------------------88c5fb9367ba53f6
+--------------------------88c5fb9367ba53f6
+Content-Disposition: form-data; name="file"; filename="File15.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File15.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "1d56e0aca8d9cef678851f78503411fc670136064567af3d1663ff8bdaca8010",
+  "name": "File15.txt",
+  "size": 120,
+  "timestamp": "2020-01-10T14:16:50.324365Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 316
+Content-Type: multipart/form-data; boundary=------------------------56192cbd07809a87
+--------------------------56192cbd07809a87
+Content-Disposition: form-data; name="file"; filename="File16.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File16.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "318def7aa97cc6f4d7224f36fa48bf6329033e7c48f2e86f0358a9f9ac5b67be",
+  "name": "File16.txt",
+  "size": 128,
+  "timestamp": "2020-01-10T14:16:50.348365Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 300
+Content-Type: multipart/form-data; boundary=------------------------5c58fa526e8c01d7
+--------------------------5c58fa526e8c01d7
+Content-Disposition: form-data; name="file"; filename="File14.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File14.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "a36e023a1ebe857aebd14336ca7ec962af92ddc59c7b68c49c906a45256eb11d",
+  "name": "File14.txt",
+  "size": 112,
+  "timestamp": "2020-01-10T14:16:50.372366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 548
+Content-Type: multipart/form-data; boundary=------------------------f85e6868a5176b6e
+--------------------------f85e6868a5176b6e
+Content-Disposition: form-data; name="file"; filename="File45.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File45.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "d9c897c5627478a7f0d063816a9fbb752b336c75ac403179c6f2401b1191d30a",
+  "name": "File45.txt",
+  "size": 360,
+  "timestamp": "2020-01-10T14:16:50.396366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 500
+Content-Type: multipart/form-data; boundary=------------------------d4d61a5298abc82f
+--------------------------d4d61a5298abc82f
+Content-Disposition: form-data; name="file"; filename="File39.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File39.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "87766972afca214ab1faf91cc071b5fbf56eeab0f831f263039e26f623841573",
+  "name": "File39.txt",
+  "size": 312,
+  "timestamp": "2020-01-10T14:16:50.420366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 236
+Content-Type: multipart/form-data; boundary=------------------------5571dc94eedb50e1
+--------------------------5571dc94eedb50e1
+Content-Disposition: form-data; name="file"; filename="File06.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File06.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "6d94eb86a98c459e60fdf7a775d64731c2cdb22ca6a962b418e4e3ac7ad73db3",
+  "name": "File06.txt",
+  "size": 48,
+  "timestamp": "2020-01-10T14:16:50.448366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 364
+Content-Type: multipart/form-data; boundary=------------------------6429ad996b004e8d
+--------------------------6429ad996b004e8d
+Content-Disposition: form-data; name="file"; filename="File22.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File22.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "9d018d59712307d69ac8ca4ef543d41e4cccbda4c9f8585ce02b330f31c71200",
+  "name": "File22.txt",
+  "size": 176,
+  "timestamp": "2020-01-10T14:16:50.468366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 468
+Content-Type: multipart/form-data; boundary=------------------------2d5fd3ebc901a7b5
+--------------------------2d5fd3ebc901a7b5
+Content-Disposition: form-data; name="file"; filename="File35.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File35.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "90504b1ab1b7dd5f133a804b318a6a9ae68d8edd7c623830c2bb3505e0eeb383",
+  "name": "File35.txt",
+  "size": 280,
+  "timestamp": "2020-01-10T14:16:50.496366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 212
+Content-Type: multipart/form-data; boundary=------------------------ed06cb39b5822e61
+--------------------------ed06cb39b5822e61
+Content-Disposition: form-data; name="file"; filename="File03.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File03.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "f5e51aa439a2002346f5f703745873ef6fac767bd22601b7c0c617d0cbde8d61",
+  "name": "File03.txt",
+  "size": 24,
+  "timestamp": "2020-01-10T14:16:50.520366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 524
+Content-Type: multipart/form-data; boundary=------------------------75a7f6d3739e46d3
+--------------------------75a7f6d3739e46d3
+Content-Disposition: form-data; name="file"; filename="File42.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File42.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "83683e2d0639c034589173c0cea588d07da2640c10b464388248c73bcd3e502c",
+  "name": "File42.txt",
+  "size": 336,
+  "timestamp": "2020-01-10T14:16:50.548366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 588
+Content-Type: multipart/form-data; boundary=------------------------3c5cc5a76c805364
+--------------------------3c5cc5a76c805364
+Content-Disposition: form-data; name="file"; filename="File50.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File50.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "b9a62bad12db46a365edcc8966cb1cb09105cf277ca423781905edfab47dfe53",
+  "name": "File50.txt",
+  "size": 400,
+  "timestamp": "2020-01-10T14:16:50.572366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 516
+Content-Type: multipart/form-data; boundary=------------------------cd1acc6361dc4db3
+--------------------------cd1acc6361dc4db3
+Content-Disposition: form-data; name="file"; filename="File41.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File41.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "7998755ebaaac2f5cf7f4f95059fdc602a9d5c8bfe67fb5b96f93caef0c91bdd",
+  "name": "File41.txt",
+  "size": 328,
+  "timestamp": "2020-01-10T14:16:50.596366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 460
+Content-Type: multipart/form-data; boundary=------------------------4dc5f34d8f17b8de
+--------------------------4dc5f34d8f17b8de
+Content-Disposition: form-data; name="file"; filename="File34.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File34.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "38a0c904f4e3af63449d4498b58744a7cabc0593ddf834242fc22d933f8f74be",
+  "name": "File34.txt",
+  "size": 272,
+  "timestamp": "2020-01-10T14:16:50.616366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 532
+Content-Type: multipart/form-data; boundary=------------------------f76b364812fa5f7d
+--------------------------f76b364812fa5f7d
+Content-Disposition: form-data; name="file"; filename="File43.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File43.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "16820d70f8775b4c9fd3bbb707e5215aa6e19de4f64c21c506e457ce49d3e2be",
+  "name": "File43.txt",
+  "size": 344,
+  "timestamp": "2020-01-10T14:16:50.644366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 356
+Content-Type: multipart/form-data; boundary=------------------------022eb69a3fd97467
+--------------------------022eb69a3fd97467
+Content-Disposition: form-data; name="file"; filename="File21.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File21.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "457fed0c4d8af24e59ad41715827436c0852e5d2d81485abe511c44942e0d722",
+  "name": "File21.txt",
+  "size": 168,
+  "timestamp": "2020-01-10T14:16:50.668366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 412
+Content-Type: multipart/form-data; boundary=------------------------594977accb90a1e7
+--------------------------594977accb90a1e7
+Content-Disposition: form-data; name="file"; filename="File28.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File28.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "89763280919746a46c07575d9df38efdca40db5da777a90654ecab36b0cc59a5",
+  "name": "File28.txt",
+  "size": 224,
+  "timestamp": "2020-01-10T14:16:50.692366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 404
+Content-Type: multipart/form-data; boundary=------------------------da5373970079d91e
+--------------------------da5373970079d91e
+Content-Disposition: form-data; name="file"; filename="File27.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File27.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "5527615a52a3b5fdcb8e3a1a312614c9458c2dcbe0b0df3ab2f2f1113d21625d",
+  "name": "File27.txt",
+  "size": 216,
+  "timestamp": "2020-01-10T14:16:50.712366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 436
+Content-Type: multipart/form-data; boundary=------------------------7785e43cab5c9dfe
+--------------------------7785e43cab5c9dfe
+Content-Disposition: form-data; name="file"; filename="File31.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File31.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "40d4126955cddd42040afde66d522fd736f5f4f654c66d6ecf43f8c78a580978",
+  "name": "File31.txt",
+  "size": 248,
+  "timestamp": "2020-01-10T14:16:50.736366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 252
+Content-Type: multipart/form-data; boundary=------------------------a9bd4a12c8394cee
+--------------------------a9bd4a12c8394cee
+Content-Disposition: form-data; name="file"; filename="File08.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File08.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "73803b99b3933181ceb30a04de7b2a60f9bb5caae0893b73bdfc79dd07a9e833",
+  "name": "File08.txt",
+  "size": 64,
+  "timestamp": "2020-01-10T14:16:50.764366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 572
+Content-Type: multipart/form-data; boundary=------------------------9cc7f2d62803257d
+--------------------------9cc7f2d62803257d
+Content-Disposition: form-data; name="file"; filename="File48.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File48.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "386bf6a815883bf6a15a0b33d9956ee45b46e46668afebf18219420838569ea0",
+  "name": "File48.txt",
+  "size": 384,
+  "timestamp": "2020-01-10T14:16:50.784366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 220
+Content-Type: multipart/form-data; boundary=------------------------56467f3fc574eec5
+--------------------------56467f3fc574eec5
+Content-Disposition: form-data; name="file"; filename="File04.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File04.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24",
+  "name": "File04.txt",
+  "size": 32,
+  "timestamp": "2020-01-10T14:16:50.808366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 580
+Content-Type: multipart/form-data; boundary=------------------------c31dafa591fd0450
+--------------------------c31dafa591fd0450
+Content-Disposition: form-data; name="file"; filename="File49.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File49.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "5d7ce7c4095175ad223f167c65c863e16662b00a18742cf1826749bfea55c747",
+  "name": "File49.txt",
+  "size": 392,
+  "timestamp": "2020-01-10T14:16:50.828366Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 292
+Content-Type: multipart/form-data; boundary=------------------------1c8b54b8b88c0a84
+--------------------------1c8b54b8b88c0a84
+Content-Disposition: form-data; name="file"; filename="File13.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File13.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "aa0cd90eb50d13dd806f5dd01c1bc64b783abaaf57f51259004d0fec74918e93",
+  "name": "File13.txt",
+  "size": 104,
+  "timestamp": "2020-01-10T14:16:50.856366Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 540
+Content-Type: multipart/form-data; boundary=------------------------0502d87da7c858e8
+--------------------------0502d87da7c858e8
+Content-Disposition: form-data; name="file"; filename="File44.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File44.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "62c74146e2110b9946836d19496fd6b99e38ff410441c7f4f6e458f36c59c609",
+  "name": "File44.txt",
+  "size": 352,
+  "timestamp": "2020-01-10T14:16:50.876367Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 484
+Content-Type: multipart/form-data; boundary=------------------------60f0adcf39d0fc97
+--------------------------60f0adcf39d0fc97
+Content-Disposition: form-data; name="file"; filename="File37.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File37.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "fd86b484358dc2221c1cd1659263371d0c6e6dda9e2bf23610b9a0136fe2e80d",
+  "name": "File37.txt",
+  "size": 296,
+  "timestamp": "2020-01-10T14:16:50.900367Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 508
+Content-Type: multipart/form-data; boundary=------------------------bb8a3ad4704b6bdf
+--------------------------bb8a3ad4704b6bdf
+Content-Disposition: form-data; name="file"; filename="File40.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File40.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "2cdaa32b40528a2a752a7514a14ed68dea1b8d44df148d58024952114f255b41",
+  "name": "File40.txt",
+  "size": 320,
+  "timestamp": "2020-01-10T14:16:50.928367Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 444
+Content-Type: multipart/form-data; boundary=------------------------36898a497e1d2fee
+--------------------------36898a497e1d2fee
+Content-Disposition: form-data; name="file"; filename="File32.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File32.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "6c567aeb603f441928042d97ae27539ebfabafb455df073a7fc7b9bf9c997983",
+  "name": "File32.txt",
+  "size": 256,
+  "timestamp": "2020-01-10T14:16:50.948367Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 428
+Content-Type: multipart/form-data; boundary=------------------------0a791e952f4cf892
+--------------------------0a791e952f4cf892
+Content-Disposition: form-data; name="file"; filename="File30.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File30.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "e116a782ccad0342095489b073946ea8e3fdf959abe6be28f30e5ebd5364a093",
+  "name": "File30.txt",
+  "size": 240,
+  "timestamp": "2020-01-10T14:16:50.976367Z"
+}
+
+[4] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:50 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 492
+Content-Type: multipart/form-data; boundary=------------------------4811da3ff2dd6725
+--------------------------4811da3ff2dd6725
+Content-Disposition: form-data; name="file"; filename="File38.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] Writing 'File38.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:50 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:50 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:50 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "8f45621d3bea385a2c03515d932c4b416ba23c555f3812b9d0a1a8d28b4774e6",
+  "name": "File38.txt",
+  "size": 304,
+  "timestamp": "2020-01-10T14:16:50.996367Z"
+}
+
+[5] [Fri Jan 10 14:16:50 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 564
+Content-Type: multipart/form-data; boundary=------------------------5b9ef8fd8c33b517
+--------------------------5b9ef8fd8c33b517
+Content-Disposition: form-data; name="file"; filename="File47.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File47.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "3ede5a95c2d7423220c59ef88acbe8b5309ee7c25e0f5630d0a99157027f45c1",
+  "name": "File47.txt",
+  "size": 376,
+  "timestamp": "2020-01-10T14:16:51.020367Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 340
+Content-Type: multipart/form-data; boundary=------------------------fafae9a57b7b921b
+--------------------------fafae9a57b7b921b
+Content-Disposition: form-data; name="file"; filename="File19.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File19.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "df5ed1546f108aaffe6d380a3c2f91ea0c6eca65330514ae619ac2608b76b00a",
+  "name": "File19.txt",
+  "size": 152,
+  "timestamp": "2020-01-10T14:16:51.048367Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 380
+Content-Type: multipart/form-data; boundary=------------------------8eb7f402058b3743
+--------------------------8eb7f402058b3743
+Content-Disposition: form-data; name="file"; filename="File24.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File24.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "1b6b5fa37a8920c74811e8d55271d7e1f32308bb2a688f260b9d3ed636ef5341",
+  "name": "File24.txt",
+  "size": 192,
+  "timestamp": "2020-01-10T14:16:51.072367Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 204
+Content-Type: multipart/form-data; boundary=------------------------0dcc0f4103ccc374
+--------------------------0dcc0f4103ccc374
+Content-Disposition: form-data; name="file"; filename="File02.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File02.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "79d3079a3bf1bbfcd940ee01ec5e28e790c18cd5686a3688f9635034d72cc319",
+  "name": "File02.txt",
+  "size": 16,
+  "timestamp": "2020-01-10T14:16:51.100367Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 332
+Content-Type: multipart/form-data; boundary=------------------------a673699839a9e26a
+--------------------------a673699839a9e26a
+Content-Disposition: form-data; name="file"; filename="File18.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File18.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "5bc283a5351cb37fde960f12db923819dd00c2ffe5fbf1bfe1ae664a9bb828ce",
+  "name": "File18.txt",
+  "size": 144,
+  "timestamp": "2020-01-10T14:16:51.120367Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 556
+Content-Type: multipart/form-data; boundary=------------------------b195357811dd4c3e
+--------------------------b195357811dd4c3e
+Content-Disposition: form-data; name="file"; filename="File46.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File46.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "de38a03581c4478799968613a4f0936c4b9659a3b880812f1dedc159d8ebf58c",
+  "name": "File46.txt",
+  "size": 368,
+  "timestamp": "2020-01-10T14:16:51.144367Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 420
+Content-Type: multipart/form-data; boundary=------------------------c39e8f1046050a3b
+--------------------------c39e8f1046050a3b
+Content-Disposition: form-data; name="file"; filename="File29.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File29.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "6d3cbe6c373da4bd29bc45c66514d4bd3ee89bdb3b64f2ea2df49871ed8e8ffc",
+  "name": "File29.txt",
+  "size": 232,
+  "timestamp": "2020-01-10T14:16:51.168367Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 476
+Content-Type: multipart/form-data; boundary=------------------------3522ab2bdc49fa2a
+--------------------------3522ab2bdc49fa2a
+Content-Disposition: form-data; name="file"; filename="File36.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File36.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "97e9fb536c20bac8e7ddc968f909d68aad6a6f926962ba776910e650ba53b9d3",
+  "name": "File36.txt",
+  "size": 288,
+  "timestamp": "2020-01-10T14:16:51.196367Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 228
+Content-Type: multipart/form-data; boundary=------------------------313b111defc15720
+--------------------------313b111defc15720
+Content-Disposition: form-data; name="file"; filename="File05.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File05.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a",
+  "name": "File05.txt",
+  "size": 40,
+  "timestamp": "2020-01-10T14:16:51.224367Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 348
+Content-Type: multipart/form-data; boundary=------------------------ba0db8b53e768e18
+--------------------------ba0db8b53e768e18
+Content-Disposition: form-data; name="file"; filename="File20.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File20.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "07b99a384cbb15bd8f34d435ea80bcad2201996a15b05579667fa0f2483169b5",
+  "name": "File20.txt",
+  "size": 160,
+  "timestamp": "2020-01-10T14:16:51.244367Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 268
+Content-Type: multipart/form-data; boundary=------------------------3d0d10672de9da11
+--------------------------3d0d10672de9da11
+Content-Disposition: form-data; name="file"; filename="File10.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File10.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "5db20c888515fb4d7b4127cc6236a98ff678cc5b23cd620cb6297a0a9ae6fe06",
+  "name": "File10.txt",
+  "size": 80,
+  "timestamp": "2020-01-10T14:16:51.268367Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 372
+Content-Type: multipart/form-data; boundary=------------------------f9b6a93e3ca23038
+--------------------------f9b6a93e3ca23038
+Content-Disposition: form-data; name="file"; filename="File23.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File23.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "d753153760fd081ef17782db8c722e1918391bfa2b76d252b2901b0928735768",
+  "name": "File23.txt",
+  "size": 184,
+  "timestamp": "2020-01-10T14:16:51.296367Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 452
+Content-Type: multipart/form-data; boundary=------------------------0638a508de9883bf
+--------------------------0638a508de9883bf
+Content-Disposition: form-data; name="file"; filename="File33.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File33.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "c99f804acf18ed4c4e11578d6dc0b21083cec9a5cb50e03d4594f2ef682e8fac",
+  "name": "File33.txt",
+  "size": 264,
+  "timestamp": "2020-01-10T14:16:51.320367Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 396
+Content-Type: multipart/form-data; boundary=------------------------3dea3d4b68d54b01
+--------------------------3dea3d4b68d54b01
+Content-Disposition: form-data; name="file"; filename="File26.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File26.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "3068deacda880094fcf813d68e7dd9cb6305cc67e66b89391db249681fc2dbd3",
+  "name": "File26.txt",
+  "size": 208,
+  "timestamp": "2020-01-10T14:16:51.344367Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 196
+Content-Type: multipart/form-data; boundary=------------------------e1072a5ffa8fcb96
+--------------------------e1072a5ffa8fcb96
+Content-Disposition: form-data; name="file"; filename="File01.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File01.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 162
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59",
+  "name": "File01.txt",
+  "size": 8,
+  "timestamp": "2020-01-10T14:16:51.368368Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 388
+Content-Type: multipart/form-data; boundary=------------------------9b9af31e9370fe7d
+--------------------------9b9af31e9370fe7d
+Content-Disposition: form-data; name="file"; filename="File25.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File25.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "3bd5d99d9f22a2f977dc93854b3801aaf7854dc7140e4e10c10ee692bd01c9e4",
+  "name": "File25.txt",
+  "size": 200,
+  "timestamp": "2020-01-10T14:16:51.392368Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 284
+Content-Type: multipart/form-data; boundary=------------------------6488ea26cea6eb8d
+--------------------------6488ea26cea6eb8d
+Content-Disposition: form-data; name="file"; filename="File12.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File12.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "7de67d309bc2ae3ee19121d88a67335668b135c17edd2f98a2675a1254cb8298",
+  "name": "File12.txt",
+  "size": 96,
+  "timestamp": "2020-01-10T14:16:51.416368Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 260
+Content-Type: multipart/form-data; boundary=------------------------f0acc775500254d6
+--------------------------f0acc775500254d6
+Content-Disposition: form-data; name="file"; filename="File09.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] Writing 'File09.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "798523a37c64104b0670dd42d49fe291031c148101f9f1ed5b7436aa2ea3c7ed",
+  "name": "File09.txt",
+  "size": 72,
+  "timestamp": "2020-01-10T14:16:51.440368Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa",
+  "name": "File07.txt",
+  "size": 56,
+  "timestamp": "2020-01-10T14:16:51.484368Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/4decf93557b8faa2ca4692a17dcb71dd687b7689756ea76cc9466b7894979f50 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "4decf93557b8faa2ca4692a17dcb71dd687b7689756ea76cc9466b7894979f50",
+  "name": "File17.txt",
+  "size": 136,
+  "timestamp": "2020-01-10T14:16:51.516368Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/baf5b2462303852f2e428d947dd065ccc5499c20a8bee89e59cc581f6c34332b HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "baf5b2462303852f2e428d947dd065ccc5499c20a8bee89e59cc581f6c34332b",
+  "name": "File11.txt",
+  "size": 88,
+  "timestamp": "2020-01-10T14:16:51.552368Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/1d56e0aca8d9cef678851f78503411fc670136064567af3d1663ff8bdaca8010 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "1d56e0aca8d9cef678851f78503411fc670136064567af3d1663ff8bdaca8010",
+  "name": "File15.txt",
+  "size": 120,
+  "timestamp": "2020-01-10T14:16:51.580368Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/318def7aa97cc6f4d7224f36fa48bf6329033e7c48f2e86f0358a9f9ac5b67be HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "318def7aa97cc6f4d7224f36fa48bf6329033e7c48f2e86f0358a9f9ac5b67be",
+  "name": "File16.txt",
+  "size": 128,
+  "timestamp": "2020-01-10T14:16:51.612368Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/a36e023a1ebe857aebd14336ca7ec962af92ddc59c7b68c49c906a45256eb11d HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "a36e023a1ebe857aebd14336ca7ec962af92ddc59c7b68c49c906a45256eb11d",
+  "name": "File14.txt",
+  "size": 112,
+  "timestamp": "2020-01-10T14:16:51.640368Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/d9c897c5627478a7f0d063816a9fbb752b336c75ac403179c6f2401b1191d30a HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "d9c897c5627478a7f0d063816a9fbb752b336c75ac403179c6f2401b1191d30a",
+  "name": "File45.txt",
+  "size": 360,
+  "timestamp": "2020-01-10T14:16:51.672368Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/87766972afca214ab1faf91cc071b5fbf56eeab0f831f263039e26f623841573 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "87766972afca214ab1faf91cc071b5fbf56eeab0f831f263039e26f623841573",
+  "name": "File39.txt",
+  "size": 312,
+  "timestamp": "2020-01-10T14:16:51.708368Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/6d94eb86a98c459e60fdf7a775d64731c2cdb22ca6a962b418e4e3ac7ad73db3 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "6d94eb86a98c459e60fdf7a775d64731c2cdb22ca6a962b418e4e3ac7ad73db3",
+  "name": "File06.txt",
+  "size": 48,
+  "timestamp": "2020-01-10T14:16:51.736368Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/9d018d59712307d69ac8ca4ef543d41e4cccbda4c9f8585ce02b330f31c71200 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "9d018d59712307d69ac8ca4ef543d41e4cccbda4c9f8585ce02b330f31c71200",
+  "name": "File22.txt",
+  "size": 176,
+  "timestamp": "2020-01-10T14:16:51.764368Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/90504b1ab1b7dd5f133a804b318a6a9ae68d8edd7c623830c2bb3505e0eeb383 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "90504b1ab1b7dd5f133a804b318a6a9ae68d8edd7c623830c2bb3505e0eeb383",
+  "name": "File35.txt",
+  "size": 280,
+  "timestamp": "2020-01-10T14:16:51.792368Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/f5e51aa439a2002346f5f703745873ef6fac767bd22601b7c0c617d0cbde8d61 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "f5e51aa439a2002346f5f703745873ef6fac767bd22601b7c0c617d0cbde8d61",
+  "name": "File03.txt",
+  "size": 24,
+  "timestamp": "2020-01-10T14:16:51.824368Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/83683e2d0639c034589173c0cea588d07da2640c10b464388248c73bcd3e502c HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "83683e2d0639c034589173c0cea588d07da2640c10b464388248c73bcd3e502c",
+  "name": "File42.txt",
+  "size": 336,
+  "timestamp": "2020-01-10T14:16:51.856369Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/b9a62bad12db46a365edcc8966cb1cb09105cf277ca423781905edfab47dfe53 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "b9a62bad12db46a365edcc8966cb1cb09105cf277ca423781905edfab47dfe53",
+  "name": "File50.txt",
+  "size": 400,
+  "timestamp": "2020-01-10T14:16:51.888369Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/7998755ebaaac2f5cf7f4f95059fdc602a9d5c8bfe67fb5b96f93caef0c91bdd HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "7998755ebaaac2f5cf7f4f95059fdc602a9d5c8bfe67fb5b96f93caef0c91bdd",
+  "name": "File41.txt",
+  "size": 328,
+  "timestamp": "2020-01-10T14:16:51.920369Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/38a0c904f4e3af63449d4498b58744a7cabc0593ddf834242fc22d933f8f74be HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "38a0c904f4e3af63449d4498b58744a7cabc0593ddf834242fc22d933f8f74be",
+  "name": "File34.txt",
+  "size": 272,
+  "timestamp": "2020-01-10T14:16:51.948369Z"
+}
+
+[5] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:51 2020 GMT] 
+GET /files/16820d70f8775b4c9fd3bbb707e5215aa6e19de4f64c21c506e457ce49d3e2be HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:51 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:51 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:51 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "16820d70f8775b4c9fd3bbb707e5215aa6e19de4f64c21c506e457ce49d3e2be",
+  "name": "File43.txt",
+  "size": 344,
+  "timestamp": "2020-01-10T14:16:51.980369Z"
+}
+
+[4] [Fri Jan 10 14:16:51 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/457fed0c4d8af24e59ad41715827436c0852e5d2d81485abe511c44942e0d722 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "457fed0c4d8af24e59ad41715827436c0852e5d2d81485abe511c44942e0d722",
+  "name": "File21.txt",
+  "size": 168,
+  "timestamp": "2020-01-10T14:16:52.012369Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/89763280919746a46c07575d9df38efdca40db5da777a90654ecab36b0cc59a5 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "89763280919746a46c07575d9df38efdca40db5da777a90654ecab36b0cc59a5",
+  "name": "File28.txt",
+  "size": 224,
+  "timestamp": "2020-01-10T14:16:52.040369Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/5527615a52a3b5fdcb8e3a1a312614c9458c2dcbe0b0df3ab2f2f1113d21625d HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "5527615a52a3b5fdcb8e3a1a312614c9458c2dcbe0b0df3ab2f2f1113d21625d",
+  "name": "File27.txt",
+  "size": 216,
+  "timestamp": "2020-01-10T14:16:52.072369Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/40d4126955cddd42040afde66d522fd736f5f4f654c66d6ecf43f8c78a580978 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "40d4126955cddd42040afde66d522fd736f5f4f654c66d6ecf43f8c78a580978",
+  "name": "File31.txt",
+  "size": 248,
+  "timestamp": "2020-01-10T14:16:52.104369Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/73803b99b3933181ceb30a04de7b2a60f9bb5caae0893b73bdfc79dd07a9e833 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "73803b99b3933181ceb30a04de7b2a60f9bb5caae0893b73bdfc79dd07a9e833",
+  "name": "File08.txt",
+  "size": 64,
+  "timestamp": "2020-01-10T14:16:52.128369Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/386bf6a815883bf6a15a0b33d9956ee45b46e46668afebf18219420838569ea0 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "386bf6a815883bf6a15a0b33d9956ee45b46e46668afebf18219420838569ea0",
+  "name": "File48.txt",
+  "size": 384,
+  "timestamp": "2020-01-10T14:16:52.156369Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24",
+  "name": "File04.txt",
+  "size": 32,
+  "timestamp": "2020-01-10T14:16:52.184369Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/5d7ce7c4095175ad223f167c65c863e16662b00a18742cf1826749bfea55c747 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "5d7ce7c4095175ad223f167c65c863e16662b00a18742cf1826749bfea55c747",
+  "name": "File49.txt",
+  "size": 392,
+  "timestamp": "2020-01-10T14:16:52.212369Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/aa0cd90eb50d13dd806f5dd01c1bc64b783abaaf57f51259004d0fec74918e93 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "aa0cd90eb50d13dd806f5dd01c1bc64b783abaaf57f51259004d0fec74918e93",
+  "name": "File13.txt",
+  "size": 104,
+  "timestamp": "2020-01-10T14:16:52.248369Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/62c74146e2110b9946836d19496fd6b99e38ff410441c7f4f6e458f36c59c609 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "62c74146e2110b9946836d19496fd6b99e38ff410441c7f4f6e458f36c59c609",
+  "name": "File44.txt",
+  "size": 352,
+  "timestamp": "2020-01-10T14:16:52.272369Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/fd86b484358dc2221c1cd1659263371d0c6e6dda9e2bf23610b9a0136fe2e80d HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "fd86b484358dc2221c1cd1659263371d0c6e6dda9e2bf23610b9a0136fe2e80d",
+  "name": "File37.txt",
+  "size": 296,
+  "timestamp": "2020-01-10T14:16:52.300369Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/2cdaa32b40528a2a752a7514a14ed68dea1b8d44df148d58024952114f255b41 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "2cdaa32b40528a2a752a7514a14ed68dea1b8d44df148d58024952114f255b41",
+  "name": "File40.txt",
+  "size": 320,
+  "timestamp": "2020-01-10T14:16:52.328370Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/6c567aeb603f441928042d97ae27539ebfabafb455df073a7fc7b9bf9c997983 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "6c567aeb603f441928042d97ae27539ebfabafb455df073a7fc7b9bf9c997983",
+  "name": "File32.txt",
+  "size": 256,
+  "timestamp": "2020-01-10T14:16:52.360370Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/e116a782ccad0342095489b073946ea8e3fdf959abe6be28f30e5ebd5364a093 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "e116a782ccad0342095489b073946ea8e3fdf959abe6be28f30e5ebd5364a093",
+  "name": "File30.txt",
+  "size": 240,
+  "timestamp": "2020-01-10T14:16:52.388370Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/8f45621d3bea385a2c03515d932c4b416ba23c555f3812b9d0a1a8d28b4774e6 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "8f45621d3bea385a2c03515d932c4b416ba23c555f3812b9d0a1a8d28b4774e6",
+  "name": "File38.txt",
+  "size": 304,
+  "timestamp": "2020-01-10T14:16:52.424370Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/3ede5a95c2d7423220c59ef88acbe8b5309ee7c25e0f5630d0a99157027f45c1 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "3ede5a95c2d7423220c59ef88acbe8b5309ee7c25e0f5630d0a99157027f45c1",
+  "name": "File47.txt",
+  "size": 376,
+  "timestamp": "2020-01-10T14:16:52.456370Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/df5ed1546f108aaffe6d380a3c2f91ea0c6eca65330514ae619ac2608b76b00a HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "df5ed1546f108aaffe6d380a3c2f91ea0c6eca65330514ae619ac2608b76b00a",
+  "name": "File19.txt",
+  "size": 152,
+  "timestamp": "2020-01-10T14:16:52.492370Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/1b6b5fa37a8920c74811e8d55271d7e1f32308bb2a688f260b9d3ed636ef5341 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "1b6b5fa37a8920c74811e8d55271d7e1f32308bb2a688f260b9d3ed636ef5341",
+  "name": "File24.txt",
+  "size": 192,
+  "timestamp": "2020-01-10T14:16:52.520370Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/79d3079a3bf1bbfcd940ee01ec5e28e790c18cd5686a3688f9635034d72cc319 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "79d3079a3bf1bbfcd940ee01ec5e28e790c18cd5686a3688f9635034d72cc319",
+  "name": "File02.txt",
+  "size": 16,
+  "timestamp": "2020-01-10T14:16:52.552370Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/5bc283a5351cb37fde960f12db923819dd00c2ffe5fbf1bfe1ae664a9bb828ce HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "5bc283a5351cb37fde960f12db923819dd00c2ffe5fbf1bfe1ae664a9bb828ce",
+  "name": "File18.txt",
+  "size": 144,
+  "timestamp": "2020-01-10T14:16:52.584370Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/de38a03581c4478799968613a4f0936c4b9659a3b880812f1dedc159d8ebf58c HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "de38a03581c4478799968613a4f0936c4b9659a3b880812f1dedc159d8ebf58c",
+  "name": "File46.txt",
+  "size": 368,
+  "timestamp": "2020-01-10T14:16:52.616370Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/6d3cbe6c373da4bd29bc45c66514d4bd3ee89bdb3b64f2ea2df49871ed8e8ffc HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "6d3cbe6c373da4bd29bc45c66514d4bd3ee89bdb3b64f2ea2df49871ed8e8ffc",
+  "name": "File29.txt",
+  "size": 232,
+  "timestamp": "2020-01-10T14:16:52.644370Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/97e9fb536c20bac8e7ddc968f909d68aad6a6f926962ba776910e650ba53b9d3 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "97e9fb536c20bac8e7ddc968f909d68aad6a6f926962ba776910e650ba53b9d3",
+  "name": "File36.txt",
+  "size": 288,
+  "timestamp": "2020-01-10T14:16:52.672370Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a",
+  "name": "File05.txt",
+  "size": 40,
+  "timestamp": "2020-01-10T14:16:52.704370Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/07b99a384cbb15bd8f34d435ea80bcad2201996a15b05579667fa0f2483169b5 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "07b99a384cbb15bd8f34d435ea80bcad2201996a15b05579667fa0f2483169b5",
+  "name": "File20.txt",
+  "size": 160,
+  "timestamp": "2020-01-10T14:16:52.736370Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/5db20c888515fb4d7b4127cc6236a98ff678cc5b23cd620cb6297a0a9ae6fe06 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "5db20c888515fb4d7b4127cc6236a98ff678cc5b23cd620cb6297a0a9ae6fe06",
+  "name": "File10.txt",
+  "size": 80,
+  "timestamp": "2020-01-10T14:16:52.764370Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/d753153760fd081ef17782db8c722e1918391bfa2b76d252b2901b0928735768 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "d753153760fd081ef17782db8c722e1918391bfa2b76d252b2901b0928735768",
+  "name": "File23.txt",
+  "size": 184,
+  "timestamp": "2020-01-10T14:16:52.792370Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/c99f804acf18ed4c4e11578d6dc0b21083cec9a5cb50e03d4594f2ef682e8fac HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "c99f804acf18ed4c4e11578d6dc0b21083cec9a5cb50e03d4594f2ef682e8fac",
+  "name": "File33.txt",
+  "size": 264,
+  "timestamp": "2020-01-10T14:16:52.828371Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/3068deacda880094fcf813d68e7dd9cb6305cc67e66b89391db249681fc2dbd3 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "3068deacda880094fcf813d68e7dd9cb6305cc67e66b89391db249681fc2dbd3",
+  "name": "File26.txt",
+  "size": 208,
+  "timestamp": "2020-01-10T14:16:52.860371Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 162
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59",
+  "name": "File01.txt",
+  "size": 8,
+  "timestamp": "2020-01-10T14:16:52.892371Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/3bd5d99d9f22a2f977dc93854b3801aaf7854dc7140e4e10c10ee692bd01c9e4 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "3bd5d99d9f22a2f977dc93854b3801aaf7854dc7140e4e10c10ee692bd01c9e4",
+  "name": "File25.txt",
+  "size": 200,
+  "timestamp": "2020-01-10T14:16:52.920371Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/7de67d309bc2ae3ee19121d88a67335668b135c17edd2f98a2675a1254cb8298 HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "7de67d309bc2ae3ee19121d88a67335668b135c17edd2f98a2675a1254cb8298",
+  "name": "File12.txt",
+  "size": 96,
+  "timestamp": "2020-01-10T14:16:52.952371Z"
+}
+
+[4] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:52 2020 GMT] 
+GET /files/798523a37c64104b0670dd42d49fe291031c148101f9f1ed5b7436aa2ea3c7ed HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:52 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:52 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:52 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "798523a37c64104b0670dd42d49fe291031c148101f9f1ed5b7436aa2ea3c7ed",
+  "name": "File09.txt",
+  "size": 72,
+  "timestamp": "2020-01-10T14:16:52.984371Z"
+}
+
+[5] [Fri Jan 10 14:16:52 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:53 2020 GMT] 
+GET /mrufiles HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:53 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:53 2020 GMT
+Server: httpsrv
+Content-Length: 532
+Last Modified: Fri Jan 10 14:16:53 2020 GMT
+Content-Type: application/octet-stream
+
+[
+  {
+    "id": "798523a37c64104b0670dd42d49fe291031c148101f9f1ed5b7436aa2ea3c7ed",
+    "name": "File09.txt",
+    "size": 72,
+    "timestamp": "2020-01-10T14:16:52.984371Z"
+  },
+  {
+    "id": "7de67d309bc2ae3ee19121d88a67335668b135c17edd2f98a2675a1254cb8298",
+    "name": "File12.txt",
+    "size": 96,
+    "timestamp": "2020-01-10T14:16:52.952371Z"
+  },
+  {
+    "id": "3bd5d99d9f22a2f977dc93854b3801aaf7854dc7140e4e10c10ee692bd01c9e4",
+    "name": "File25.txt",
+    "size": 200,
+    "timestamp": "2020-01-10T14:16:52.920371Z"
+  }
+]
+
+[4] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:53 2020 GMT] 
+GET /files/fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa/zip HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:53 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:53 2020 GMT
+Server: httpsrv
+Content-Length: 144
+Last Modified: Fri Jan 10 14:16:53 2020
+Content-Type: application/zip
+
+
+[5] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:53 2020 GMT] 
+GET /mrufiles/zip HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:53 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:53 2020 GMT
+Server: httpsrv
+Content-Length: 388
+Last Modified: Fri Jan 10 14:16:53 2020
+Content-Type: application/zip
+
+
+[4] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:53 2020 GMT] 
+GET /mrufiles HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:53 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:53 2020 GMT
+Server: httpsrv
+Content-Length: 531
+Last Modified: Fri Jan 10 14:16:53 2020 GMT
+Content-Type: application/octet-stream
+
+[
+  {
+    "id": "fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa",
+    "name": "File07.txt",
+    "size": 56,
+    "timestamp": "2020-01-10T14:16:53.056371Z"
+  },
+  {
+    "id": "798523a37c64104b0670dd42d49fe291031c148101f9f1ed5b7436aa2ea3c7ed",
+    "name": "File09.txt",
+    "size": 72,
+    "timestamp": "2020-01-10T14:16:53.084371Z"
+  },
+  {
+    "id": "7de67d309bc2ae3ee19121d88a67335668b135c17edd2f98a2675a1254cb8298",
+    "name": "File12.txt",
+    "size": 96,
+    "timestamp": "2020-01-10T14:16:53.084371Z"
+  }
+]
+
+[5] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:53 2020 GMT] 
+GET /files HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:53 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:53 2020 GMT
+Server: httpsrv
+Content-Length: 10278
+Last Modified: Fri Jan 10 14:16:53 2020 GMT
+Content-Type: application/octet-stream
+
+[
+  {
+    "id": "6f005ee610d6bbae6252f300c7d8b9c9d185475f6b2a4d8529a67ce37866a948",
+    "name": "functional_test.sh",
+    "size": 11334,
+    "timestamp": "2020-01-09T18:27:58.176700Z"
+  },
+  {
+    "id": "b3d030a4c01c2f2d823dbf7810a0d656231c6042847dc909afd925e0740fd17e",
+    "name": "zeroFile.txt",
+    "size": 0,
+    "timestamp": "2020-01-10T14:15:09.763734Z"
+  },
+  {
+    "id": "fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa",
+    "name": "File07.txt",
+    "size": 56,
+    "timestamp": "2020-01-10T14:16:53.056371Z"
+  },
+  {
+    "id": "4decf93557b8faa2ca4692a17dcb71dd687b7689756ea76cc9466b7894979f50",
+    "name": "File17.txt",
+    "size": 136,
+    "timestamp": "2020-01-10T14:16:51.516368Z"
+  },
+  {
+    "id": "baf5b2462303852f2e428d947dd065ccc5499c20a8bee89e59cc581f6c34332b",
+    "name": "File11.txt",
+    "size": 88,
+    "timestamp": "2020-01-10T14:16:51.552368Z"
+  },
+  {
+    "id": "1d56e0aca8d9cef678851f78503411fc670136064567af3d1663ff8bdaca8010",
+    "name": "File15.txt",
+    "size": 120,
+    "timestamp": "2020-01-10T14:16:51.580368Z"
+  },
+  {
+    "id": "318def7aa97cc6f4d7224f36fa48bf6329033e7c48f2e86f0358a9f9ac5b67be",
+    "name": "File16.txt",
+    "size": 128,
+    "timestamp": "2020-01-10T14:16:51.612368Z"
+  },
+  {
+    "id": "a36e023a1ebe857aebd14336ca7ec962af92ddc59c7b68c49c906a45256eb11d",
+    "name": "File14.txt",
+    "size": 112,
+    "timestamp": "2020-01-10T14:16:51.640368Z"
+  },
+  {
+    "id": "d9c897c5627478a7f0d063816a9fbb752b336c75ac403179c6f2401b1191d30a",
+    "name": "File45.txt",
+    "size": 360,
+    "timestamp": "2020-01-10T14:16:51.672368Z"
+  },
+  {
+    "id": "87766972afca214ab1faf91cc071b5fbf56eeab0f831f263039e26f623841573",
+    "name": "File39.txt",
+    "size": 312,
+    "timestamp": "2020-01-10T14:16:51.708368Z"
+  },
+  {
+    "id": "6d94eb86a98c459e60fdf7a775d64731c2cdb22ca6a962b418e4e3ac7ad73db3",
+    "name": "File06.txt",
+    "size": 48,
+    "timestamp": "2020-01-10T14:16:51.736368Z"
+  },
+  {
+    "id": "9d018d59712307d69ac8ca4ef543d41e4cccbda4c9f8585ce02b330f31c71200",
+    "name": "File22.txt",
+    "size": 176,
+    "timestamp": "2020-01-10T14:16:51.764368Z"
+  },
+  {
+    "id": "1e7de1ae2d059d21e1dd75d5812d5a34b0222cef273b7c3a2af62eb747f9d20a",
+    "name": "CMakeLists.txt",
+    "size": 908,
+    "timestamp": "2020-01-09T18:28:37.572756Z"
+  },
+  {
+    "id": "90504b1ab1b7dd5f133a804b318a6a9ae68d8edd7c623830c2bb3505e0eeb383",
+    "name": "File35.txt",
+    "size": 280,
+    "timestamp": "2020-01-10T14:16:51.792368Z"
+  },
+  {
+    "id": "f5e51aa439a2002346f5f703745873ef6fac767bd22601b7c0c617d0cbde8d61",
+    "name": "File03.txt",
+    "size": 24,
+    "timestamp": "2020-01-10T14:16:51.824368Z"
+  },
+  {
+    "id": "83683e2d0639c034589173c0cea588d07da2640c10b464388248c73bcd3e502c",
+    "name": "File42.txt",
+    "size": 336,
+    "timestamp": "2020-01-10T14:16:51.856369Z"
+  },
+  {
+    "id": "b9a62bad12db46a365edcc8966cb1cb09105cf277ca423781905edfab47dfe53",
+    "name": "File50.txt",
+    "size": 400,
+    "timestamp": "2020-01-10T14:16:51.888369Z"
+  },
+  {
+    "id": "7998755ebaaac2f5cf7f4f95059fdc602a9d5c8bfe67fb5b96f93caef0c91bdd",
+    "name": "File41.txt",
+    "size": 328,
+    "timestamp": "2020-01-10T14:16:51.920369Z"
+  },
+  {
+    "id": "38a0c904f4e3af63449d4498b58744a7cabc0593ddf834242fc22d933f8f74be",
+    "name": "File34.txt",
+    "size": 272,
+    "timestamp": "2020-01-10T14:16:51.948369Z"
+  },
+  {
+    "id": "16820d70f8775b4c9fd3bbb707e5215aa6e19de4f64c21c506e457ce49d3e2be",
+    "name": "File43.txt",
+    "size": 344,
+    "timestamp": "2020-01-10T14:16:51.980369Z"
+  },
+  {
+    "id": "457fed0c4d8af24e59ad41715827436c0852e5d2d81485abe511c44942e0d722",
+    "name": "File21.txt",
+    "size": 168,
+    "timestamp": "2020-01-10T14:16:52.012369Z"
+  },
+  {
+    "id": "89763280919746a46c07575d9df38efdca40db5da777a90654ecab36b0cc59a5",
+    "name": "File28.txt",
+    "size": 224,
+    "timestamp": "2020-01-10T14:16:52.040369Z"
+  },
+  {
+    "id": "5527615a52a3b5fdcb8e3a1a312614c9458c2dcbe0b0df3ab2f2f1113d21625d",
+    "name": "File27.txt",
+    "size": 216,
+    "timestamp": "2020-01-10T14:16:52.072369Z"
+  },
+  {
+    "id": "40d4126955cddd42040afde66d522fd736f5f4f654c66d6ecf43f8c78a580978",
+    "name": "File31.txt",
+    "size": 248,
+    "timestamp": "2020-01-10T14:16:52.104369Z"
+  },
+  {
+    "id": "73803b99b3933181ceb30a04de7b2a60f9bb5caae0893b73bdfc79dd07a9e833",
+    "name": "File08.txt",
+    "size": 64,
+    "timestamp": "2020-01-10T14:16:52.128369Z"
+  },
+  {
+    "id": "05986694d9c5e7132e3c7741e4475ea88fcb815d22bd9976a9fc6ea486796383",
+    "name": "CMakeCache.txt",
+    "size": 14896,
+    "timestamp": "2020-01-07T15:47:06.725567Z"
+  },
+  {
+    "id": "386bf6a815883bf6a15a0b33d9956ee45b46e46668afebf18219420838569ea0",
+    "name": "File48.txt",
+    "size": 384,
+    "timestamp": "2020-01-10T14:16:52.156369Z"
+  },
+  {
+    "id": "34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24",
+    "name": "File04.txt",
+    "size": 32,
+    "timestamp": "2020-01-10T14:16:52.184369Z"
+  },
+  {
+    "id": "5d7ce7c4095175ad223f167c65c863e16662b00a18742cf1826749bfea55c747",
+    "name": "File49.txt",
+    "size": 392,
+    "timestamp": "2020-01-10T14:16:52.212369Z"
+  },
+  {
+    "id": "aa0cd90eb50d13dd806f5dd01c1bc64b783abaaf57f51259004d0fec74918e93",
+    "name": "File13.txt",
+    "size": 104,
+    "timestamp": "2020-01-10T14:16:52.248369Z"
+  },
+  {
+    "id": "62c74146e2110b9946836d19496fd6b99e38ff410441c7f4f6e458f36c59c609",
+    "name": "File44.txt",
+    "size": 352,
+    "timestamp": "2020-01-10T14:16:52.272369Z"
+  },
+  {
+    "id": "fd86b484358dc2221c1cd1659263371d0c6e6dda9e2bf23610b9a0136fe2e80d",
+    "name": "File37.txt",
+    "size": 296,
+    "timestamp": "2020-01-10T14:16:52.300369Z"
+  },
+  {
+    "id": "2cdaa32b40528a2a752a7514a14ed68dea1b8d44df148d58024952114f255b41",
+    "name": "File40.txt",
+    "size": 320,
+    "timestamp": "2020-01-10T14:16:52.328370Z"
+  },
+  {
+    "id": "6c567aeb603f441928042d97ae27539ebfabafb455df073a7fc7b9bf9c997983",
+    "name": "File32.txt",
+    "size": 256,
+    "timestamp": "2020-01-10T14:16:52.360370Z"
+  },
+  {
+    "id": "e116a782ccad0342095489b073946ea8e3fdf959abe6be28f30e5ebd5364a093",
+    "name": "File30.txt",
+    "size": 240,
+    "timestamp": "2020-01-10T14:16:52.388370Z"
+  },
+  {
+    "id": "8f45621d3bea385a2c03515d932c4b416ba23c555f3812b9d0a1a8d28b4774e6",
+    "name": "File38.txt",
+    "size": 304,
+    "timestamp": "2020-01-10T14:16:52.424370Z"
+  },
+  {
+    "id": "3ede5a95c2d7423220c59ef88acbe8b5309ee7c25e0f5630d0a99157027f45c1",
+    "name": "File47.txt",
+    "size": 376,
+    "timestamp": "2020-01-10T14:16:52.456370Z"
+  },
+  {
+    "id": "4f90d7d253418a6bd2f85e0215fabd3287c8e4b71e43d9d1b8d20225b51d9a2d",
+    "name": "nino nino",
+    "size": 16329,
+    "timestamp": "2020-01-07T15:53:52.839986Z"
+  },
+  {
+    "id": "df5ed1546f108aaffe6d380a3c2f91ea0c6eca65330514ae619ac2608b76b00a",
+    "name": "File19.txt",
+    "size": 152,
+    "timestamp": "2020-01-10T14:16:52.492370Z"
+  },
+  {
+    "id": "1b6b5fa37a8920c74811e8d55271d7e1f32308bb2a688f260b9d3ed636ef5341",
+    "name": "File24.txt",
+    "size": 192,
+    "timestamp": "2020-01-10T14:16:52.520370Z"
+  },
+  {
+    "id": "79d3079a3bf1bbfcd940ee01ec5e28e790c18cd5686a3688f9635034d72cc319",
+    "name": "File02.txt",
+    "size": 16,
+    "timestamp": "2020-01-10T14:16:52.552370Z"
+  },
+  {
+    "id": "af15cd88904df837f9fc572c3ab1b53677c6d4cc353c0e11eb259b5f01424d31",
+    "name": "small.txt",
+    "size": 6,
+    "timestamp": "2020-01-07T15:57:20.902945Z"
+  },
+  {
+    "id": "5bc283a5351cb37fde960f12db923819dd00c2ffe5fbf1bfe1ae664a9bb828ce",
+    "name": "File18.txt",
+    "size": 144,
+    "timestamp": "2020-01-10T14:16:52.584370Z"
+  },
+  {
+    "id": "de38a03581c4478799968613a4f0936c4b9659a3b880812f1dedc159d8ebf58c",
+    "name": "File46.txt",
+    "size": 368,
+    "timestamp": "2020-01-10T14:16:52.616370Z"
+  },
+  {
+    "id": "6d3cbe6c373da4bd29bc45c66514d4bd3ee89bdb3b64f2ea2df49871ed8e8ffc",
+    "name": "File29.txt",
+    "size": 232,
+    "timestamp": "2020-01-10T14:16:52.644370Z"
+  },
+  {
+    "id": "f5fd5bea340dd36c82e9d2a938fba222981e2d676e1493f44e236623bac64c48",
+    "name": "bigFile.txt",
+    "size": 972398,
+    "timestamp": "2020-01-09T18:25:00.249848Z"
+  },
+  {
+    "id": "97e9fb536c20bac8e7ddc968f909d68aad6a6f926962ba776910e650ba53b9d3",
+    "name": "File36.txt",
+    "size": 288,
+    "timestamp": "2020-01-10T14:16:52.672370Z"
+  },
+  {
+    "id": "7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a",
+    "name": "File05.txt",
+    "size": 40,
+    "timestamp": "2020-01-10T14:16:52.704370Z"
+  },
+  {
+    "id": "07b99a384cbb15bd8f34d435ea80bcad2201996a15b05579667fa0f2483169b5",
+    "name": "File20.txt",
+    "size": 160,
+    "timestamp": "2020-01-10T14:16:52.736370Z"
+  },
+  {
+    "id": "5db20c888515fb4d7b4127cc6236a98ff678cc5b23cd620cb6297a0a9ae6fe06",
+    "name": "File10.txt",
+    "size": 80,
+    "timestamp": "2020-01-10T14:16:52.764370Z"
+  },
+  {
+    "id": "d753153760fd081ef17782db8c722e1918391bfa2b76d252b2901b0928735768",
+    "name": "File23.txt",
+    "size": 184,
+    "timestamp": "2020-01-10T14:16:52.792370Z"
+  },
+  {
+    "id": "c99f804acf18ed4c4e11578d6dc0b21083cec9a5cb50e03d4594f2ef682e8fac",
+    "name": "File33.txt",
+    "size": 264,
+    "timestamp": "2020-01-10T14:16:52.828371Z"
+  },
+  {
+    "id": "3068deacda880094fcf813d68e7dd9cb6305cc67e66b89391db249681fc2dbd3",
+    "name": "File26.txt",
+    "size": 208,
+    "timestamp": "2020-01-10T14:16:52.860371Z"
+  },
+  {
+    "id": "638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59",
+    "name": "File01.txt",
+    "size": 8,
+    "timestamp": "2020-01-10T14:16:52.892371Z"
+  },
+  {
+    "id": "3bd5d99d9f22a2f977dc93854b3801aaf7854dc7140e4e10c10ee692bd01c9e4",
+    "name": "File25.txt",
+    "size": 200,
+    "timestamp": "2020-01-10T14:16:52.920371Z"
+  },
+  {
+    "id": "7de67d309bc2ae3ee19121d88a67335668b135c17edd2f98a2675a1254cb8298",
+    "name": "File12.txt",
+    "size": 96,
+    "timestamp": "2020-01-10T14:16:53.084371Z"
+  },
+  {
+    "id": "76ed074a9305c04054cdebb9e9aad2d818052b07091de1f20cad0bbac34ffb52",
+    "name": "Makefile",
+    "size": 16413,
+    "timestamp": "2020-01-07T15:52:40.719394Z"
+  },
+  {
+    "id": "798523a37c64104b0670dd42d49fe291031c148101f9f1ed5b7436aa2ea3c7ed",
+    "name": "File09.txt",
+    "size": 72,
+    "timestamp": "2020-01-10T14:16:53.084371Z"
+  }
+]
+
+[4] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:53 2020 GMT] 
+GET /mrufiles HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:53 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:53 2020 GMT
+Server: httpsrv
+Content-Length: 531
+Last Modified: Fri Jan 10 14:16:53 2020 GMT
+Content-Type: application/octet-stream
+
+[
+  {
+    "id": "fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa",
+    "name": "File07.txt",
+    "size": 56,
+    "timestamp": "2020-01-10T14:16:53.056371Z"
+  },
+  {
+    "id": "798523a37c64104b0670dd42d49fe291031c148101f9f1ed5b7436aa2ea3c7ed",
+    "name": "File09.txt",
+    "size": 72,
+    "timestamp": "2020-01-10T14:16:53.084371Z"
+  },
+  {
+    "id": "7de67d309bc2ae3ee19121d88a67335668b135c17edd2f98a2675a1254cb8298",
+    "name": "File12.txt",
+    "size": 96,
+    "timestamp": "2020-01-10T14:16:53.084371Z"
+  }
+]
+
+[5] [Fri Jan 10 14:16:53 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:54 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:54 2020 GMT] 
+GET /mrufiles HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:54 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:54 2020 GMT
+Server: httpsrv
+Content-Length: 530
+Last Modified: Fri Jan 10 14:16:54 2020 GMT
+Content-Type: application/octet-stream
+
+[
+  {
+    "id": "638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59",
+    "name": "File01.txt",
+    "size": 8,
+    "timestamp": "2020-01-10T14:16:54.704374Z"
+  },
+  {
+    "id": "79d3079a3bf1bbfcd940ee01ec5e28e790c18cd5686a3688f9635034d72cc319",
+    "name": "File02.txt",
+    "size": 16,
+    "timestamp": "2020-01-10T14:16:54.704374Z"
+  },
+  {
+    "id": "f5e51aa439a2002346f5f703745873ef6fac767bd22601b7c0c617d0cbde8d61",
+    "name": "File03.txt",
+    "size": 24,
+    "timestamp": "2020-01-10T14:16:54.708374Z"
+  }
+]
+
+[4] [Fri Jan 10 14:16:54 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:56 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:56 2020 GMT] 
+GET /files/34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24/zip HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:56 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:56 2020 GMT
+Server: httpsrv
+Content-Length: 132
+Last Modified: Fri Jan 10 14:16:56 2020
+Content-Type: application/zip
+
+
+[5] [Fri Jan 10 14:16:56 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:56 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:56 2020 GMT] 
+GET /mrufiles HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:56 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:56 2020 GMT
+Server: httpsrv
+Content-Length: 530
+Last Modified: Fri Jan 10 14:16:56 2020 GMT
+Content-Type: application/octet-stream
+
+[
+  {
+    "id": "34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24",
+    "name": "File04.txt",
+    "size": 32,
+    "timestamp": "2020-01-10T14:16:56.276378Z"
+  },
+  {
+    "id": "638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59",
+    "name": "File01.txt",
+    "size": 8,
+    "timestamp": "2020-01-10T14:16:54.704374Z"
+  },
+  {
+    "id": "79d3079a3bf1bbfcd940ee01ec5e28e790c18cd5686a3688f9635034d72cc319",
+    "name": "File02.txt",
+    "size": 16,
+    "timestamp": "2020-01-10T14:16:54.704374Z"
+  }
+]
+
+[4] [Fri Jan 10 14:16:56 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:56 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:56 2020 GMT] 
+GET /mrufiles HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:56 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:56 2020 GMT
+Server: httpsrv
+Content-Length: 530
+Last Modified: Fri Jan 10 14:16:56 2020 GMT
+Content-Type: application/octet-stream
+
+[
+  {
+    "id": "34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24",
+    "name": "File04.txt",
+    "size": 32,
+    "timestamp": "2020-01-10T14:16:56.276378Z"
+  },
+  {
+    "id": "638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59",
+    "name": "File01.txt",
+    "size": 8,
+    "timestamp": "2020-01-10T14:16:54.704374Z"
+  },
+  {
+    "id": "79d3079a3bf1bbfcd940ee01ec5e28e790c18cd5686a3688f9635034d72cc319",
+    "name": "File02.txt",
+    "size": 16,
+    "timestamp": "2020-01-10T14:16:54.704374Z"
+  }
+]
+
+[5] [Fri Jan 10 14:16:56 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:57 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:57 2020 GMT] 
+GET /files/7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:57 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:57 2020 GMT
+Server: httpsrv
+Content-Length: 163
+Last Modified: Fri Jan 10 14:16:57 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a",
+  "name": "File05.txt",
+  "size": 40,
+  "timestamp": "2020-01-10T14:16:57.852381Z"
+}
+
+[4] [Fri Jan 10 14:16:57 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:57 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:57 2020 GMT] 
+GET /mrufiles HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:57 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:57 2020 GMT
+Server: httpsrv
+Content-Length: 530
+Last Modified: Fri Jan 10 14:16:57 2020 GMT
+Content-Type: application/octet-stream
+
+[
+  {
+    "id": "7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a",
+    "name": "File05.txt",
+    "size": 40,
+    "timestamp": "2020-01-10T14:16:57.852381Z"
+  },
+  {
+    "id": "34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24",
+    "name": "File04.txt",
+    "size": 32,
+    "timestamp": "2020-01-10T14:16:56.276378Z"
+  },
+  {
+    "id": "638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59",
+    "name": "File01.txt",
+    "size": 8,
+    "timestamp": "2020-01-10T14:16:54.704374Z"
+  }
+]
+
+[5] [Fri Jan 10 14:16:57 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:57 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:57 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 972587
+Content-Type: multipart/form-data; boundary=------------------------f72cdc7c597ac370
+Expect: 100-continue
+
+[4] [Fri Jan 10 14:16:57 2020 GMT] Writing ''
+[4] [Fri Jan 10 14:16:57 2020 GMT] Error writing ''
+<<< RESPONSE [4] [Fri Jan 10 14:16:57 2020 GMT] 
+HTTP/1.1 100 Continue
+
+
+>>> REQUEST [4] [Fri Jan 10 14:16:57 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 972587
+Content-Type: multipart/form-data; boundary=------------------------f72cdc7c597ac370
+Expect: 100-continue
+--------------------------f72cdc7c597ac370
+Content-Disposition: form-data; name="file"; filename="bigFile.txt"
+Content-Type: text/plain
+
+[4] [Fri Jan 10 14:16:57 2020 GMT] Writing 'bigFile.txt'
+<<< RESPONSE [4] [Fri Jan 10 14:16:57 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:59 2020 GMT
+Server: httpsrv
+Content-Length: 168
+Last Modified: Fri Jan 10 14:16:59 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "f5fd5bea340dd36c82e9d2a938fba222981e2d676e1493f44e236623bac64c48",
+  "name": "bigFile.txt",
+  "size": 972398,
+  "timestamp": "2020-01-09T18:25:00.249848Z"
+}
+
+[4] [Fri Jan 10 14:16:57 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:59 2020 GMT] 
+POST /store HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+Content-Length: 190
+Content-Type: multipart/form-data; boundary=------------------------97c0146b682bb90b
+--------------------------97c0146b682bb90b
+Content-Disposition: form-data; name="file"; filename="zeroFile.txt"
+Content-Type: text/plain
+
+[5] [Fri Jan 10 14:16:59 2020 GMT] Writing 'zeroFile.txt'
+<<< RESPONSE [5] [Fri Jan 10 14:16:59 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:59 2020 GMT
+Server: httpsrv
+Content-Length: 164
+Last Modified: Fri Jan 10 14:16:59 2020 GMT
+Content-Type: application/octet-stream
+
+{
+  "id": "b3d030a4c01c2f2d823dbf7810a0d656231c6042847dc909afd925e0740fd17e",
+  "name": "zeroFile.txt",
+  "size": 0,
+  "timestamp": "2020-01-10T14:15:09.763734Z"
+}
+
+[5] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:59 2020 GMT] 
+GET /files/b3d030a4c01c2f2d823dbf7810a0d656231c6042847dc909afd925e0740fd17e/zip HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:59 2020 GMT] 
+HTTP/1.1 200 OK
+Date: Fri Jan 10 14:16:59 2020 GMT
+Server: httpsrv
+Content-Length: 124
+Last Modified: Fri Jan 10 14:16:59 2020
+Content-Type: application/zip
+
+
+[4] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:59 2020 GMT] 
+GET /mrufiles/ThisIsInvalid HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:59 2020 GMT] 
+HTTP/1.1 400 Bad Request
+Date: Fri Jan 10 14:16:59 2020 GMT
+Server: httpsrv
+Content-Length: 82
+Content-Type: text/html
+
+<html><head><title>400 Bad Request</title></head><body>Bad Request</body></html>
+
+[5] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:59 2020 GMT] 
+GET /files/InvalidID HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:59 2020 GMT] 
+HTTP/1.1 404 Not Found
+Date: Fri Jan 10 14:16:59 2020 GMT
+Server: httpsrv
+Content-Length: 78
+Content-Type: text/html
+
+<html><head><title>404 Not Found</title></head><body>Not Found</body></html>
+
+[4] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[5] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [5] [Fri Jan 10 14:16:59 2020 GMT] 
+GET /files/invalidID/zip HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [5] [Fri Jan 10 14:16:59 2020 GMT] 
+HTTP/1.1 404 Not Found
+Date: Fri Jan 10 14:16:59 2020 GMT
+Server: httpsrv
+Content-Length: 78
+Content-Type: text/html
+
+<html><head><title>404 Not Found</title></head><body>Not Found</body></html>
+
+[5] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION ENDS
+
+[4] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION STARTS
+>>> REQUEST [4] [Fri Jan 10 14:16:59 2020 GMT] 
+GET /mrufiles/zip/thisIsInvalid HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.65.3
+Accept: */*
+
+<<< RESPONSE [4] [Fri Jan 10 14:16:59 2020 GMT] 
+HTTP/1.1 400 Bad Request
+Date: Fri Jan 10 14:16:59 2020 GMT
+Server: httpsrv
+Content-Length: 82
+Content-Type: text/html
+
+<html><head><title>400 Bad Request</title></head><body>Bad Request</body></html>
+
+[4] [Fri Jan 10 14:16:59 2020 GMT] ---- HTTP SERVER SESSION ENDS
+

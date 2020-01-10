@@ -1,0 +1,68 @@
+------------------------------------
+TEST SUCCEDED
+------------------------------------
+[ OK Fri Jan 10 14:16:51 GMT 2020] POST /store: all 50 files uploaded without errors
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa for File07.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/4decf93557b8faa2ca4692a17dcb71dd687b7689756ea76cc9466b7894979f50 for File17.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/baf5b2462303852f2e428d947dd065ccc5499c20a8bee89e59cc581f6c34332b for File11.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/1d56e0aca8d9cef678851f78503411fc670136064567af3d1663ff8bdaca8010 for File15.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/318def7aa97cc6f4d7224f36fa48bf6329033e7c48f2e86f0358a9f9ac5b67be for File16.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/a36e023a1ebe857aebd14336ca7ec962af92ddc59c7b68c49c906a45256eb11d for File14.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/d9c897c5627478a7f0d063816a9fbb752b336c75ac403179c6f2401b1191d30a for File45.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/87766972afca214ab1faf91cc071b5fbf56eeab0f831f263039e26f623841573 for File39.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/6d94eb86a98c459e60fdf7a775d64731c2cdb22ca6a962b418e4e3ac7ad73db3 for File06.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/9d018d59712307d69ac8ca4ef543d41e4cccbda4c9f8585ce02b330f31c71200 for File22.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/90504b1ab1b7dd5f133a804b318a6a9ae68d8edd7c623830c2bb3505e0eeb383 for File35.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/f5e51aa439a2002346f5f703745873ef6fac767bd22601b7c0c617d0cbde8d61 for File03.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/83683e2d0639c034589173c0cea588d07da2640c10b464388248c73bcd3e502c for File42.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/b9a62bad12db46a365edcc8966cb1cb09105cf277ca423781905edfab47dfe53 for File50.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/7998755ebaaac2f5cf7f4f95059fdc602a9d5c8bfe67fb5b96f93caef0c91bdd for File41.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/38a0c904f4e3af63449d4498b58744a7cabc0593ddf834242fc22d933f8f74be for File34.txt: succeded
+[ OK Fri Jan 10 14:16:51 GMT 2020] GET /files/16820d70f8775b4c9fd3bbb707e5215aa6e19de4f64c21c506e457ce49d3e2be for File43.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/457fed0c4d8af24e59ad41715827436c0852e5d2d81485abe511c44942e0d722 for File21.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/89763280919746a46c07575d9df38efdca40db5da777a90654ecab36b0cc59a5 for File28.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/5527615a52a3b5fdcb8e3a1a312614c9458c2dcbe0b0df3ab2f2f1113d21625d for File27.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/40d4126955cddd42040afde66d522fd736f5f4f654c66d6ecf43f8c78a580978 for File31.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/73803b99b3933181ceb30a04de7b2a60f9bb5caae0893b73bdfc79dd07a9e833 for File08.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/386bf6a815883bf6a15a0b33d9956ee45b46e46668afebf18219420838569ea0 for File48.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24 for File04.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/5d7ce7c4095175ad223f167c65c863e16662b00a18742cf1826749bfea55c747 for File49.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/aa0cd90eb50d13dd806f5dd01c1bc64b783abaaf57f51259004d0fec74918e93 for File13.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/62c74146e2110b9946836d19496fd6b99e38ff410441c7f4f6e458f36c59c609 for File44.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/fd86b484358dc2221c1cd1659263371d0c6e6dda9e2bf23610b9a0136fe2e80d for File37.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/2cdaa32b40528a2a752a7514a14ed68dea1b8d44df148d58024952114f255b41 for File40.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/6c567aeb603f441928042d97ae27539ebfabafb455df073a7fc7b9bf9c997983 for File32.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/e116a782ccad0342095489b073946ea8e3fdf959abe6be28f30e5ebd5364a093 for File30.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/8f45621d3bea385a2c03515d932c4b416ba23c555f3812b9d0a1a8d28b4774e6 for File38.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/3ede5a95c2d7423220c59ef88acbe8b5309ee7c25e0f5630d0a99157027f45c1 for File47.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/df5ed1546f108aaffe6d380a3c2f91ea0c6eca65330514ae619ac2608b76b00a for File19.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/1b6b5fa37a8920c74811e8d55271d7e1f32308bb2a688f260b9d3ed636ef5341 for File24.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/79d3079a3bf1bbfcd940ee01ec5e28e790c18cd5686a3688f9635034d72cc319 for File02.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/5bc283a5351cb37fde960f12db923819dd00c2ffe5fbf1bfe1ae664a9bb828ce for File18.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/de38a03581c4478799968613a4f0936c4b9659a3b880812f1dedc159d8ebf58c for File46.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/6d3cbe6c373da4bd29bc45c66514d4bd3ee89bdb3b64f2ea2df49871ed8e8ffc for File29.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/97e9fb536c20bac8e7ddc968f909d68aad6a6f926962ba776910e650ba53b9d3 for File36.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a for File05.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/07b99a384cbb15bd8f34d435ea80bcad2201996a15b05579667fa0f2483169b5 for File20.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/5db20c888515fb4d7b4127cc6236a98ff678cc5b23cd620cb6297a0a9ae6fe06 for File10.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/d753153760fd081ef17782db8c722e1918391bfa2b76d252b2901b0928735768 for File23.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/c99f804acf18ed4c4e11578d6dc0b21083cec9a5cb50e03d4594f2ef682e8fac for File33.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/3068deacda880094fcf813d68e7dd9cb6305cc67e66b89391db249681fc2dbd3 for File26.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/638f7e3159523ba68067197705e2d8c9f39c85b111a1128a933a64b607350b59 for File01.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/3bd5d99d9f22a2f977dc93854b3801aaf7854dc7140e4e10c10ee692bd01c9e4 for File25.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/7de67d309bc2ae3ee19121d88a67335668b135c17edd2f98a2675a1254cb8298 for File12.txt: succeded
+[ OK Fri Jan 10 14:16:52 GMT 2020] GET /files/798523a37c64104b0670dd42d49fe291031c148101f9f1ed5b7436aa2ea3c7ed for File09.txt: succeded
+[ OK Fri Jan 10 14:16:53 GMT 2020] GET /mrufiles: Get OK, content validated
+[ OK Fri Jan 10 14:16:53 GMT 2020] GET /files/fb5b9399e9da3e0724e246614503bed822d4ff9bc7f16c342e83246334a905fa/zip: zip file downloaded
+[ OK Fri Jan 10 14:16:53 GMT 2020] GET /mrufiles/zip: mrufiles entry count verified
+[ OK Fri Jan 10 14:16:53 GMT 2020] GET /files: JSON Valid
+[ OK Fri Jan 10 14:16:53 GMT 2020] GET /mrufiles: JSON Valid
+[ OK Fri Jan 10 14:16:56 GMT 2020] GET /files/34e876dd956e9e5a7d3ab486370f1cad5524e32e4179767ee4eca55106ffff24/zip: Timestamp updated correctly
+[ OK Fri Jan 10 14:16:57 GMT 2020] GET /files/7a5f3fe108e00ab57a99c7d70d401f0623fe562cb7b99a0e72413dcc0354b11a: JSON response for single id is Valid
+[ OK Fri Jan 10 14:16:57 GMT 2020] GET /files/4decf93557b8faa2ca4692a17dcb71dd687b7689756ea76cc9466b7894979f50: timestamp looks OK
+[ OK Fri Jan 10 14:16:59 GMT 2020] POST store/bigFile.txt: the 'big file' has been uploaded correctly
+[ OK Fri Jan 10 14:16:59 GMT 2020] POST store/zeroFile.txt: zero-size file is handled correctly
+[ OK Fri Jan 10 14:16:59 GMT 2020] GET mrufiles/ThisIsInvalid: expected HTTP error checked
+[ OK Fri Jan 10 14:16:59 GMT 2020] GET files/InvalidID: expected HTTP error checked
+[ OK Fri Jan 10 14:16:59 GMT 2020] GET files/invalidID/zip: expected HTTP error checked
+[ OK Fri Jan 10 14:16:59 GMT 2020] GET mrufiles/zip/thisIsInvalid: expected HTTP error checked

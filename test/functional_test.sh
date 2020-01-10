@@ -12,12 +12,16 @@ working_dir="$HOME/.httpsrv"
 # Utils
 # ------------------------------------------------------------------------------
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
 checkCommand() {
-    commandName=$1
-    if ! [ -x "$(command -v $commandName)" ]; then
-      echo 'Error: $commandName is not installed.' >&2
-      exit 1
-    fi
+  commandName=$1
+  if ! [ -x "$(command -v $commandName)" ]; then
+    echo 'Error: $commandName is not installed.' >&2
+    exit 1
+  fi
 }
 
 
@@ -33,12 +37,13 @@ fail() {
   failMsg=$1
    
   set +x
-  printf "$failMsg" >&2
+  printf "[$RED Error $NC] $failMsg" >&2
   exit 1
 }
 
 success() {
-  echo "$1" >> $resultfile
+  timestamp=`date`
+  echo "[ ${GREEN}OK${NC} $timestamp] $1" >> $resultfile
 }
 
 
@@ -54,10 +59,6 @@ checkCommand "sha256sum"
 
 jsonvalidator="jsonlint-php"
 checkCommand $jsonvalidator
-
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
 
 #set -x
 
@@ -104,9 +105,9 @@ echo $listcontent | sed -r "s/\}/\\n/g" > $listfile
 chk=`cat $listfile | grep id | grep name | grep timestamp | wc -l`
 
 if [ $chk = "$NUMOFFILES" ]; then
-  success "OK    POST /store"
+  success "POST /store: all $NUMOFFILES files uploaded without errors"
 else
-  fail "POST /store ${RED}Expected $NUMOFFILES notifications${NC}\n" 
+  fail "POST /store: Expected $NUMOFFILES notifications\n" 
 fi
 
 cleanUpFile $listfile
@@ -127,9 +128,9 @@ while read p; do
   [[ -z "$first_id" ]] && first_id=`echo $p | awk '{print $3}'`
 
   if [ $ok = "1" ]; then
-    success "OK    GET /files/$id"
+    success "GET /files/$id: succeded"
   else
-    fail "GET /files/<${id}> ${RED}TEST FAILED${NC}\n"
+    fail "GET /files/<${id}>: can't get a correct answer\n"
   fi
 done < $listfile 
 
@@ -161,9 +162,9 @@ ok=0
 diff $threeidsfile $sortedmruidsfile && ok=1
 
 if [ $ok = "1" ]; then
-  success "OK    GET /mrufiles" 
+  success "GET /mrufiles: Get OK, content validated" 
 else
-  fail "GET /mrufiles ${RED}TEST FAILED${NC}\n"
+  fail "GET /mrufiles: response and actual f/s files look different\n"
 fi
 
 
@@ -174,9 +175,9 @@ ok=0
 curl --output $tmp_dir2/$first_id.zip $host_and_port/files/$first_id/zip && ok=1 
 
 if [ $ok = "1" ]; then
-  success "OK    GET /files/$first_id/zip" 
+  success "GET /files/$first_id/zip: zip file downloaded" 
 else
-  fail "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
+  fail "GET /files/$first_id/zip: Can't download the zip file\n"
 fi
 
 filename=`zipinfo $tmp_dir2/$first_id.zip | grep File | awk '{ print $9 }'`
@@ -184,12 +185,12 @@ ok=0
 cd $tmp_dir2 && unzip $tmp_dir2/$first_id.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
-  fail "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
+  fail "GET /files/$first_id/zip: failed downloading the zip file\n"
 fi
 
 diff $tmp_dir2/$filename $tmp_dir/$filename || ok=0
 if [ $ok = "0" ]; then
-  fail "GET /files/$first_id/zip ${RED}TEST FAILED${NC}\n"
+  fail "GET /files/$first_id/zip: unexpected zip archive content\n"
 fi
 
 
@@ -201,14 +202,15 @@ rm -f $tmp_dir2/*
 curl --output $tmp_dir2/mrufiles.zip $host_and_port/mrufiles/zip && ok=1 
 
 if [ $ok = "0" ]; then
-  fail "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n"
+  fail "GET /mrufiles/zip: Can't download the mrufiles archive\n"
 fi
 
 ok=0
 cd $tmp_dir2 && unzip ./mrufiles.zip && rm mrufiles.zip && cd - && ok=1
 
 if [ $ok = "0" ]; then
-  fail "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n"
+  cd -
+  fail "GET /mrufiles/zip: Failed uncompress the mrufiles.zip\n"
 fi
 
 ok=0
@@ -218,9 +220,9 @@ filescount=`ls *.txt | wc -w`
 cd -
 
 if [ $ok = "1" ] && [ $filescount = "3" ]; then
-  success "OK    GET /mrufiles/zip"
+  success "GET /mrufiles/zip: mrufiles entry count verified"
 else
-  fail "GET /mrufiles/zip ${RED}TEST FAILED${NC}\n"
+  fail "GET /mrufiles/zip: Unexpected number of entries in mrufiles.zip archive\n"
 fi
 
 # ------------------------------------------------------------------------------
@@ -234,16 +236,16 @@ function getRequest() {
   ok=0
   curl $host_and_port/$getRequestType > $tmp_dir/$getRequestType.json && ok=1
   if [ $ok = "0" ]; then
-    fail "GET /$getRequestType ${RED}TEST FAILED${NC}\n"
+    fail "GET /$getRequestType: Can't get an answer\n"
   fi
 
   ok=0
   eval "$jsonvalidator $tmp_dir/$getRequestType.json && ok=1" 2>/dev/null 
   if [ $ok = "0" ]; then
-    fail "GET /$getRequestType ${RED}Can't validate the JSON outcome${NC}\n"
+    fail "GET /$getRequestType: Can't validate JSON\n"
   fi
 
-  success "OK    GET /$getRequestType JSON Validation"
+  success "GET /$getRequestType: JSON Valid"
 }
 
 getRequest files
@@ -268,7 +270,7 @@ id=`echo -n File04.txt | sha256sum  | awk '{print $1}'`
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null || ok=1
 if [ $ok = "0" ]; then
-   fail "GET /files/$first_id ${RED}%first_id should not be in the mrulist now${NC}\n"
+   fail "GET /files/$first_id: %first_id should not be in the mrulist now\n"
 fi
 
 # make sure timestamp distance at least is 1 sec
@@ -277,16 +279,16 @@ sleep 1.5
 ok=0
 curl --output $tmp_dir2/$id.zip $host_and_port/files/$id/zip && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id ${RED}Can't download zip file${NC}\n" 
+  fail "GET /files/$id: Can't download zip file\n" 
 fi
 
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id ${RED}Can't get the mru list${NC}\n"
+  fail "GET /files/$id: Can't get the mru list\n"
 fi
 
-success "TS-OK GET /files/$id/zip"
+success "GET /files/$id/zip: Timestamp updated correctly"
 
 #GET /file/<id>
 #check that the first_id related entry now is into mrufiles list
@@ -296,7 +298,7 @@ id=`echo -n File05.txt | sha256sum  | awk '{print $1}'`
 ok=1
 curl $host_and_port/mrufiles | grep $id && ok=0
  if [ $ok = "0" ]; then
-   fail "GET /files/$id ${RED} The id is not supposed to be in the MRU list${NC}\n"
+   fail "GET /files/$id: the id is not supposed to be in the MRU list\n"
 fi
 
 # make sure timestamp distance at least is 1 sec
@@ -305,25 +307,25 @@ sleep 1.5
 ok=0
 curl $host_and_port/files/$id > $tmp_dir/aFile.json && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$second_id ${RED}Can't get the file descriptor${NC}\n"
+  fail "GET /files/$second_id: Can't get the file descriptor\n"
 fi
 
 ok=0
 eval "$jsonvalidator $tmp_dir/aFile.json && ok=1" 2>/dev/null 
 if [ $ok = "0" ]; then
-  fail "GET /files/$id  ${RED}Can't validate the JSON output${NC}\n"
+  fail "GET /files/$id : Can't validate the JSON output\n"
 else
-  success "OK    GET /files/$id (JSON for single query) is Valid"
+  success "GET /files/$id: JSON response for single id is Valid"
 fi
 
 ok=0
 curl $host_and_port/mrufiles | grep $id >/dev/null && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$second_id ${RED}Can't get the mru list${NC}\n"
+  fail "GET /files/$second_id: Can't get the mru list\n"
 fi
 
 
-success "TS-OK GET /files/$second_id"
+success "GET /files/$second_id: timestamp looks OK"
 
 # ------------------------------------------------------------------------------
 # Big File Test
@@ -339,19 +341,18 @@ bigfileid=`echo -n ${bigFileName} | sha256sum  | awk '{print $1}'`
 ok=0
 cd $tmp_dir && curl -F file=@${bigFileName} $host_and_port/store > $bigFileName.json && cd - && ok=1
 if [ $ok = "0" ]; then
-  fail "POST $bigFileName/store ${RED}Cannot transfer ${tmp_dir}/${bigFileName} ${NC}\n"
+  fail "POST $bigFileName/store: Cannot transfer ${tmp_dir}/${bigFileName}\n"
 fi
 
 ok=0
 grep $bigfileid $tmp_dir/$bigFileName.json && ok=1
 if [ $ok = "0" ]; then
-  fail "POST $bigFileName/store ${RED}Invalid response for ${tmp_dir}/${bigFileName} ${NC}\n"
+  fail "POST $bigFileName/store: Invalid response for ${tmp_dir}/${bigFileName}\n"
 fi
 
-success "BF-OK POST store/$bigFileName"
+success "POST store/$bigFileName: the 'big file' has been uploaded correctly"
 
 
-set -x
 # ------------------------------------------------------------------------------
 # Zero File Test
 # ------------------------------------------------------------------------------
@@ -365,13 +366,13 @@ zerofileid=`echo -n ${zeroFileName} | sha256sum  | awk '{print $1}'`
 ok=0
 cd $tmp_dir && curl -F file=@${zeroFileName} $host_and_port/store > $zeroFileName.json && cd - && ok=1
 if [ $ok = "0" ]; then
-  fail "POST $zeroFileName/store ${RED}Cannot transfer ${tmp_dir}/${zeroFileName} ${NC}\n"
+  fail "POST $zeroFileName/store: Cannot transfer ${tmp_dir}/${zeroFileName}\n"
 fi
 
 ok=0
 grep $zerofileid $tmp_dir/$zeroFileName.json && grep '"size": 0,' $tmp_dir/$zeroFileName.json && ok=1
 if [ $ok = "0" ]; then
-  fail "POST $zeroFileName/store ${RED}Invalid response for ${tmp_dir}/${zeroFileName} ${NC}\n"
+  fail "POST $zeroFileName/store: Invalid response for ${tmp_dir}/${zeroFileName}\n"
 fi
 
 rm -f $tmp_dir/$zeroFileName
@@ -379,21 +380,21 @@ rm -f $tmp_dir/$zeroFileName
 ok=0
 curl --output $tmp_dir/$zerofileid.zip $host_and_port/files/$zerofileid/zip && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id/zip ${RED}Zero size file download failed${NC}\n" 
+  fail "GET /files/$id/zip: Zero size file download failed\n" 
 fi
 
 ok=0
 cd $tmp_dir && unzip $tmp_dir/$zerofileid.zip && cd - && ok=1
 if [ $ok = "0" ]; then
-  fail "GET /files/$id/zip ${RED}Zip file not found${NC}\n" 
+  fail "GET /files/$id/zip: Zip file not found\n" 
 fi
 
 FILESIZE=$(stat -c%s "$zeroFileName")
 if [ $FILESIZE -ne "0" ]; then
-  fail "GET /files/$id/zip ${RED}Zip file size $FILESIZE != 0 ${NC}\n" 
+  fail "GET /files/$id/zip: Zip file size $FILESIZE != 0\n" 
 fi
 
-success "ZF-OK POST store/$zeroFileName"
+success "POST store/$zeroFileName: zero-size file is handled correctly"
 
 # ------------------------------------------------------------------------------
 # Evil Requests
@@ -407,17 +408,17 @@ sendWrongRequest() {
   curl $host_and_port/$uriToSend > $tmp_dir/err.html && ok=1
 
   if [ $ok = "0" ]; then
-    fail "GET $uriToSend ${RED}Error in Server Response${NC}\n"
+    fail "GET $uriToSend: Error in Server Response\n"
   fi
 
   ok=0
   grep "$errorExpected" $tmp_dir/err.html && ok=1
 
   if [ $ok = "0" ]; then
-    fail "GET $uriToSend ${RED}Wrong error message detected${NC}\n"
+    fail "GET $uriToSend: Wrong error message detected\n"
   fi
 
-  success "INVRQ GET $uriToSend (server answered with error which is OK)"
+  success "GET $uriToSend: expected HTTP error checked"
 }
 
 sendWrongRequest mrufiles/ThisIsInvalid     "400 Bad Request"
@@ -434,7 +435,7 @@ clear
 echo ------------------------------------
 printf "${GREEN}TEST SUCCEDED${NC}\n"
 echo ------------------------------------
-cat $resultfile
+while read -r line; do echo -e $line; done < $resultfile
 
 
 # ------------------------------------------------------------------------------
