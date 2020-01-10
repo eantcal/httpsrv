@@ -125,7 +125,8 @@ bool FilenameMap::jsonStat(
    if (ret < 0)
       return false;
 
-   std::tm bt = *localtime(&(rstat.st_atime));
+   // convert into UTC timestamp
+   std::tm bt = *gmtime(&(rstat.st_atime));
 
    std::ostringstream ossTS;
 

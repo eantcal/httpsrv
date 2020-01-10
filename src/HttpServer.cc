@@ -140,7 +140,7 @@ private:
          const int sd = getTcpSocketHandle()->getSocketFd();
          sessionId =
              "[" + std::to_string(sd) + "] " +
-             "[" + SysUtils::getLocalTime() + "] ";
+             "[" + SysUtils::getUtcTime() + "] ";
 
          log() << sessionId << "---- HTTP SERVER SESSION STARTS" << std::endl;
          log().flush();

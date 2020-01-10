@@ -41,7 +41,7 @@ void HttpResponse::formatError(int code)
       + "<body>" + msg + "</body></html>\r\n";
 
    _response = HTTP_SERVER_VER " " + scode + " " + msg + "\r\n";
-   _response += "Date: " + SysUtils::getLocalTime() + "\r\n";
+   _response += "Date: " + SysUtils::getUtcTime() + "\r\n";
    _response += "Server: " HTTP_SERVER_NAME "\r\n";
    _response += "Content-Length: " + std::to_string(error_html.size()) + "\r\n";
    _response += "Content-Type: text/html\r\n\r\n";
@@ -59,7 +59,7 @@ void HttpResponse::formatPositiveResponse(
 {
 
    _response = HTTP_SERVER_VER " 200 OK\r\n";
-   _response += "Date: " + SysUtils::getLocalTime() + "\r\n";
+   _response += "Date: " + SysUtils::getUtcTime() + "\r\n";
    _response += "Server: " HTTP_SERVER_NAME "\r\n";
    _response += "Content-Length: " + std::to_string(contentLen) + "\r\n";
    _response += "Last Modified: " + fileTime + "\r\n";
@@ -117,7 +117,7 @@ HttpResponse::HttpResponse(
          else
          {
             formatPositiveResponse(
-                SysUtils::getLocalTime(),
+                SysUtils::getUtcTime(),
                 std::string(bodyFormat),
                 body.size());
 
@@ -144,7 +144,7 @@ HttpResponse::HttpResponse(
       else
       {
          formatPositiveResponse(
-             SysUtils::getLocalTime(),
+             SysUtils::getUtcTime(),
              std::string(bodyFormat),
              body.size());
 

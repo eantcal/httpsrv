@@ -30,12 +30,12 @@ void SysUtils::convertDurationInTimeval(const TimeoutInterval &d, timeval &tv)
 
 /* -------------------------------------------------------------------------- */
 
-void SysUtils::getLocalTime(std::string &localTime)
+void SysUtils::getUtcTime(std::string &retTime)
 {
    time_t ltime;
    ltime = ::time(NULL); // get current calendar time
-   localTime = ::asctime(::localtime(&ltime));
-   StrUtils::removeLastCharIf(localTime, '\n');
+   retTime = ::asctime(::gmtime(&ltime));
+   StrUtils::removeLastCharIf(retTime, '\n');
 }
 
 /* -------------------------------------------------------------------------- */

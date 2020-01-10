@@ -218,7 +218,7 @@ Application::ErrCode Application::run()
 
    if (_verboseModeOn)
    {
-      std::cout << SysUtils::getLocalTime() << std::endl
+      std::cout << SysUtils::getUtcTime() << std::endl
                 << "Command line :'" << _commandLine << "'"
                 << std::endl
                 << HTTP_SERVER_NAME << " is listening on TCP port "

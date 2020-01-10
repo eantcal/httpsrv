@@ -88,25 +88,25 @@ bool initCommunicationLib();
 int closeSocketFd(int sd);
 
 /**
- * Gets the system time, corrected for the local time zone
+ * Gets the system UTC time
  * Time format is "DoW Mon dd hh:mm:ss yyyy"
  * Example "Thu Sep 19 10:03:50 2013"
  *
- * @param localTime will contain the time
+ * @param retTime will contain the time
  */
-void getLocalTime(std::string &localTime);
+void getUtcTime(std::string &retTime);
 
 /**
- * Gets the system time, corrected for the local time zone
+ * Gets the system UTC time
  * Time format is "DoW Mon dd hh:mm:ss yyyy"
  * Example "Thu Sep 19 10:03:50 2013"
  *
  * @return the string will contain the time
  */
-inline std::string getLocalTime()
+inline std::string getUtcTime()
 {
    std::string lt;
-   getLocalTime(lt);
+   getUtcTime(lt);
    return lt;
 }
 
