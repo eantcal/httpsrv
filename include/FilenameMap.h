@@ -17,7 +17,6 @@
 #include <mutex> // For std::unique_lock
 #include <shared_mutex>
 #include <string>
-#include <memory>
 
 /* -------------------------------------------------------------------------- */
 
@@ -28,20 +27,12 @@
 class FilenameMap
 {
 public:
-   using Handle = std::unique_ptr<FilenameMap>;
+   FilenameMap() = default;
 
    FilenameMap(const FilenameMap &) = delete;
    FilenameMap(FilenameMap &&) = delete;
    FilenameMap &operator=(const FilenameMap &) = delete;
    FilenameMap &operator=(FilenameMap &&) = delete;
-
-   /**
-    * Creates an object instance
-    */
-   static Handle make()
-   {
-      return FilenameMap::Handle(new (std::nothrow) FilenameMap);
-   }
 
    /**
     * Thread-safe version of insert (thread-safe)
@@ -152,9 +143,6 @@ public:
        const std::string &id,
        std::string &json,
        bool updateTimeStamp);
-
-   FilenameMap() = default;
-
 private:
    using data_t = std::unordered_map<std::string, std::string>;
    mutable std::shared_mutex _mtx;

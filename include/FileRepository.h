@@ -39,12 +39,7 @@ public:
    static Handle make(const std::string& path, int mrufilesN)
    {
       // Creates or validates (if already existant) a repository for text file
-      auto fmap = FilenameMap::make();
-      if (!fmap)
-         return nullptr;
-
-      Handle ret(new (std::nothrow) FileRepository(
-         path, mrufilesN, std::move(fmap)));
+      Handle ret(new (std::nothrow) FileRepository(path, mrufilesN));
 
       assert(ret);
 
@@ -87,16 +82,13 @@ public:
     */
    FilenameMap& getFilenameMap() 
    {
-      assert(_filenameMap);
-
-      return *_filenameMap;
+      return _filenameMap;
    }
 
 private:
-   FileRepository(const std::string& path, int mrufilesN, FilenameMap::Handle aMap) :
+   FileRepository(const std::string& path, int mrufilesN) :
       _path(path),
-      _mrufilesN(mrufilesN),
-      _filenameMap(std::move(aMap))
+      _mrufilesN(mrufilesN)
    {
    }
 
@@ -108,7 +100,7 @@ private:
 private:
    std::string _path;
    int _mrufilesN;
-   FilenameMap::Handle _filenameMap;
+   FilenameMap _filenameMap;
 };
 
 /* ------------------------------------------------------------------------- */
