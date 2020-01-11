@@ -99,12 +99,30 @@ public:
       std::string& json);
 
    /**
-   * Create a zip archive containing MRU files of repository
-   *
-   * @param zipFileName is name of file created
-   * @return true if operation succeded, false otherwise
-   */
+    * Create a zip archive containing MRU files of repository
+    *
+    * @param zipFileName is name of file created
+    * @return true if operation succeded, false otherwise
+    */
    bool createMruFilesZip(std::string& zipFileName);
+
+   enum class createFileZipRes {
+      success,
+      idNotFound,
+      cantCreateTmpDir,
+      cantZipFile
+   };
+
+   /**
+    * Create a zip archive containing a specific file of repository
+    *
+    * @paran id is identifier of file
+    * @param zipFileName is name of file created
+    * @return one of possible error code defined in createFileZipRes
+    */
+
+   createFileZipRes createFileZip(
+      const std::string id, std::string& zipFileName);
 
 private:
    FileRepository(const std::string& path, int mrufilesN) :

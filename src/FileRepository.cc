@@ -164,7 +164,6 @@ bool FileRepository::store(
    return false;
 }
 
-
 /* -------------------------------------------------------------------------- */
 
 bool FileRepository::createMruFilesZip(std::string& zipFileName)
@@ -196,4 +195,36 @@ bool FileRepository::createMruFilesZip(std::string& zipFileName)
    zipFileName = tempDir.string();
 
    return true;
+}
+
+/* -------------------------------------------------------------------------- */
+
+FileRepository::createFileZipRes FileRepository::createFileZip(
+   const std::string id, std::string& zipFileName)
+{
+   std::string fileName;
+
+   if (!getFilenameMap().locked_search(id, fileName))
+      return createFileZipRes::idNotFound;
+
+   fs::path tempDir;
+   if (!FileUtils::createTemporaryDir(tempDir))
+      return createFileZipRes::cantCreateTmpDir;
+
+   tempDir /= fileName + ".zip";
+   fs::path src(_path);
+   src /= fileName;
+
+   const auto updated =
+      FileUtils::touch(src.string(), false /*== do not create if it does not exist*/);
+
+   ZipArchive zipArchive(tempDir.string());
+   if (!updated || !zipArchive.create() || !zipArchive.add(src.string(), fileName))
+      return createFileZipRes::cantZipFile;
+
+   zipArchive.close();
+
+   zipFileName = tempDir.string();
+
+   return createFileZipRes::success;
 }

@@ -128,6 +128,7 @@ private:
    {
       const auto &uri = httpRequest.getUri();
 
+      // command /files
       if (uri == HTTP_SERVER_GET_FILES &&
          _FileRepository->getFilenameMap().
             locked_updateMakeJson(getLocalStorePath(), json))
@@ -135,6 +136,7 @@ private:
          return ProcessGetRequestResult::sendJsonFileList;
       }
 
+      // command /mrufiles
       if (uri == HTTP_SERVER_GET_MRUFILES)
       {
          return !_FileRepository->createJsonMruFilesList(json) ? 
@@ -142,6 +144,7 @@ private:
             ProcessGetRequestResult::sendMruFiles;
       }
 
+      // command /mrufiles/zip
       if (uri == HTTP_SERVER_GET_MRUFILES_ZIP)
       {         
          return _FileRepository->createMruFilesZip(fileToSend) ?
@@ -151,6 +154,7 @@ private:
 
       const auto &uriArgs = httpRequest.getUriArgs();
 
+      // command /files/<id> is split in 3 args (first one, arg[0] is dummy)
       if (uriArgs.size() == 3 && uriArgs[1] == HTTP_URIPFX_FILES)
       {
          const auto &id = httpRequest.getUriArgs()[2];
@@ -161,36 +165,25 @@ private:
          }
       }
 
+      // command /files/<id>/zip is split in 4 args (first one, arg[0] is dummy)
       if (uriArgs.size() == 4 && 
           uriArgs[1] == HTTP_URIPFX_FILES && 
           uriArgs[3] == HTTP_URISFX_ZIP)
       {
-         std::string fileName;
-         const auto &id = uriArgs[2];
+         const auto& id = uriArgs[2];
+         auto res = _FileRepository->createFileZip(id, fileToSend);
+         switch (res) 
+         {
+            case FileRepository::createFileZipRes::idNotFound:
+               return ProcessGetRequestResult::sendNotFound;
 
-         if (!_FileRepository->getFilenameMap().locked_search(id, fileName))
-            return ProcessGetRequestResult::sendNotFound;
+            case FileRepository::createFileZipRes::cantCreateTmpDir:
+            case FileRepository::createFileZipRes::cantZipFile:
+               return ProcessGetRequestResult::sendInternalError;
 
-         fs::path tempDir;
-         if (!FileUtils::createTemporaryDir(tempDir))
-            return ProcessGetRequestResult::sendInternalError;
-
-         tempDir /= fileName + ".zip";
-         fs::path src(getLocalStorePath());
-         src /= fileName;
-
-         const auto updated =
-             FileUtils::touch(src.string(), false /*== do not create if it does not exist*/);
-
-         ZipArchive zipArchive(tempDir.string());
-         if (!updated || !zipArchive.create() || !zipArchive.add(src.string(), fileName))
-            return ProcessGetRequestResult::sendInternalError;
-
-         zipArchive.close();
-
-         fileToSend = tempDir.string();
-
-         return ProcessGetRequestResult::sendZipFile;
+            case FileRepository::createFileZipRes::success:
+               return ProcessGetRequestResult::sendZipFile;
+         }
       }
 
       return ProcessGetRequestResult::sendErrorInvalidRequest;
