@@ -18,36 +18,33 @@ Httpsrv is a console that can be easily daemonized (via external command like da
 Main thread executes the HTTP server implemented by `class HttpServer`.
 
 ### Configuration and start-up
-An HttpServer object is instantiated by an Application object (created in turn by function `main()`), which basically is a builder for it.
-
-Application object verifies and completes the configuration as a mix of default and optional parameters (via program arguments) and, in absence of configuration errors, creates:
-* a `FileRepository` instance: which is responsible for 
+Application entry point, the main function, creates an `class Application` which is a builder for `FileRepository` and `HttpServer`:
+* class `FileRepository` provides methods for:
     * accessing the filesystem, 
     * creating zip archives,
-    * creating a `FilenameMap` object (file name resolver for a given `id`), 
-    * formatting the JSON status
-* `HttpServer` is responsible for 
+    * creating a `FilenameMap` object (`filename` resolver for a given `id`), 
+    * formatting the JSON metadata
+* class `HttpServer` implements the HTTP server main loop:
     * accepting a new TCP connection and 
-    * finally creating an HTTP session (`class HTTPSession`) which handles the GET and POST API business logic.
+    * finally creating an HTTP session (`HTTPSession`) which finally handles the application business logic.
     
-The server relies on the filesystem for storing the text (or any binary) files, so it creates (in the context `FileRepository` initialization), if not already existent, a specific directory handled by class `FileRepository`. By default the directory is a subdir of user home directory and can be configured at application start-up. The repository is by default named `“.httpsrv”` for ‘unix’ platforms, `“httpsrv”` for Windows.
+httpsrv relies on the filesystem for storing files, so it creates in the context `FileRepository` initialization - if not already existent - a specific directory handled by class `FileRepository`. 
+The repository directory can be configured via program arguments, and by default it is a subdir of user home directory named `“.httpsrv”` for ‘unix’ platforms, `“httpsrv”` for Windows.
 
-The http server is executed via its method `run()`. Such method is blocking for the caller, so unless the application is executed as background process or daemon, it will block the caller process (typically the shell).
-The server will be bound on any local interfaces and on a configured TCP port (which is `8080`, by default).
+When the initialization is completed, the application object calls the method `run()` of `HttpServer` object. Such method is blocking for the caller, so unless the application is executed as background process or daemon, it will block the caller process (typically the shell).
+The server is designed to bind on any interfaces and a configurable TCP port (`8080`, by default).
 
-The method `HttpServer::run()` executes a loop that for each iteration waits for incoming connection by calling `accept()` which eventually calls the socket function `accept()`. 
+## Main server loop
+The method `HttpServer::run()` executes a loop that for each iteration waits for incoming connection by calling `accept()` which eventually will result in calling the `accept()` function of socket library. 
+When `accept()` accepts a connection, `run()` gets a new `TcpSocket` object, which represents the TCP session, and creates a new HTTP Session handled by instance of class `HttpSession`. 
+Each HTTP Session runs in a separate thread so multiple requests can be served concurrently. It is guaranteed that independent operations are thread safe. 
 
-### HTTP Sessions and concurrent operations 
-Each HTTP session runs in a separate thread so multiple requests can be served concurrently. It is guaranteed that independent operations are thread safe. 
-
-The chance of conflicts and their consequences are the same of trying to access to the **same** file in a filesystem at the **same** time:
+### Concurrent operations 
 * Concurrent GET operations not altering the timestamp can be executed without any issue.
-* Concurrent POST or GET (id or id/zip) for the same files might produce a JSON metadata which does not reflect - for some clients - the actual repository status. Repeating the operation later, in absence of conflicts, will fix the issue.
+* Concurrent POST or GET (id or id/zip) for the same files might produce a JSON metadata which does not reflect - for some concurrent clients - the actual repository status. Repeating the operation later, in absence of concurrent access to the same file, will fix the issue (BTW this is what commonly happens in a shared  and unlocked unix filesystem).
 
-In absence of specific requirements it has been decided of not implementing a strictly F/S locking mechanism in order to avoid conflicts (optimistic policy), which basically has allowed to simplify the design.
-Anyway adding an additional memory r/w lock mechanism would prevent a single instance of httpsrv to access a shared resource, but that would not work for external access to repository itself, while an effective mechanism should rely on a well-orchestrated solution which cannot be provided (easily) by stand-alone application.
-
-The file id is a SHA256 hash code of file name (which is in turn assumed to be unique), so any conflict would have no impact on its validity, moreover the class `FilenameMap` (which provide the methods to resolve the filename for a given id) is designed to be thread-safe (a r/w mutex is used for the purposes). So the design should avoid concurrent requestes would result in server crash or asymptotic instability.
+In absence of specific requirements it has been decided of not implementing a strictly F/S locking mechanism by adopting an optimistic policy: moreover adding an additional memory r/w lock mechanism would prevent a single instance of httpsrv to access a shared resource, but that would not work for external access to repository itself. Only an effective mechanism relying on a well-orchestrated solution could prevent that.
+The file id is a SHA256 hash code of file name (which is in turn assumed to be unique), so any conflict would have no impact on its validity, moreover the class `FilenameMap` (which provides the methods to resolve the filename for a given id) is designed to be thread-safe (a r/w mutex is used for the purposes). So the design should avoid concurrent requests would result in server crash or asymptotic instability.
 
 ## Resiliency
 The application is also designed to recover from intentional or unintentional restart.
@@ -114,5 +111,5 @@ CMake support and Visual Studio 2019 project files are provided.
 The server has been built and tested on Linux, MacOS and Windows, more precisely it has been tested on:
 - Darwin (18.7.0 Darwin Kernel Version 18.7.0) on MacBook Pro, built using Apple clang version 11.0.0 (clang-1100.0.20.17), Target: x86_64-apple-darwin18.7.0, Thread model: posix, cmake version 3.12.2
 - Linux 5.0.0-38-generic #41-Ubuntu SMP Tue Dec 3 00:27:35 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux, built using g++ (Ubuntu 8.3.0-6ubuntu1) 8.3.0, cmake version 3.13.4
-- Windows 10 buillt using Visual Studio 2019
+- Windows 10 built using Visual Studio 2019
 
