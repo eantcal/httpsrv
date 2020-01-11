@@ -128,3 +128,36 @@ bool FileRepository::createJsonMruFilesList(std::string &json)
    json += "\n]\n";
    return true;
 }
+
+/* -------------------------------------------------------------------------- */
+
+bool FileRepository::store(
+   const std::string& fileName,
+   const std::string& fileContent,
+   std::string& json)
+{
+   fs::path filePath(_path);
+   filePath /= fileName;
+
+   std::ofstream os(filePath.string(), std::ofstream::binary);
+
+   os.write(fileContent.data(), fileContent.size());
+
+   if (!os.fail())
+   {
+      auto id = FileUtils::hashCode(fileName);
+
+      os.close(); // create the file posted by client
+      if (!FilenameMap::jsonStat(filePath.string(), fileName, id, json))
+      {
+         json.clear();
+      }
+      else
+      {
+         getFilenameMap().insert(id, fileName);
+         return true;
+      }
+   }
+
+   return false;
+}

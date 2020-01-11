@@ -82,36 +82,6 @@ private:
    {
    }
 
-   bool writePostedFile(
-       const std::string &fileName,
-       const std::string &fileContent,
-       std::string &json)
-   {
-      std::string filePath = getLocalStorePath() + "/" + fileName;
-
-      std::ofstream os(filePath, std::ofstream::binary);
-
-      os.write(fileContent.data(), fileContent.size());
-
-      if (!os.fail())
-      {
-         auto id = FileUtils::hashCode(fileName);
-
-         os.close(); // create the file posted by client
-         if (!FilenameMap::jsonStat(filePath, fileName, id, json))
-         {
-            json.clear();
-         }
-         else
-         {
-            _FileRepository->getFilenameMap().insert(id, fileName);
-            return true;
-         }
-      }
-
-      return false;
-   }
-
    enum class ProcessGetRequestResult
    {
       none,
@@ -300,7 +270,7 @@ void HttpServerSession::operator()(Handle taskHandle)
             log().flush();
          }
 
-         if (!writePostedFile(fileName, httpRequest->getBody(), jsonResponse))
+         if (!_FileRepository->store(fileName, httpRequest->getBody(), jsonResponse))
          {
             if (_verboseModeOn)
             {

@@ -85,6 +85,17 @@ public:
       return _filenameMap;
    }
 
+   /**
+    * Store a file on the repository.
+    * @param fileName is name of file to be stored
+    * @param fileContent is the content of file (can be empty)
+    * @param json is JSON formatted returned status
+    */
+   bool store(
+      const std::string& fileName,
+      const std::string& fileContent,
+      std::string& json);
+
 private:
    FileRepository(const std::string& path, int mrufilesN) :
       _path(path),
