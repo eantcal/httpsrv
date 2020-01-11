@@ -1,8 +1,5 @@
 # httpsrv
-Httpsrv is a retailed version of a lightweight HTTP server and derives from thttpd (https://github.com/eantcal/thttpd), originally implemented to serve http GET/HEAD methods. httpsrv has been refactored to support HTTP methods GET and POST.
-It has been implemented in modern C++, which means it requires a C++14 or even C++17 compiler to be successfully built.
-It has been designed to run on Linux mainly, but it can run also on MacOS or other unix platforms other than Windows. 
-
+Httpsrv is a retailed version of a lightweight HTTP server and derives from thttpd (https://github.com/eantcal/thttpd), originally implemented to serve http GET/HEAD methods. 
 httpsrv is capable to serve multiple clients supporting GET and POST methods and has been designed to respond to the following specifications:
 - standalone application containing an embedded web server which exposes the following HTTP API for storing and retrieving text files and their associated metadata:
 - `POST` `some_file.txt` to `/store`: returns a JSON payload with file metadata containing name, size (in bytes), request timestamp and an auto-generated ID
@@ -12,17 +9,32 @@ httpsrv is capable to serve multiple clients supporting GET and POST methods and
 - `GET` `/mrufiles`: returns a JSON payload with an array of files metadata containing file name, size (in bytes), timestamp and ID for the top `N` most recently accessed files via the `/files/{id}` and `/files/{id}/zip` endpoints. `N` should be a configurable parameter for this application.
 - `GET` `/mrufiles/zip`: returns a zip archive containing the top `N` most recently accessed files via the `/files/{id}` and `/files/{id}/zip` endpoints. `N` should be a configurable parameter for this application.
 
-##httpsrv architecture
+## httpsrv architecture
+Httpsrv is a console application, that can be easily daemonized (via external command like daemonize if required, in Linux, for example). 
+Main thread executes the HTTP server implemented by class HttpServer.
+The HttpServer is instantiated by an Application object, created directly by main() function, which basically is a builder for it. Application verifies and completes the configuration as a mix of default and optional parameters (via program arguments) and creates:
+- a FileRepository instance: which is responsible for accessing the filesystem, creating zip archives, creating a FilenameMap object (filename resolver for a given id), formatting the JSON status for files and invoked by HttpServerSession object instance related to a specific working thread.
+- HttpServer (which is a singleton) is responsible for accepting the TCP connection and creating for each accepted one a specific working thread (HttpServerSession).
+Once repository and http server are configured, the server is executed (via its method run()). This method is blocking for the caller, so unless the application is executed as background process or daemon, it blocks the caller process (typically the shell).
+The server binds on any local interfaces and the specific configured TCP port (which is 8080, by default).
+The method HttpServer::run() executes a loop that for each iteration is locked by TcpSocket::accept() method. This is a wrapper of socket function accept() which basically unlocks when a client is connected. 
+
+httpsrv has been refactored to support HTTP methods GET and POST.
+It has been implemented in modern C++, which means it requires a C++14 or even C++17 compiler to be successfully built.
+It has been designed to run on Linux mainly, but it can run also on MacOS or other unix platforms other than Windows. 
+
 Each HTTP sessions runs in a separate thread so multiple requests can be served concurrently. It is guaranteed that independent operations are thread safe. 
-The server relies on the filesystem for storing the text files, so it creates (if not already existent) a specific directory that we called ‘file repository’ (class FileRepository). By default the directory is a subdir of user home directory and can be configured at start-up. The default name is “.httpsrv” for ‘unix’ platforms, “httpsrv” for Windows. 
-The chance of conflicts and their consequences are the same of trying to access to the same file in a filesystem (because the repository path can be hosted on any supported filesystem, this can have an impact read/write operations) at the same time:
+The server relies on the filesystem for storing the text files, so it creates (if not already existent) a specific directory (handled by class FileRepository). By default the directory is a subdir of user home directory and can be configured at start-up. The default name is “.httpsrv” for ‘unix’ platforms, “httpsrv” for Windows. 
+The chance of conflicts and their consequences are the same of trying to access to the same file in a filesystem (the behaviour can be slightly different depending on the actual filesystem is hosting the repository) at the same time:
 - Concurrent GET operations which not altering the timestamp can be executed without any issue.
 - Concurrent POST or GET (id or id/zip) for the same files can fail or produce a status (the JSON descriptor) which does not reflect - for some clients - the actual repository status. Repeating the operation later, in absence of conflicts, will fix the issue.
-In absence of specific requirement we decide not to implement a strictly F/S locking mechanism for avoiding conflicts (optimistic solution), which basically allowed to simplify the design.
-The id is a SHA256 hash code of file name (which is assumed to be unique), so any conflict has no impact on its validity and a map (FilenameMap instance), which resolves the filename for a given id, is itself thread-safe and locked by r/w mutex. So it is guaranteed that conflicts do not make crashing the server or make it asymptotically unstable.
-The application is also designed to recover from intentionally or not intentionally restart (an external process monitor could be used for such purpose).
-httpsrv updates the FilenameMap content at start-up (as the http requests are not accepted yet) reading any files present in the configured repository path. This allows the server to restart from a given status in case for some reason must be restarted. 
-Multiple instance of httpsrv could be run concurrently on the same system, binding on separate ports. In case they share the same repository, it is not guaranteed that a file posted from a server can be got from another one because the FilenameMap instance lies in each process memory and there was not any requirements for such unsupported scenario.
+In absence of specific requirement I have decide not to implement a strictly F/S locking mechanism for avoiding conflicts (optimistic solution), which basically allowed to simplify the design (an additional memory r/w lock mechanism would prevent a single instance of httpsrv to access a shared resource, but that would not work for external access to repository itself, while an effective mechanism should rely on a well-orchestrated solution which is out of scope here).
+The id is a SHA256 hash code of file name (which is in turn assumed to be unique), so any conflict has no impact on its validity and a map (FilenameMap instance), which resolves the filename for a given id, is itself thread-safe and locked by r/w mutex. So it is guaranteed that conflicts do not make crashing the server or make it asymptotically unstable.
+
+The application is also designed to recover from intentional or unintentional restart. An external process monitor could be used for such purpose.
+For such reason, httpsrv updates the FilenameMap content at start-up (as the http requests are not accepted yet) getting the status of any files present in the configured repository path. This allows the server to restart from a given repository state, in case for some reason it must be restarted. 
+
+Multiple instances of httpsrv could be run concurrently on the same system, binding on separate ports. In case they share the same repository, it is not guaranteed that a file posted from a server can be visible to another server instance because the FilenameMap content is stored in the isolated process memory. Moreover there was not any requirements for such scenario.
 
 When a file is uploaded via POST the server does:
 - create a HttpServerSession (which executes in a concurrent thread)
@@ -36,13 +48,6 @@ GET operation
 
 
 ##httpsrv implementation
-Httpsrv is a console application (can be easly daemonized via external command like daemonize if required, in Linux, for example). Main thread executes the HTTP server (implemented by HttpServer class).
-The HttpServer is instantiated by an Application object (created directly by main() function) which basically is a builder for it. Application verifies and completes the configuration as a mix of default and optional parameters (via program arguments), creates an instance of HttpServer (which is a singleton) and by specific setter methods configures it by setting:
-- bind port (default 8080)
-- an optional logger object (any std::ostream reference, default std::cout)
-- repository path (default ~/.httpsrv).
-Application object calls bind/listen methods of HttpServer and in absence of errors finally calls its run() method. This method is blocking for the caller, so unless the application is executed as background process or daemon, it blocks for the caller.
-The server binds on any interfaces (including the loopback) and the configured port.
 
 
 ##making httpsrv
@@ -73,3 +78,4 @@ The server has been built and tested on Linux, MacOS and Windows, more precisely
 - Darwin (18.7.0 Darwin Kernel Version 18.7.0) on MacBook Pro, built using Apple clang version 11.0.0 (clang-1100.0.20.17), Target: x86_64-apple-darwin18.7.0, Thread model: posix, cmake version 3.12.2
 - Linux 5.0.0-38-generic #41-Ubuntu SMP Tue Dec 3 00:27:35 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux, built using g++ (Ubuntu 8.3.0-6ubuntu1) 8.3.0, cmake version 3.13.4
 - Windows 10 buillt using Visual Studio 2019
+
