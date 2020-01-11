@@ -143,34 +143,10 @@ private:
       }
 
       if (uri == HTTP_SERVER_GET_MRUFILES_ZIP)
-      {
-         fs::path tempDir;
-         if (!FileUtils::createTemporaryDir(tempDir))
-            return ProcessGetRequestResult::sendInternalError;
-
-         std::list<std::string> fileList;
-         if (!_FileRepository->createMruFilesList(fileList))
-            return ProcessGetRequestResult::sendInternalError;
-
-         tempDir /= MRU_FILES_ZIP_NAME;
-         ZipArchive zipArchive(tempDir.string());
-         
-         if (!zipArchive.create())
-            return ProcessGetRequestResult::sendInternalError;
-
-         for (const auto &fileName : fileList)
-         {
-            fs::path src(getLocalStorePath());
-            src /= fileName;
-
-            if (!zipArchive.add(src.string(), fileName))
-               return ProcessGetRequestResult::sendInternalError;
-         }
-
-         zipArchive.close();
-         fileToSend = tempDir.string();
-
-         return ProcessGetRequestResult::sendZipFile;
+      {         
+         return _FileRepository->createMruFilesZip(fileToSend) ?
+            ProcessGetRequestResult::sendZipFile :
+            ProcessGetRequestResult::sendInternalError;
       }
 
       const auto &uriArgs = httpRequest.getUriArgs();

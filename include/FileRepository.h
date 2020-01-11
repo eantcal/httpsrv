@@ -87,14 +87,24 @@ public:
 
    /**
     * Store a file on the repository.
+    *
     * @param fileName is name of file to be stored
     * @param fileContent is the content of file (can be empty)
     * @param json is JSON formatted returned status
+    * @return true if operation succeded, false otherwise
     */
    bool store(
       const std::string& fileName,
       const std::string& fileContent,
       std::string& json);
+
+   /**
+   * Create a zip archive containing MRU files of repository
+   *
+   * @param zipFileName is name of file created
+   * @return true if operation succeded, false otherwise
+   */
+   bool createMruFilesZip(std::string& zipFileName);
 
 private:
    FileRepository(const std::string& path, int mrufilesN) :

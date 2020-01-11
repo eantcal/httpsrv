@@ -9,7 +9,9 @@
 /* -------------------------------------------------------------------------- */
 
 #include "FileRepository.h"
+#include "ZipArchive.h"
 #include "StrUtils.h"
+#include "config.h"
 
 /* -------------------------------------------------------------------------- */
 
@@ -160,4 +162,38 @@ bool FileRepository::store(
    }
 
    return false;
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+bool FileRepository::createMruFilesZip(std::string& zipFileName)
+{
+   fs::path tempDir;
+   if (!FileUtils::createTemporaryDir(tempDir))
+      return false;
+
+   std::list<std::string> fileList;
+   if (!createMruFilesList(fileList))
+      return false;
+
+   tempDir /= MRU_FILES_ZIP_NAME;
+   ZipArchive zipArchive(tempDir.string());
+
+   if (!zipArchive.create())
+      return false;
+
+   for (const auto& fileName : fileList)
+   {
+      fs::path src(_path);
+      src /= fileName;
+
+      if (!zipArchive.add(src.string(), fileName))
+         return false;
+   }
+
+   zipArchive.close();
+   zipFileName = tempDir.string();
+
+   return true;
 }

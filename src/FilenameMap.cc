@@ -54,7 +54,7 @@ bool FilenameMap::locked_updateMakeJson(
    fs::path dirPath(path);
    fs::directory_iterator endIt;
 
-   FilenameMap newCache;
+   FilenameMap newMap;
 
    json = "[\n";
 
@@ -70,12 +70,12 @@ bool FilenameMap::locked_updateMakeJson(
             if (FilenameMap::jsonStat(
                it->path().string(), fName, id, jsonEntry, "  ", ",\n"))
             {
-               newCache.insert(id, fName);
+               newMap.insert(id, fName);
                json += jsonEntry;
             }
          }
       }
-      locked_replace(std::move(newCache));
+      locked_replace(std::move(newMap));
 
       // remove last ",\n" sequence
       if (json.size() > 2)
