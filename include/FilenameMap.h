@@ -28,7 +28,7 @@
 class FilenameMap
 {
 public:
-   using Handle = std::shared_ptr<FilenameMap>;
+   using Handle = std::unique_ptr<FilenameMap>;
 
    FilenameMap(const FilenameMap &) = delete;
    FilenameMap(FilenameMap &&) = delete;
@@ -54,6 +54,7 @@ public:
 
    /**
     * Inserts <id, filename> in the map
+    *
     * @param id is the map key
     * @param fileName is the value
     */
@@ -73,7 +74,9 @@ public:
 
    /**
     * Replaces the entire map content (thread-safe) with
-    * with a given map contant (which will be invalidated)
+    * with a given map content.
+    *
+    * @param newMap is the new map
     */
    void locked_replace(FilenameMap &&newMap)
    {
@@ -83,6 +86,7 @@ public:
 
    /**
     * Searches a filename related to a given id (thread-safe)
+    *
     * @param id searched id
     * @param fileName is assigned with corrispondent filename if found
     * @return true if id is found, false otherwise
@@ -101,7 +105,8 @@ public:
    }
 
    /**
-    * Scan the file system path to populate the map
+    * Scans the file system path to populate the map
+    *
     * @param path of local repository
     * @return true if operation successfully completed, false otherwise
     */
@@ -109,6 +114,7 @@ public:
 
    /**
     * Scans the repository to update a given filenameMap
+    *
     * @param path of repository
     * @param json is the JSON formatted text matching the cache content
     * @return true if operation successfully completed, false otherwise

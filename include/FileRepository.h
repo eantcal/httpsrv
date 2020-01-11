@@ -29,22 +29,26 @@ class FileRepository
 public:
    using Handle = std::shared_ptr<FileRepository>;
 
-   /** 
+   /**
      * Creates a new FileRepository object and a related directory
      * for a given path.
      * @param path is the directory path
      * @param mruFilesN is a number N of max mrufiles built by
      *       createJsonMruFilesList() method
      */
-   static Handle make(const std::string &path, int mrufilesN)
+   static Handle make(const std::string& path, int mrufilesN)
    {
-      Handle ret(new (std::nothrow) FileRepository(path, mrufilesN));
-      assert(ret);
-
-      if (!ret)
+      // Creates or validates (if already existant) a repository for text file
+      auto fmap = FilenameMap::make();
+      if (!fmap)
          return nullptr;
 
-      return ret->init() ? ret : nullptr;
+      Handle ret(new (std::nothrow) FileRepository(
+         path, mrufilesN, std::move(fmap)));
+
+      assert(ret);
+
+      return ret && ret->init() ? ret : nullptr;
    }
 
    /**
@@ -52,19 +56,19 @@ public:
     * @param json containing the mru files list
     * @return true if operation succeded, false otherwise
     */
-   bool createJsonMruFilesList(std::string &json);
+   bool createJsonMruFilesList(std::string& json);
 
    /**
     * Creates a list of mru filenames
     * @param mrufiles containing the list
     * @return true if operation succeded, false otherwise
     */
-   bool createMruFilesList(std::list<std::string> &mrufiles);
+   bool createMruFilesList(std::list<std::string>& mrufiles);
 
    /**
     * Returns the repository path
     */
-   const std::string &getPath() const noexcept
+   const std::string& getPath() const noexcept
    {
       return _path;
    }
@@ -78,21 +82,33 @@ public:
       return _mrufilesN;
    }
 
+   /**
+    * Returns a FilenameMap reference
+    */
+   FilenameMap& getFilenameMap() 
+   {
+      assert(_filenameMap);
+
+      return *_filenameMap;
+   }
+
 private:
-   FileRepository(const std::string &path, int mrufilesN) : 
+   FileRepository(const std::string& path, int mrufilesN, FilenameMap::Handle aMap) :
       _path(path),
-      _mrufilesN(mrufilesN)
+      _mrufilesN(mrufilesN),
+      _filenameMap(std::move(aMap))
    {
    }
 
    using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
 
    bool init();
-   bool createTimeOrderedFilesList(TimeOrderedFileList &list);
+   bool createTimeOrderedFilesList(TimeOrderedFileList& list);
 
 private:
    std::string _path;
    int _mrufilesN;
+   FilenameMap::Handle _filenameMap;
 };
 
 /* ------------------------------------------------------------------------- */

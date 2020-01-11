@@ -67,7 +67,8 @@ bool FilenameMap::locked_updateMakeJson(
             std::string jsonEntry;
             auto fName = it->path().filename().string();
             auto id = FileUtils::hashCode(fName);
-            if (FilenameMap::jsonStat(it->path().string(), fName, id, jsonEntry, "  ", ",\n"))
+            if (FilenameMap::jsonStat(
+               it->path().string(), fName, id, jsonEntry, "  ", ",\n"))
             {
                newCache.insert(id, fName);
                json += jsonEntry;
@@ -104,7 +105,9 @@ bool FilenameMap::jsonStatFileUpdateTS(
    std::string filePath = path + "/" + fName;
 
    if (updateTimeStamp)
-      FileUtils::touch(filePath, false /*== do not create if it does not exist*/);
+      FileUtils::touch(
+         filePath, 
+         false /*-> do not create a file if it doesn't exist*/);
 
    return jsonStat(filePath, fName, id, json);
 }
@@ -153,12 +156,16 @@ bool FilenameMap::jsonStat(
 
    std::stringstream oss;
    oss << beginl << "{" << std::endl;
-   // we don't need to escape the is while does contain any control/puntuactor char by contract
+
+   // we don't need to escape the id as doesn't contain any control/puntuactor chars
    oss << beginl << "  \"id\": \"" << id << "\"," << std::endl;
+
    // while we need to escape the filename otherwhise resulting JSON could be invalid
    oss << beginl << "  \"name\": \"" << StrUtils::escapeJson(fileName) << "\"," << std::endl;
+
    oss << beginl << "  \"size\": " << rstat.st_size << "," << std::endl;
    oss << beginl << "  \"timestamp\": \"" << ossTS.str() << "\"" << std::endl;
+
    oss << beginl << "}" << endl;
    jsonOutput = oss.str();
 

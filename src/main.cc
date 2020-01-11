@@ -17,7 +17,7 @@
  */
 int main(int argc, char *argv[])
 {
-   Application application(argc, argv, std::cout);
+   Application application(argc, argv, /*logger=*/std::cout);
    const auto errCode = application.run();
 
    switch (errCode)
@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
 
    case Application::ErrCode::commandLineError:
    case Application::ErrCode::fileRepositoryInitError:
-   case Application::ErrCode::idFileNameMapInitError:
    case Application::ErrCode::httpSrvBindError:
    case Application::ErrCode::httpSrvListenError:
    case Application::ErrCode::httpSrvStartError:

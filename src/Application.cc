@@ -175,28 +175,22 @@ Application::ErrCode Application::run()
       return ErrCode::commLibError;
    }
 
-   // Creates or validates (if already existant) a repository for text file
-   _filenameMap = FilenameMap::make();
-   if (!_filenameMap)
-   {
-      _errMessage = "Cannot initialize the filename map";
-      return ErrCode::idFileNameMapInitError;
-   }
-
    _FileRepository = FileRepository::make(_localRepositoryPath, _mrufilesN);
 
+   // Scan the repository for mapping hash(filename)->filename 
    if (!_FileRepository ||
-       !_filenameMap->scan(_FileRepository->getPath()))
+       !_FileRepository->getFilenameMap().scan(_FileRepository->getPath()))
    {
       _errMessage = "Cannot initialize the local repository";
       return ErrCode::fileRepositoryInitError;
    }
 
+   // Creates the HttpServer instance
    auto &httpSrv = HttpServer::getInstance();
 
-   httpSrv.setFilenameMap(_filenameMap);
    httpSrv.setFileRepository(_FileRepository);
 
+   // Bind the server to any-interface:_httpServerPort
    if (!httpSrv.bind(_httpServerPort))
    {
       ss << "Error binding server port " << _httpServerPort;
@@ -204,6 +198,7 @@ Application::ErrCode Application::run()
       return ErrCode::httpSrvBindError;
    }
 
+   // Make it listening configuring the backlog list size
    if (!httpSrv.listen(HTTP_SERVER_BACKLOG))
    {
       ss << "Error trying to listen to server port "
@@ -214,6 +209,7 @@ Application::ErrCode Application::run()
       return ErrCode::httpSrvListenError;
    }
 
+   // If required set a logger
    httpSrv.setupLogger(_verboseModeOn ? &_logger : nullptr);
 
    if (_verboseModeOn)
@@ -227,11 +223,13 @@ Application::ErrCode Application::run()
                 << std::endl;
    }
 
+   // Finally run the server (blocking the caller)
    if (!HttpServer::getInstance().run())
    {
       _errMessage = "Error starting the server";
       return ErrCode::httpSrvStartError;
    }
 
+   // Following statement won't be executed
    return ErrCode::success;
 }

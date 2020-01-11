@@ -17,11 +17,10 @@
 #include "TcpListener.h"
 
 #include "FileRepository.h"
-#include "FilenameMap.h"
 
 #include "config.h"
 
-#include <iostream>
+//#include <iostream>
 #include <string>
 
 /* -------------------------------------------------------------------------- */
@@ -57,14 +56,6 @@ public:
    }
 
    /**
-    * Sets a id/filename cache instance
-    */
-   void setFilenameMap(FilenameMap::Handle cacheInstance) noexcept
-   {
-      _filenameMap = cacheInstance;
-   }
-
-   /**
     * Gets HttpServer object instance reference.
     * This class is a singleton. First time this function is called,
     * the HttpServer object is initialized.
@@ -88,6 +79,7 @@ public:
     */
    void setFileRepository(FileRepository::Handle handle)
    {
+      assert(handle);
       _FileRepository = handle;
    }
 
@@ -139,12 +131,12 @@ protected:
    }
 
 private:
+   static HttpServer* _instance;
+
    std::ostream *_loggerOStreamPtr = &std::clog;
-   static HttpServer *_instance;
    TranspPort _serverPort = HTTP_SERVER_PORT;
    TcpListener::Handle _tcpServer;
    bool _verboseModeOn = true;
-   FilenameMap::Handle _filenameMap;
    FileRepository::Handle _FileRepository;
 
    HttpServer() = default;

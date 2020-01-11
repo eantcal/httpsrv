@@ -15,8 +15,6 @@
 #include "HttpServer.h"
 #include "FileRepository.h"
 
-#include "FilenameMap.h"
-
 #include "StrUtils.h"
 #include "SysUtils.h"
 #include "FileUtils.h"
@@ -38,14 +36,12 @@ public:
        bool verboseModeOn,
        std::ostream &loggerOStream,
        TcpSocket::Handle socketHandle,
-       FilenameMap::Handle filenameMap,
        FileRepository::Handle FileRepository)
    {
       return Handle(new (std::nothrow) HttpServerSession(
           verboseModeOn,
           loggerOStream,
           socketHandle,
-          filenameMap,
           FileRepository));
    }
 
@@ -56,7 +52,6 @@ private:
    bool _verboseModeOn = true;
    std::ostream &_logger;
    TcpSocket::Handle _tcpSocketHandle;
-   FilenameMap::Handle _filenameMap;
    FileRepository::Handle _FileRepository;
 
    std::ostream &log()
@@ -78,13 +73,11 @@ private:
        bool verboseModeOn,
        std::ostream &loggerOStream,
        TcpSocket::Handle socketHandle,
-       FilenameMap::Handle filenameMap,
        FileRepository::Handle FileRepository)
        : 
        _verboseModeOn(verboseModeOn), 
        _logger(loggerOStream), 
        _tcpSocketHandle(socketHandle), 
-       _filenameMap(filenameMap), 
        _FileRepository(FileRepository)
    {
    }
@@ -111,7 +104,7 @@ private:
          }
          else
          {
-            _filenameMap->insert(id, fileName);
+            _FileRepository->getFilenameMap().insert(id, fileName);
             return true;
          }
       }
@@ -166,7 +159,8 @@ private:
       const auto &uri = httpRequest.getUri();
 
       if (uri == HTTP_SERVER_GET_FILES &&
-          _filenameMap->locked_updateMakeJson(getLocalStorePath(), json))
+         _FileRepository->getFilenameMap().
+            locked_updateMakeJson(getLocalStorePath(), json))
       {
          return ProcessGetRequestResult::sendJsonFileList;
       }
@@ -214,8 +208,11 @@ private:
       if (uriArgs.size() == 3 && uriArgs[1] == HTTP_URIPFX_FILES)
       {
          const auto &id = httpRequest.getUriArgs()[2];
-         if (!_filenameMap->jsonStatFileUpdateTS(getLocalStorePath(), id, json, true))
+         if (!_FileRepository->getFilenameMap().
+               jsonStatFileUpdateTS(getLocalStorePath(), id, json, true)) 
+         { 
             return ProcessGetRequestResult::sendInternalError;
+         }
       }
 
       if (uriArgs.size() == 4 && 
@@ -225,7 +222,7 @@ private:
          std::string fileName;
          const auto &id = uriArgs[2];
 
-         if (!_filenameMap->locked_search(id, fileName))
+         if (!_FileRepository->getFilenameMap().locked_search(id, fileName))
             return ProcessGetRequestResult::sendNotFound;
 
          fs::path tempDir;
@@ -447,7 +444,6 @@ bool HttpServer::run()
           _verboseModeOn,
           *_loggerOStreamPtr,
           handle,
-          _filenameMap,
           _FileRepository);
 
       // Coping the http_server_task handle (shared_ptr) the reference

@@ -15,7 +15,6 @@
 
 #include "HttpServer.h"
 #include "FileRepository.h"
-#include "FilenameMap.h"
 #include "FileUtils.h"
 #include "SysUtils.h"
 #include "StrUtils.h"
@@ -40,7 +39,6 @@ public:
       commandLineError,
       showVersionUsage,
       fileRepositoryInitError,
-      idFileNameMapInitError,
       commLibError,
       httpSrvBindError,
       httpSrvListenError,
@@ -66,8 +64,6 @@ private:
    bool showUsage(std::stringstream &os) const;
 
    std::ostream &_logger;
-
-   FilenameMap::Handle _filenameMap;
 
    std::string _progName;
    std::string _commandLine;
