@@ -53,6 +53,7 @@ private:
    std::ostream &_logger;
    TcpSocket::Handle _tcpSocketHandle;
    FileRepository::Handle _FileRepository;
+   std::string _sessionId;
 
    std::ostream &log()
    {
@@ -82,7 +83,7 @@ private:
    {
    }
 
-   enum class ProcessGetRequestResult
+   enum class processAction
    {
       none,
       sendErrorInvalidRequest,
@@ -93,75 +94,72 @@ private:
       sendZipFile
    };
 
-   std::string logBegin()
-   {
-      // Generates an identifier for recognizing HTTP session
-      std::string sessionId;
-
-      if (_verboseModeOn)
-      {
-         const int sd = getTcpSocketHandle()->getSocketFd();
-         sessionId =
-             "[" + std::to_string(sd) + "] " +
-             "[" + SysUtils::getUtcTime() + "] ";
-
-         log() << sessionId << "---- HTTP SERVER SESSION STARTS" << std::endl;
-         log().flush();
-      }
-      return sessionId;
-   }
-
-   void logEnd(const std::string &sessionId)
+   void logSessionBegin()
    {
       if (!_verboseModeOn)
          return;
 
-      log() << sessionId << "---- HTTP SERVER SESSION ENDS" << std::endl
+      const int sd = getTcpSocketHandle()->getSocketFd();
+      _sessionId =
+         "[" + std::to_string(sd) + "] " +
+         "[" + SysUtils::getUtcTime() + "] ";
+
+      log() << _sessionId << "---- HTTP SERVER SESSION STARTS" << std::endl;
+      log().flush();
+   }
+
+   void logEnd()
+   {
+      if (!_verboseModeOn)
+         return;
+
+      log() << _sessionId << "---- HTTP SERVER SESSION ENDS" << std::endl
             << std::endl;
       log().flush();
    }
 
-   ProcessGetRequestResult processGetRequest(
-       HttpRequest &httpRequest,
+   //! Process HTTP GET Method
+   processAction processGetRequest(
+       HttpRequest &httpIncomingRequest,
        std::string &json,
        std::string &fileToSend)
    {
-      const auto &uri = httpRequest.getUri();
+      const auto &uri = httpIncomingRequest.getUri();
 
       // command /files
       if (uri == HTTP_SERVER_GET_FILES &&
          _FileRepository->getFilenameMap().
             locked_updateMakeJson(getLocalStorePath(), json))
       {
-         return ProcessGetRequestResult::sendJsonFileList;
+         return processAction::sendJsonFileList;
       }
 
       // command /mrufiles
       if (uri == HTTP_SERVER_GET_MRUFILES)
       {
          return !_FileRepository->createJsonMruFilesList(json) ? 
-            ProcessGetRequestResult::sendInternalError : 
-            ProcessGetRequestResult::sendMruFiles;
+            processAction::sendInternalError : 
+            processAction::sendMruFiles;
       }
 
       // command /mrufiles/zip
       if (uri == HTTP_SERVER_GET_MRUFILES_ZIP)
       {         
          return _FileRepository->createMruFilesZip(fileToSend) ?
-            ProcessGetRequestResult::sendZipFile :
-            ProcessGetRequestResult::sendInternalError;
+            processAction::sendZipFile :
+            processAction::sendInternalError;
       }
 
-      const auto &uriArgs = httpRequest.getUriArgs();
+      const auto &uriArgs = httpIncomingRequest.getUriArgs();
 
       // command /files/<id> is split in 3 args (first one, arg[0] is dummy)
       if (uriArgs.size() == 3 && uriArgs[1] == HTTP_URIPFX_FILES)
       {
-         const auto &id = httpRequest.getUriArgs()[2];
+         const auto &id = httpIncomingRequest.getUriArgs()[2];
          if (!_FileRepository->getFilenameMap().
                jsonStatFileUpdateTS(getLocalStorePath(), id, json, true)) 
          { 
-            return ProcessGetRequestResult::sendInternalError;
+            return processAction::sendInternalError;
          }
       }
 
@@ -175,18 +173,40 @@ private:
          switch (res) 
          {
             case FileRepository::createFileZipRes::idNotFound:
-               return ProcessGetRequestResult::sendNotFound;
+               return processAction::sendNotFound;
 
             case FileRepository::createFileZipRes::cantCreateTmpDir:
             case FileRepository::createFileZipRes::cantZipFile:
-               return ProcessGetRequestResult::sendInternalError;
+               return processAction::sendInternalError;
 
             case FileRepository::createFileZipRes::success:
-               return ProcessGetRequestResult::sendZipFile;
+               return processAction::sendZipFile;
          }
       }
 
-      return ProcessGetRequestResult::sendErrorInvalidRequest;
+      return processAction::sendErrorInvalidRequest;
+   }
+
+
+   //! Process HTTP POST method
+   void processPostRequest(HttpRequest& httpIncomingRequest, std::string& jsonResponse) 
+   {
+      const auto& fileName = httpIncomingRequest.getFileName();
+
+      if (_verboseModeOn)
+      {
+         log() << _sessionId << "Writing '" << fileName << "'" << std::endl;
+         log().flush();
+      }
+
+      if (!_FileRepository->store(fileName, httpIncomingRequest.getBody(), jsonResponse))
+      {
+         if (_verboseModeOn)
+         {
+            log() << _sessionId << "Error writing '" << fileName << "'" << std::endl;
+            log().flush();
+         }
+      }
    }
 };
 
@@ -199,12 +219,12 @@ void HttpServerSession::operator()(Handle taskHandle)
 {
    (void)taskHandle;
 
-   auto sessionId = logBegin();
+   logSessionBegin();
 
-   // Wait for a request from remote peer
-   HttpRequest::Handle httpRequest(new (std::nothrow) HttpRequest);
-   assert(httpRequest);
-   if (!httpRequest) // out-of-memory?
+   // Wait for a request from client
+   HttpRequest::Handle httpIncomingRequest(new (std::nothrow) HttpRequest);
+   assert(httpIncomingRequest);
+   if (!httpIncomingRequest) // out-of-memory?
       return; 
 
    // Wait for a request from remote peer
@@ -212,7 +232,7 @@ void HttpServerSession::operator()(Handle taskHandle)
    {
       // Create an http socket around a connected tcp socket
       HttpSocket httpSocket(getTcpSocketHandle());
-      httpSocket >> httpRequest;
+      httpSocket >> httpIncomingRequest;
 
       // If an error occoured terminate the task
       if (!httpSocket)
@@ -220,69 +240,63 @@ void HttpServerSession::operator()(Handle taskHandle)
 
       // Log the request
       if (_verboseModeOn)
-         httpRequest->dump(log(), sessionId);
+         httpIncomingRequest->dump(log(), _sessionId);
 
       std::string jsonResponse;
       std::string fileToSend;
-      ProcessGetRequestResult getRequestAction = ProcessGetRequestResult::none;
+      processAction action = processAction::none;
 
-      HttpResponse::Handle response;
+      HttpResponse::Handle outgoingResponse;
 
-      if (httpRequest->isExpectedContinueResponse() || 
-          httpRequest->isValidPostRequest())
+      // if POST client request contains 'Expected: 100-Continue'
+      // we are processing a multi-part body of a previous POST request
+      if (httpIncomingRequest->isExpectedContinueResponse() || 
+          // or it does not, checks if the incoming request is
+          // a valid POST request 
+          httpIncomingRequest->isValidPostRequest())
       {
-         auto fileName = httpRequest->getFileName();
-
-         if (_verboseModeOn)
-         {
-            log() << sessionId << "Writing '" << fileName << "'" << std::endl;
-            log().flush();
-         }
-
-         if (!_FileRepository->store(fileName, httpRequest->getBody(), jsonResponse))
-         {
-            if (_verboseModeOn)
-            {
-               log() << sessionId << "Error writing '" << fileName << "'" << std::endl;
-               log().flush();
-            }
-         }
+         processPostRequest(*httpIncomingRequest, jsonResponse);
       }
-      else if (httpRequest->isValidGetRequest())
+
+      // checks if httpIncomingRequest is valid GET request
+      else if (httpIncomingRequest->isValidGetRequest())
       {
-         getRequestAction = processGetRequest(*httpRequest, jsonResponse, fileToSend);
+         action = processGetRequest(*httpIncomingRequest, jsonResponse, fileToSend);
       }
+
+      // None of above -> respond 400 - Bad Request to the client
       else
       {
-         response = std::make_unique<HttpResponse>(400); // Bad Request
+         outgoingResponse = std::make_unique<HttpResponse>(400); // Bad Request
       }
 
-      if (!response)
+      if (!outgoingResponse)
       {
-         // Format a response to previous HTTP request, unless a bad
+         // Format a outgoingResponse to previous HTTP request, unless a bad
          // request was detected
-         response = std::make_unique<HttpResponse>(
-             *httpRequest,
+         outgoingResponse = std::make_unique<HttpResponse>(
+             *httpIncomingRequest,
              jsonResponse,
              jsonResponse.empty() ? "" : ".json",
              fileToSend);
       }
 
-      assert(response);
-      if (!response)
+      assert(outgoingResponse);
+      if (!outgoingResponse)
          break;
 
-      // Send the response header and any not empty json content to remote peer
-      httpSocket << *response;
+      // Send the outgoingResponse header and any not empty json content to remote peer
+      httpSocket << *outgoingResponse;
 
-      // Any binary content is sent after response header
-      if (getRequestAction == ProcessGetRequestResult::sendZipFile)
+      // Any binary content is sent following the HTTP response header
+      // already sent to the client
+      if (action == processAction::sendZipFile)
       {
          if (0 > httpSocket.sendFile(fileToSend))
          {
             if (_verboseModeOn)
             {
-               log() << sessionId << "Error sending '" << fileToSend
+               log() << _sessionId << "Error sending '" << fileToSend
                      << "'" << std::endl
                      << std::endl;
                      
@@ -293,27 +307,27 @@ void HttpServerSession::operator()(Handle taskHandle)
       }
 
       if (_verboseModeOn)
-         response->dump(log(), sessionId);
+         outgoingResponse->dump(log(), _sessionId);
 
-      if (response->isErrorResponse())
+      if (outgoingResponse->isErrorResponse())
          break;
 
-      if (!httpRequest->isExpectedContinueResponse())
+      if (!httpIncomingRequest->isExpectedContinueResponse())
       {
-         httpRequest.reset(new (std::nothrow) HttpRequest);
-         assert(httpRequest);
-         if (!httpRequest)
+         httpIncomingRequest.reset(new (std::nothrow) HttpRequest);
+         assert(httpIncomingRequest);
+         if (!httpIncomingRequest)
             break;
       }
       else
       {
-         httpRequest->clearExpectedContinueFlag();
+         httpIncomingRequest->clearExpectedContinueFlag();
       }
    }
 
    getTcpSocketHandle()->shutdown();
 
-   logEnd(sessionId);
+   logEnd();
 }
 
 /* -------------------------------------------------------------------------- */
