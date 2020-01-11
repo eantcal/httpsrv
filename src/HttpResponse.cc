@@ -90,7 +90,7 @@ HttpResponse::HttpResponse(
     const HttpRequest &request,
     const std::string &body,
     const std::string &bodyFormat,
-    const std::string &fileToSend)
+    const std::string &nameOfFileToSend)
 {
    if (request.getMethod() == HttpRequest::Method::UNKNOWN)
    {
@@ -100,7 +100,7 @@ HttpResponse::HttpResponse(
 
    if (request.getMethod() == HttpRequest::Method::POST)
    {
-      if (request.isExpectedContinueResponse())
+      if (request.isExpected_100_Continue_Response())
       {
          formatContinueResponse();
       }
@@ -132,7 +132,7 @@ HttpResponse::HttpResponse(
          std::string fileTime, fileExt;
          size_t contentLen = 0;
 
-         if (FileUtils::fileStat(fileToSend, fileTime, fileExt, contentLen))
+         if (FileUtils::fileStat(nameOfFileToSend, fileTime, fileExt, contentLen))
          {
             formatPositiveResponse(fileTime, fileExt, contentLen);
          }

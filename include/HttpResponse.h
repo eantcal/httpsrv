@@ -40,13 +40,13 @@ public:
     * @param request is the request
     * @param body is optional body content
     * @param bodyFormat is optional body format
-    * @param fileToSend is optional file name to send
+    * @param nameOfFileToSend is optional file name to send
     */
    HttpResponse(
        const HttpRequest &request,
        const std::string &body,
        const std::string &bodyFormat,
-       const std::string &fileToSend);
+       const std::string &nameOfFileToSend);
 
    /**
     * Constructs an error response depending on given errorCode.

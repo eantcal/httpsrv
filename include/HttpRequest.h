@@ -144,7 +144,7 @@ public:
     * Returns true if the request contains "Expect: 100-continue"
     * @return true if continue request sent by client, false otherwise
     */
-   bool isExpectedContinueResponse() const noexcept
+   bool isExpected_100_Continue_Response() const noexcept
    {
       return _expected_100_continue;
    }
@@ -227,7 +227,7 @@ public:
       return 
          getMethod() == HttpRequest::Method::POST && 
              getUri() == HTTP_SERVER_POST_STORE && 
-             !isExpectedContinueResponse() && 
+             !isExpected_100_Continue_Response() && 
              !getFileName().empty();
    }
 

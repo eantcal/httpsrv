@@ -107,7 +107,7 @@ bool HttpSocket::recv(HttpRequest::Handle &handle)
          if (line == "\r\n")
             line.clear();
 
-         if (!handle->isExpectedContinueResponse())
+         if (!handle->isExpected_100_Continue_Response())
          {
             receivingBody = handle->getBoundary().empty() || boundary_maker;
          }

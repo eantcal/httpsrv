@@ -120,11 +120,11 @@ private:
 
    //! Process HTTP GET Method
    processAction processGetRequest(
-       HttpRequest &httpIncomingRequest,
+       HttpRequest &incomingRequest,
        std::string &json,
-       std::string &fileToSend)
+       std::string &nameOfFileToSend)
    {
-      const auto &uri = httpIncomingRequest.getUri();
+      const auto &uri = incomingRequest.getUri();
 
       // command /files
       if (uri == HTTP_SERVER_GET_FILES &&
@@ -145,17 +145,17 @@ private:
       // command /mrufiles/zip
       if (uri == HTTP_SERVER_GET_MRUFILES_ZIP)
       {         
-         return _FileRepository->createMruFilesZip(fileToSend) ?
+         return _FileRepository->createMruFilesZip(nameOfFileToSend) ?
             processAction::sendZipFile :
             processAction::sendInternalError;
       }
 
-      const auto &uriArgs = httpIncomingRequest.getUriArgs();
+      const auto &uriArgs = incomingRequest.getUriArgs();
 
       // command /files/<id> is split in 3 args (first one, arg[0] is dummy)
       if (uriArgs.size() == 3 && uriArgs[1] == HTTP_URIPFX_FILES)
       {
-         const auto &id = httpIncomingRequest.getUriArgs()[2];
+         const auto &id = incomingRequest.getUriArgs()[2];
          if (!_FileRepository->getFilenameMap().
                jsonStatFileUpdateTS(getLocalStorePath(), id, json, true)) 
          { 
@@ -169,7 +169,7 @@ private:
           uriArgs[3] == HTTP_URISFX_ZIP)
       {
          const auto& id = uriArgs[2];
-         auto res = _FileRepository->createFileZip(id, fileToSend);
+         auto res = _FileRepository->createFileZip(id, nameOfFileToSend);
          switch (res) 
          {
             case FileRepository::createFileZipRes::idNotFound:
@@ -189,9 +189,9 @@ private:
 
 
    //! Process HTTP POST method
-   void processPostRequest(HttpRequest& httpIncomingRequest, std::string& jsonResponse) 
+   void processPostRequest(HttpRequest& incomingRequest, std::string& jsonResponse) 
    {
-      const auto& fileName = httpIncomingRequest.getFileName();
+      const auto& fileName = incomingRequest.getFileName();
 
       if (_verboseModeOn)
       {
@@ -199,7 +199,7 @@ private:
          log().flush();
       }
 
-      if (!_FileRepository->store(fileName, httpIncomingRequest.getBody(), jsonResponse))
+      if (!_FileRepository->store(fileName, incomingRequest.getBody(), jsonResponse))
       {
          if (_verboseModeOn)
          {
@@ -221,18 +221,18 @@ void HttpServerSession::operator()(Handle taskHandle)
 
    logSessionBegin();
 
-   // Wait for a request from client
-   HttpRequest::Handle httpIncomingRequest(new (std::nothrow) HttpRequest);
-   assert(httpIncomingRequest);
-   if (!httpIncomingRequest) // out-of-memory?
+   HttpRequest::Handle incomingRequest(new (std::nothrow) HttpRequest);
+
+   assert(incomingRequest);
+   if (!incomingRequest) // out-of-memory?
       return; 
 
-   // Wait for a request from remote peer
+   // Wait for a request from peer
    while (getTcpSocketHandle())
    {
       // Create an http socket around a connected tcp socket
       HttpSocket httpSocket(getTcpSocketHandle());
-      httpSocket >> httpIncomingRequest;
+      httpSocket >> incomingRequest;
 
       // If an error occoured terminate the task
       if (!httpSocket)
@@ -240,28 +240,30 @@ void HttpServerSession::operator()(Handle taskHandle)
 
       // Log the request
       if (_verboseModeOn)
-         httpIncomingRequest->dump(log(), _sessionId);
+         incomingRequest->dump(log(), _sessionId);
 
       std::string jsonResponse;
-      std::string fileToSend;
+      std::string nameOfFileToSend;
       processAction action = processAction::none;
 
       HttpResponse::Handle outgoingResponse;
 
-      // if POST client request contains 'Expected: 100-Continue'
-      // we are processing a multi-part body of a previous POST request
-      if (httpIncomingRequest->isExpectedContinueResponse() || 
-          // or it does not, checks if the incoming request is
+      // if this is a pending POST-request containing 'Expected: 100-Continue'
+      if (incomingRequest->isExpected_100_Continue_Response() || 
+          // or it is not, then checks if incoming request is
           // a valid POST request 
-          httpIncomingRequest->isValidPostRequest())
+          incomingRequest->isValidPostRequest())
       {
-         processPostRequest(*httpIncomingRequest, jsonResponse);
+         processPostRequest(*incomingRequest, jsonResponse);
       }
 
-      // checks if httpIncomingRequest is valid GET request
-      else if (httpIncomingRequest->isValidGetRequest())
+      // else checks if incomingRequest is valid GET request
+      else if (incomingRequest->isValidGetRequest())
       {
-         action = processGetRequest(*httpIncomingRequest, jsonResponse, fileToSend);
+         action = processGetRequest(
+            *incomingRequest, 
+            jsonResponse, 
+            nameOfFileToSend);
       }
 
       // None of above -> respond 400 - Bad Request to the client
@@ -272,31 +274,30 @@ void HttpServerSession::operator()(Handle taskHandle)
 
       if (!outgoingResponse)
       {
-         // Format a outgoingResponse to previous HTTP request, unless a bad
-         // request was detected
+         // Format a response to previous HTTP client request
          outgoingResponse = std::make_unique<HttpResponse>(
-             *httpIncomingRequest,
+             *incomingRequest,
              jsonResponse,
              jsonResponse.empty() ? "" : ".json",
-             fileToSend);
+             nameOfFileToSend);
       }
 
       assert(outgoingResponse);
       if (!outgoingResponse)
          break;
 
-      // Send the outgoingResponse header and any not empty json content to remote peer
+      // Send the response header and any not empty json content to remote peer
       httpSocket << *outgoingResponse;
 
       // Any binary content is sent following the HTTP response header
       // already sent to the client
       if (action == processAction::sendZipFile)
       {
-         if (0 > httpSocket.sendFile(fileToSend))
+         if (0 > httpSocket.sendFile(nameOfFileToSend))
          {
             if (_verboseModeOn)
             {
-               log() << _sessionId << "Error sending '" << fileToSend
+               log() << _sessionId << "Error sending '" << nameOfFileToSend
                      << "'" << std::endl
                      << std::endl;
                      
@@ -309,19 +310,20 @@ void HttpServerSession::operator()(Handle taskHandle)
       if (_verboseModeOn)
          outgoingResponse->dump(log(), _sessionId);
 
+      // If we have generated an error, close the session
       if (outgoingResponse->isErrorResponse())
          break;
 
-      if (!httpIncomingRequest->isExpectedContinueResponse())
+      if (!incomingRequest->isExpected_100_Continue_Response())
       {
-         httpIncomingRequest.reset(new (std::nothrow) HttpRequest);
-         assert(httpIncomingRequest);
-         if (!httpIncomingRequest)
+         incomingRequest.reset(new (std::nothrow) HttpRequest);
+         assert(incomingRequest);
+         if (!incomingRequest)
             break;
       }
       else
       {
-         httpIncomingRequest->clearExpectedContinueFlag();
+         incomingRequest->clearExpectedContinueFlag();
       }
    }
 
