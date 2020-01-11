@@ -6,6 +6,11 @@ echo -----------------------
 
 # Server is expected to run with the following configuration
 host_and_port="localhost:8080"
+
+if [ ! -z $1 ]; then
+  host_and_port="$1"
+fi
+
 working_dir="$HOME/.httpsrv"
 
 # ------------------------------------------------------------------------------
