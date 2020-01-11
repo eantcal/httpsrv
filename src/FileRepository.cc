@@ -215,8 +215,9 @@ FileRepository::createFileZipRes FileRepository::createFileZip(
    fs::path src(_path);
    src /= fileName;
 
-   const auto updated =
-      FileUtils::touch(src.string(), false /*== do not create if it does not exist*/);
+   const auto updated = FileUtils::touch(
+      src.string(), 
+      false /*== do not create if it does not exist*/);
 
    ZipArchive zipArchive(tempDir.string());
    if (!updated || !zipArchive.create() || !zipArchive.add(src.string(), fileName))

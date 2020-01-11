@@ -13,8 +13,8 @@ httpsrv is capable to serve multiple clients supporting GET and POST methods and
 Httpsrv is a console application, that can be easily daemonized (via external command like daemonize if required, in Linux, for example). 
 Main thread executes the HTTP server implemented by class HttpServer.
 The HttpServer is instantiated by an Application object, created directly by main() function, which basically is a builder for it. Application verifies and completes the configuration as a mix of default and optional parameters (via program arguments) and creates:
-- a FileRepository instance: which is responsible for accessing the filesystem, creating zip archives, creating a FilenameMap object (filename resolver for a given id), formatting the JSON status for files and invoked by HttpServerSession object instance related to a specific working thread.
-- HttpServer (which is a singleton) is responsible for accepting the TCP connection and creating for each accepted one a specific working thread (HttpServerSession).
+- a FileRepository instance: which is responsible for accessing the filesystem, creating zip archives, creating a FilenameMap object (filename resolver for a given id), formatting the JSON status for files and invoked by HttpSession object instance related to a specific working thread.
+- HttpServer (which is a singleton) is responsible for accepting the TCP connection and creating for each accepted one a specific working thread (HttpSession).
 Once repository and http server are configured, the server is executed (via its method run()). This method is blocking for the caller, so unless the application is executed as background process or daemon, it blocks the caller process (typically the shell).
 The server binds on any local interfaces and the specific configured TCP port (which is 8080, by default).
 The method HttpServer::run() executes a loop that for each iteration is locked by TcpSocket::accept() method. This is a wrapper of socket function accept() which basically unlocks when a client is connected. 
@@ -37,7 +37,7 @@ For such reason, httpsrv updates the FilenameMap content at start-up (as the htt
 Multiple instances of httpsrv could be run concurrently on the same system, binding on separate ports. In case they share the same repository, it is not guaranteed that a file posted from a server can be visible to another server instance because the FilenameMap content is stored in the isolated process memory. Moreover there was not any requirements for such scenario.
 
 When a file is uploaded via POST the server does:
-- create a HttpServerSession (which executes in a concurrent thread)
+- create a HttpSession (which executes in a concurrent thread)
 - in absence of errors, write the file in a local repository (by default ~/.httpsrv directory)
 - update a thread-safe FilenameMap instance
 - generates a JSON file descriptor (as per specification)
