@@ -97,7 +97,8 @@ private:
    processAction processGetRequest(
        HttpRequest &incomingRequest,
        std::string &json,
-       std::string &nameOfFileToSend);
+       std::string &nameOfFileToSend,
+       FileUtils::DirectoryRipper::Handle& zipCleaner);
 
 
    //! Process HTTP POST method

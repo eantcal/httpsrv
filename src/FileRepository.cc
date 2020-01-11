@@ -166,11 +166,15 @@ bool FileRepository::store(
 
 /* -------------------------------------------------------------------------- */
 
-bool FileRepository::createMruFilesZip(std::string& zipFileName)
+bool FileRepository::createMruFilesZip(
+   std::string& zipFileName,
+   FileUtils::DirectoryRipper::Handle& zipCleaner)
 {
    fs::path tempDir;
    if (!FileUtils::createTemporaryDir(tempDir))
       return false;
+
+   zipCleaner = std::make_shared<FileUtils::DirectoryRipper>(tempDir);
 
    std::list<std::string> fileList;
    if (!createMruFilesList(fileList))
@@ -200,7 +204,9 @@ bool FileRepository::createMruFilesZip(std::string& zipFileName)
 /* -------------------------------------------------------------------------- */
 
 FileRepository::createFileZipRes FileRepository::createFileZip(
-   const std::string id, std::string& zipFileName)
+   const std::string id, 
+   std::string& zipFileName,
+   FileUtils::DirectoryRipper::Handle& zipCleaner)
 {
    std::string fileName;
 
@@ -210,6 +216,8 @@ FileRepository::createFileZipRes FileRepository::createFileZip(
    fs::path tempDir;
    if (!FileUtils::createTemporaryDir(tempDir))
       return createFileZipRes::cantCreateTmpDir;
+
+   zipCleaner = std::make_shared<FileUtils::DirectoryRipper>(tempDir);
 
    tempDir /= fileName + ".zip";
    fs::path src(_path);

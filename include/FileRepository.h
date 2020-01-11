@@ -102,9 +102,13 @@ public:
     * Create a zip archive containing MRU files of repository
     *
     * @param zipFileName is name of file created
+    * @param zipCleaner will receive a copy of zipCleaner which
+    *        eventually will destroy the temporary zip file
     * @return true if operation succeded, false otherwise
     */
-   bool createMruFilesZip(std::string& zipFileName);
+   bool createMruFilesZip(
+      std::string& zipFileName,
+      FileUtils::DirectoryRipper::Handle& zipCleaner);
 
    enum class createFileZipRes {
       success,
@@ -118,11 +122,14 @@ public:
     *
     * @paran id is identifier of file
     * @param zipFileName is name of file created
+    * @param zipCleaner will receive a copy of zipCleaner which 
+    *        eventually will destroy the temporary zip file
     * @return one of possible error code defined in createFileZipRes
     */
-
    createFileZipRes createFileZip(
-      const std::string id, std::string& zipFileName);
+      const std::string id, 
+      std::string& zipFileName, 
+      FileUtils::DirectoryRipper::Handle& zipCleaner);
 
 private:
    FileRepository(const std::string& path, int mrufilesN) :

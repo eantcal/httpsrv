@@ -52,7 +52,8 @@ void HttpSession::logEnd()
 HttpSession::processAction HttpSession::processGetRequest(
    HttpRequest& incomingRequest,
    std::string& json,
-   std::string& nameOfFileToSend)
+   std::string& nameOfFileToSend,
+   FileUtils::DirectoryRipper::Handle& zipCleaner)
 {
    const auto& uri = incomingRequest.getUri();
 
@@ -75,7 +76,7 @@ HttpSession::processAction HttpSession::processGetRequest(
    // command /mrufiles/zip
    if (uri == HTTP_SERVER_GET_MRUFILES_ZIP)
    {
-      return _FileRepository->createMruFilesZip(nameOfFileToSend) ?
+      return _FileRepository->createMruFilesZip(nameOfFileToSend, zipCleaner) ?
          processAction::sendZipFile :
          processAction::sendInternalError;
    }
@@ -99,7 +100,7 @@ HttpSession::processAction HttpSession::processGetRequest(
       uriArgs[3] == HTTP_URISFX_ZIP)
    {
       const auto& id = uriArgs[2];
-      auto res = _FileRepository->createFileZip(id, nameOfFileToSend);
+      auto res = _FileRepository->createFileZip(id, nameOfFileToSend, zipCleaner);
       switch (res)
       {
       case FileRepository::createFileZipRes::idNotFound:
@@ -180,6 +181,12 @@ void HttpSession::operator()(Handle taskHandle)
 
       HttpResponse::Handle outgoingResponse;
 
+      // if assigned with non-null DirectoryRipper Handle (a shared pointer)
+      // on session termination the handle will eventually clean up the
+      // temporary directory and its content created for the zip archive
+      // required by GET files/<id>/zip or GET mrufiles/zip operations
+      FileUtils::DirectoryRipper::Handle zipCleaner;
+
       // if this is a pending POST-request containing 'Expected: 100-Continue'
       if (incomingRequest->isExpected_100_Continue_Response() ||
          // or it is not, then checks if incoming request is
@@ -195,7 +202,8 @@ void HttpSession::operator()(Handle taskHandle)
          action = processGetRequest(
             *incomingRequest,
             jsonResponse,
-            nameOfFileToSend);
+            nameOfFileToSend,
+            zipCleaner);
       }
 
       // None of above -> respond 400 - Bad Request to the client
@@ -257,6 +265,10 @@ void HttpSession::operator()(Handle taskHandle)
       {
          incomingRequest->clearExpectedContinueFlag();
       }
+
+      // After sent a file we can close the HTTP Session
+      if (action == processAction::sendZipFile)
+         break;
    }
 
    getTcpSocketHandle()->shutdown();

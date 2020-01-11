@@ -105,6 +105,30 @@ std::string getHomeDir();
  */
 std::string hashCode(const std::string &src);
 
+
+//! Provides a safe method to clean-up an existing directory
+struct DirectoryRipper 
+{
+   using Handle = std::shared_ptr<DirectoryRipper>;
+
+   //! ctor: set the path to remove
+   DirectoryRipper(const fs::path& pathToRemove) : 
+      _pathToRemove(pathToRemove) 
+   {}
+
+   //! Removes the entire path
+   //! @return true if operation completes without errors
+   bool removeAll();
+
+   //! dtor - executes removeAll
+   ~DirectoryRipper() 
+   {
+      removeAll();
+   }
+private:
+   fs::path _pathToRemove;
+};
+
 }; // namespace FileUtils
 
 /* ------------------------------------------------------------------------- */

@@ -197,3 +197,25 @@ bool FileUtils::touchDir(
    return FileUtils::directoryExists(relativeDirName) &&
           FileUtils::getFullPath(relativeDirName, fullPath);
 }
+
+
+/* -------------------------------------------------------------------------- */
+
+bool FileUtils::DirectoryRipper::removeAll() 
+{
+   try {
+      for (fs::directory_iterator end_dir_it, it(_pathToRemove);
+         it != end_dir_it;
+         ++it)
+      {
+         fs::remove_all(it->path());
+      }
+      fs::remove(_pathToRemove);
+   }
+   catch (...) {
+      return false;
+   }
+   return true;
+}
+
+
