@@ -67,7 +67,7 @@ inline static std::string uppercase(const std::string &str)
 /**
  * Escapes a string to make it valid for JSON format requirements
  * @param str is the string to escape
- * @returned the JSON valid string
+ * @return the JSON valid string
  */
 std::string escapeJson(const std::string& str);
 

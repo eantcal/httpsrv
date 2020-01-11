@@ -70,8 +70,6 @@ public:
       return Handle(new (std::nothrow) TcpListener());
    }
 
-  
-
    /**
     * Enables the listening mode, to listen for incoming
     * connection attempts.
@@ -95,8 +93,6 @@ public:
 private:
    std::atomic<Status> _status;
    TcpListener();
-
-
 };
 
 /* -------------------------------------------------------------------------- */

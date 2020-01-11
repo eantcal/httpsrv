@@ -69,23 +69,32 @@ bool HttpServer::run()
    {
       const TcpSocket::Handle handle = accept();
 
+      assert(_loggerOStreamPtr);
+
       // Accept failed for some reason, retry later
       if (!handle)
       {
+         if (_verboseModeOn) 
+         {
+            *_loggerOStreamPtr 
+               << "HttpServer::run() accept is failing" << std::endl;
+         }
          std::this_thread::sleep_for(std::chrono::seconds(1));
          continue;
       }
 
-      assert(_loggerOStreamPtr);
-
+      // Create a new http session context
       HttpSession::Handle sessionHandle = HttpSession::create(
           _verboseModeOn,
           *_loggerOStreamPtr,
           handle,
           _FileRepository);
 
-      // Coping the http_server_task handle (shared_ptr) the reference
-      // count is automatically increased by one
+      // the function operator() will because of *sessionHandle
+      // reference, while the sessionHandle itself will be
+      // copied to the thread stack as parameter, this will force
+      // to increment the handle reference count until the worker thread
+      // is running preserving the context integrity
       std::thread workerThread(*sessionHandle, sessionHandle);
 
       workerThread.detach();
