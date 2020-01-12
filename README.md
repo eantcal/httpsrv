@@ -1,6 +1,6 @@
 # HttpSrv
 
-HttpSrv is a retailed version of a lightweight HTTP server and derives from [thttpd](https://github.com/eantcal/thttpd), originally implemented to implement HTTP GET/HEAD methods.
+HttpSrv is a retailed version of a lightweight HTTP server and derives from [thttpd](https://github.com/eantcal/thttpd), originally designed to implement HTTP GET/HEAD methods.
 It has been implemented in modern C++ and portable on several platforms including Linux, MacOs and Windows.
 
 HttpSrv is capable to serve multiple clients supporting GET and POST methods and has been designed to respond to the following specifications:
