@@ -159,8 +159,7 @@ Boost Filesystem can be replaced by C++ standard version if fully supported by C
 ## Known Limitations
 
 * HTTP protocol has been supported only for providing the specific API exposed.
-* Timestamp precision of some filesystem implementation might not support the microseconds field as result two files will have different timestamps if they differ at least for 1 second.
-File timestamp is a GMT representation of last access attribute of a file (as documented in `stat` syscall). Some filesystem could not support microsecond field, so the timestamp can result rounded to the second.
+* Timestamp precision of some filesystem implementation might not support the microseconds field as result two files will have different timestamps if they differ at least for 1 second and the metadata `timestamp` field can result rounded to the second.
 
 ## Tests
 
