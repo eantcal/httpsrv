@@ -2,8 +2,7 @@
 
 HttpSrv is a retailed version of a lightweight HTTP server and derives from [thttpd](https://github.com/eantcal/thttpd), originally implemented to serve http GET/HEAD methods.
 
-HttpSrv has been implemented in modern C++, which means it requires a C++14 or even C++17 compiler to be successfully built.
-It has been designed to run on Linux, but it can also run on MacOS or other Unix/Posix platforms other than Windows.
+HttpSrv has been implemented in modern C++ and portable on several platforms including Linux, MacOs and Windows.
 
 HttpSrv is capable to serve multiple clients supporting GET and POST methods and has been designed to respond to the following specifications:
 
@@ -170,10 +169,11 @@ The test shows a detailed log during the execution.
 If the test completes sucessfully it prints out a detailed [summary](misc/example_of_positive_test_result.txt)
 In case of error the test stops showing a related message leaving the log visible in the stdout/stderr.
 
-### What is missing?
+### What is missing
 
 Even if the functional tests sollicit the application in the most common scenarios, a complete test framework should include:
-* Unit test for each class/function exposed 
+
+* Unit test for each class/function exposed
 * Automatic stress tests (valgrind could be used to check for memory leaks)
 * Concurrent automatic tests
 * httpsrv log analysis to check for internal errors
@@ -186,41 +186,52 @@ To compile HttpSrv you will need a compiler supporting modern C++
 Tested on latest versions GCC, Microsoft Visual C++, (Apple) Clang.
 
 ### Windows Installation Prerequisites
+
 To install successfully the following software component is required on the installation computer:
-- Visual C++ Redistributable Packages are required.
-- Boost binaries for Windows
+
+* Visual C++ Redistributable Packages are required
+* Boost binaries for Windows
 
 ### Tested Platforms
 
 Tested on the following platforms:
-CMake support and Visual Studio 2019 project files are provided.
 The server has been built and tested on Linux, MacOS and Windows, more precisely it has been tested on:
 
 * Darwin (18.7.0 Darwin Kernel Version 18.7.0) on MacBook Pro, built using Apple clang version 11.0.0 (clang-1100.0.20.17), Target: x86_64-apple-darwin18.7.0, Thread model: posix, cmake version 3.12.2
 * Linux 5.0.0-38-generic #41-Ubuntu SMP Tue Dec 3 00:27:35 UTC 2019 x86_64 GNU/Linux, built using g++ (Ubuntu 8.3.0-6ubuntu1) 8.3.0, CMake version 3.13.4
 * Windows 10 built using Visual Studio 2019
 
-### Build
-### Logs
-### TODO...
+### Build HttpSrv using CMake
 
-### HttpSrv command line options:
+`CMakeLists.txt` and Visual Studio 2019 solution (`httpsrv.sln`) and project (`httpsrv.vcxproj`) files have been provided.
+To build HttpSrv from source directory just type
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+### HttpSrv command line
 
 ```
 Usage:
 	./httpsrv
 		-p | --port <port>
-			Bind server to a TCP port number (default is 8080) 
+			Bind server to a TCP port number (default is 8080)
 		-n | --mrufiles <N>
-			MRU Files N (default is 3) 
+			MRU Files N (default is 3)
 		-w | --storedir <working_dir_path>
-			Set a local working directory (default is ~/.httpsrv) 
+			Set a local working directory (default is ~/.httpsrv)
 		-vv | --verbose
 			Enable logging on stderr
 		-v | --version
 			Show software version
 		-h | --help
-			Show this help 
+			Show this help
 
 ```
 
+### Logs
+### TODO...
