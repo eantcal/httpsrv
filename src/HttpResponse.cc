@@ -40,9 +40,9 @@ void HttpResponse::formatError(int code)
       = "<html><head><title>" + scode + " " + msg + "</title></head>" 
       + "<body>" + msg + "</body></html>\r\n";
 
-   _response = HTTP_SERVER_VER " " + scode + " " + msg + "\r\n";
+   _response = HTTPSRV_VER " " + scode + " " + msg + "\r\n";
    _response += "Date: " + SysUtils::getUtcTime() + "\r\n";
-   _response += "Server: " HTTP_SERVER_NAME "\r\n";
+   _response += "Server: " HTTPSRV_NAME "\r\n";
    _response += "Content-Length: " + std::to_string(error_html.size()) + "\r\n";
    _response += "Content-Type: text/html\r\n\r\n";
    _response += error_html;
@@ -58,9 +58,9 @@ void HttpResponse::formatPositiveResponse(
     const size_t &contentLen)
 {
 
-   _response = HTTP_SERVER_VER " 200 OK\r\n";
+   _response = HTTPSRV_VER " 200 OK\r\n";
    _response += "Date: " + SysUtils::getUtcTime() + "\r\n";
-   _response += "Server: " HTTP_SERVER_NAME "\r\n";
+   _response += "Server: " HTTPSRV_NAME "\r\n";
    _response += "Content-Length: " + std::to_string(contentLen) + "\r\n";
    _response += "Last Modified: " + fileTime + "\r\n";
    _response += "Content-Type: ";
@@ -80,7 +80,7 @@ void HttpResponse::formatPositiveResponse(
 
 void HttpResponse::formatContinueResponse()
 {
-   _response = HTTP_SERVER_VER " 100 Continue\r\n\r\n";
+   _response = HTTPSRV_VER " 100 Continue\r\n\r\n";
    _errorResponse = false;
 }
 
@@ -106,7 +106,7 @@ HttpResponse::HttpResponse(
       }
       else
       {
-         if (request.getUri() != HTTP_SERVER_POST_STORE)
+         if (request.getUri() != HTTPSRV_POST_STORE)
          {
             formatError(400); // Bad Request Error
          }

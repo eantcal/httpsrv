@@ -67,9 +67,9 @@ private:
 
    std::string _progName;
    std::string _commandLine;
-   std::string _localRepositoryPath = HTTP_SERVER_LOCAL_REPOSITORY_PATH;
+   std::string _localRepositoryPath = HTTPSRV_LOCAL_REPOSITORY_PATH;
 
-   TcpSocket::TranspPort _httpServerPort = HTTP_SERVER_PORT;
+   TcpSocket::TranspPort _httpServerPort = HTTPSRV_PORT;
 
    bool _showHelp = false;
    bool _showVer = false;
@@ -77,8 +77,8 @@ private:
    bool _verboseModeOn = false;
    std::string _errMessage;
 
-   static const int _min_ver = HTTP_SERVER_MIN_V;
-   static const int _maj_ver = HTTP_SERVER_MAJ_V;
+   static const int _min_ver = HTTPSRV_MIN_V;
+   static const int _maj_ver = HTTPSRV_MAJ_V;
 
    int _mrufilesN = MRUFILES_DEF_N;
 

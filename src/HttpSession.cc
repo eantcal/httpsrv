@@ -58,7 +58,7 @@ HttpSession::processAction HttpSession::processGetRequest(
    const auto& uri = incomingRequest.getUri();
 
    // command /files
-   if (uri == HTTP_SERVER_GET_FILES &&
+   if (uri == HTTPSRV_GET_FILES &&
       _FileRepository->getFilenameMap().
       locked_updateMakeJson(getLocalStorePath(), json))
    {
@@ -66,7 +66,7 @@ HttpSession::processAction HttpSession::processGetRequest(
    }
 
    // command /mrufiles
-   if (uri == HTTP_SERVER_GET_MRUFILES)
+   if (uri == HTTPSRV_GET_MRUFILES)
    {
       return !_FileRepository->createJsonMruFilesList(json) ?
          processAction::sendInternalError :
@@ -74,7 +74,7 @@ HttpSession::processAction HttpSession::processGetRequest(
    }
 
    // command /mrufiles/zip
-   if (uri == HTTP_SERVER_GET_MRUFILES_ZIP)
+   if (uri == HTTPSRV_GET_MRUFILES_ZIP)
    {
       return _FileRepository->createMruFilesZip(nameOfFileToSend, zipCleaner) ?
          processAction::sendZipFile :

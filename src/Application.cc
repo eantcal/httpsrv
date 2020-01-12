@@ -15,7 +15,7 @@
 bool Application::showUsage(std::stringstream &os) const
 {
    if (_showVer)
-      os << HTTP_SERVER_NAME << " " << _maj_ver << "." << _min_ver
+      os << HTTPSRV_NAME << " " << _maj_ver << "." << _min_ver
          << "\n";
 
    if (!_showHelp)
@@ -25,13 +25,13 @@ bool Application::showUsage(std::stringstream &os) const
    os << "\t" << _progName << "\n";
    os << "\t\t-p | --port <port>\n";
    os << "\t\t\tBind server to a TCP port number (default is "
-      << HTTP_SERVER_PORT << ") \n";
+      << HTTPSRV_PORT << ") \n";
    os << "\t\t-n | --mrufiles <N>\n";
    os << "\t\t\tMRU Files N (default is "
       << MRUFILES_DEF_N << ") \n";
-   os << "\t\t-w | --storedir <working_dir_path>\n";
-   os << "\t\t\tSet a local working directory (default is "
-      << HTTP_SERVER_LOCAL_REPOSITORY_PATH << ") \n";
+   os << "\t\t-w | --storedir <repository-path>\n";
+   os << "\t\t\tSet a repository directory (default is "
+      << HTTPSRV_LOCAL_REPOSITORY_PATH << ") \n";
    os << "\t\t-vv | --verbose\n";
    os << "\t\t\tEnable logging on stderr\n";
    os << "\t\t-v | --version\n";
@@ -199,7 +199,7 @@ Application::ErrCode Application::run()
    }
 
    // Make it listening configuring the backlog list size
-   if (!httpSrv.listen(HTTP_SERVER_BACKLOG))
+   if (!httpSrv.listen(HTTPSRV_BACKLOG))
    {
       ss << "Error trying to listen to server port "
          << _httpServerPort;
@@ -217,7 +217,7 @@ Application::ErrCode Application::run()
       std::cout << SysUtils::getUtcTime() << std::endl
                 << "Command line :'" << _commandLine << "'"
                 << std::endl
-                << HTTP_SERVER_NAME << " is listening on TCP port "
+                << HTTPSRV_NAME << " is listening on TCP port "
                 << _httpServerPort << std::endl
                 << "Working directory is '" << _localRepositoryPath << "'"
                 << std::endl;

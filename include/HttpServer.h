@@ -131,7 +131,7 @@ private:
    static HttpServer* _instance;
 
    std::ostream *_loggerOStreamPtr = &std::clog;
-   TranspPort _serverPort = HTTP_SERVER_PORT;
+   TranspPort _serverPort = HTTPSRV_PORT;
    TcpListener::Handle _tcpServer;
    bool _verboseModeOn = true;
    FileRepository::Handle _FileRepository;
@@ -141,4 +141,4 @@ private:
 
 /* -------------------------------------------------------------------------- */
 
-#endif // __HTTP_SERVER_H__
+#endif // !__HTTP_SERVER_H__

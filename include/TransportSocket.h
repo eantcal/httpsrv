@@ -185,7 +185,7 @@ public:
 
 private:
    SocketFd _socket = 0;
-   enum { TX_BUFFER_SIZE = HTTP_SERVER_TX_BUF_SIZE };
+   enum { TX_BUFFER_SIZE = HTTPSRV_TX_BUF_SIZE };
 
 protected:
    sockaddr_in _local_ip_port_sa_in;

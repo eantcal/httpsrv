@@ -209,9 +209,9 @@ public:
    {
       return 
          (getMethod() == HttpRequest::Method::GET &&
-            (getUri() == HTTP_SERVER_GET_MRUFILES ||
-            getUri() == HTTP_SERVER_GET_MRUFILES_ZIP ||
-            getUri() == HTTP_SERVER_GET_FILES ||
+            (getUri() == HTTPSRV_GET_MRUFILES ||
+            getUri() == HTTPSRV_GET_MRUFILES_ZIP ||
+            getUri() == HTTPSRV_GET_FILES ||
             (getUriArgs().size() == 3 &&
                getUriArgs()[1] == HTTP_URIPFX_FILES) ||
             (getUriArgs().size() == 4 &&
@@ -226,7 +226,7 @@ public:
    {
       return 
          getMethod() == HttpRequest::Method::POST && 
-             getUri() == HTTP_SERVER_POST_STORE && 
+             getUri() == HTTPSRV_POST_STORE && 
              !isExpected_100_Continue_Response() && 
              !getFileName().empty();
    }
