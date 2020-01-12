@@ -45,7 +45,7 @@ The repository directory path can be configured at start-up. By default, it is a
 When the initialization is completed, the application object calls the method `run()` of `HttpServer` object. Such method is blocking for the caller, so unless the application is executed as background process or daemon, it will block the caller process (typically the shell).
 The server is designed to bind on any interfaces and a specific and configurable TCP port (which is `8080`, by default).
 
-## Main server loop
+### Main server loop
 
 The method `HttpServer::run()` executes a loop that, for each iteration, waits for incoming connection by calling `accept()` method which will eventually result in calling `accept()` function of socket library.
 When `accept()` accepts a connection, `run()` gets a new `TcpSocket` object, which represents the TCP session, and creates a new HTTP Session handled by instance of class `HttpSession`.
@@ -59,14 +59,14 @@ Get operations which require a zip file can be executed cuncurrently without con
 In absence of specific requirements it has been decided not to implement a strictly F/S locking mechanism, adopting indeed an optimistic policy. The rationale is to maintain the design simple, also considering the remote chance of conflicts and their negligible effects.
 The file `id` is a hash code of file name (which is in turn assumed to be unique), so any conflicts would have no impact on its validity, moreover the class `FilenameMap` (which provides the methods to resolve the filename for a given id) is designed to be thread-safe (r/w locking mechanism is used for the purposes). So the design should avoid that concurrent requests resulted in server crash or asymptotic instability.
 
-## Resiliency
+### Resiliency
 
 The application is also designed to be recover from intentional or unintentional restart.
 For such reason, HttpSrv updates the `FilenameMap` object at start-up (reading the repository files list), as the http requests are not accepted yet, getting the status of any files present in the configured repository path. This allows the server to restart from a given repository state.
 
 Multiple instances of HttpSrv could be run concurrently on the same system, binding on separate ports. In case they share the same repository, it is not guaranteed that a file posted from a server can be visible to another server (until such server executes a request for file list or is restarted) because the `FilenameMap` object would be stored in each (isolated) process memory.
 
-GET and POST requests are processed within a `HTTPSession` loop which consists in:
+`GET` and `POST` requests are processed within a `HTTPSession` loop which consists in:
 
 * reading receiving and parsing an http request (`HttpRequest`)
 * validating and classifieng the request
@@ -74,7 +74,7 @@ GET and POST requests are processed within a `HTTPSession` loop which consists i
 * creating a response header + a body (`HTTPResponse`)
 * cleaning-up resourses (deleting for example the temporary directory of a zip file sent to the client) and ending the session
 
-### POST
+#### POST
 
 When a file is uploaded, the POST business logic consists in:
 
@@ -83,7 +83,7 @@ When a file is uploaded, the POST business logic consists in:
 * generates a JSON file metadata from stored file attribute;
 * reply to the client either sending back a JSON metadata or HTTP/HTML error response depending on success or failure of one of previous steps.
 
-### GET
+#### GET
 
 When a get request is processed the business logic performs the following action:
 
@@ -115,7 +115,7 @@ If the URI does not respect the given syntax, an `HTTP 400 Bad Request` error wi
 If the URI does is valid but the id not found, an `HTTP 404 Not Found` error will be sent to the client.
 Building a `release` version of HttpSrv binary strips out assert() calls, so in case of bugs or hardware failures or resources (e.g. memory) exhausted that might generate an `HTTP 500 Internal Server Error`.
 
-## HTTP Server Classes
+### HTTP Server Classes
 
 * Class `HttpServer` accepts client request and generates HttpSession in separate worker thread
 * Class `HttpSession` handles the single GET/POST request and executes the related business logic
@@ -125,27 +125,23 @@ Building a `release` version of HttpSrv binary strips out assert() calls, so in 
 * Class `TransportSocket` and `TcpSocket` classes expose basic socket functions including `send/recv` APIs
 * Class `TcpListener` provides a wrapper of some passive TCP functions such `listen` and `accept`.
 
-## Repository Management Classes
+### Repository Management Classes
 
 * Class `FileRepository` provides the support for handlig the files, reading attributes, building MRU list, formatting the JSON metadata
 * Class `FilenameMap` provides id to file name resolver
 * Class `ZipArchive` provides a wrapper for zip functions
 
-## Additional Helper functions
+### Additional Helper functions
 
 * Functions in namepace `FileUtils` provide some f/s helpers
 * Functions in namepace `StrUtils` provide some string manipulation helpers
 * Functions in namepace `SysUtils` provide some helpers not belonging to previous two categories
 
-## Timestamp and precision
+### Timestamp and precision
 
 File timestamp is a GMT representation of last access attribute of a file (as documented in `stat` syscall). Some filesystem could not support microsecond field, so the timestamp can result rounded to the second.
 
-## Other utilities
-
-A miscellanea of additional functions/classes have been implemented to provide some utilities handling date/time, strings, files, JSON formatting, etc.
-
-## 3pp
+### 3pp
 
 HttpSrv relies on C++ standard library (which is part of language) and other few 3pp part libraries such as:
 
@@ -161,12 +157,40 @@ Wrapper function/class for such libraries have been provided:
 * `hashCode()` function part of `FileUtils.h` is a wrapper for `picosha2::hash256_hex_string` function
 Boost Filesystem can be replaced by C++ standard version if fully supported by C++ compiler (defining the preprocessor symbol `USE_STD_FS` at compile time).
 
-## Limitations
+## Known Limitations
 
 * HTTP protocol has been supported only for providing the specific API exposed.
-* Timestamp precision of some filesystem implementation might not support the microseconds field.
+* Timestamp precision of some filesystem implementation might not support the microseconds field as result two files will have different timestamps if differ at least for 1 second. 
 
-## Tested Platforms
+## Test
+A functional test implemented as [BASH script](test/functional_test.sh) has been provided to verify the main use scenarios. It relies on a number of welknown 3pp commands/tools including `grep`, `awk`, `sed`, `unzip`, `curl`, `jsonlint`, `sha256sum`. 
+To execute the functional tests the httpsrv binary must be running (by default bound on localhost:8080).
+The script accept as an optional parameter `hostname:port` (same syntax of curl).
+The test shows a detailed log during the execution.
+If the test completes sucessfully it prints out a detailed [summary](misc/example_of_positive_test_result.txt)
+In case of error the test stops showing a related message leaving the log visible in the stdout/stderr.
+
+### What is missing?
+
+Even if the functional tests sollicit the application in the most common scenarios, a complete test framework should include:
+* Unit test for each class/function exposed 
+* Automatic stress tests (valgrind could be used to check for memory leaks)
+* Concurrent automatic tests
+* httpsrv log analysis to check for internal errors
+An automation server like [Jenkins](https://jenkins.io/) could be used.
+Additional tools for checking code coverege and static analysis could be used as well.
+
+## C++ Compiler Prerequisites
+
+To compile HttpSrv you will need a compiler supporting modern C++ 
+Tested on latest versions GCC, Microsoft Visual C++, (Apple) Clang.
+
+### Windows Installation Prerequisites
+To install successfully the following software component is required on the installation computer:
+- Visual C++ Redistributable Packages are required.
+- Boost binaries for Windows
+
+### Tested Platforms
 
 Tested on the following platforms:
 CMake support and Visual Studio 2019 project files are provided.
@@ -176,4 +200,7 @@ The server has been built and tested on Linux, MacOS and Windows, more precisely
 * Linux 5.0.0-38-generic #41-Ubuntu SMP Tue Dec 3 00:27:35 UTC 2019 x86_64 GNU/Linux, built using g++ (Ubuntu 8.3.0-6ubuntu1) 8.3.0, CMake version 3.13.4
 * Windows 10 built using Visual Studio 2019
 
-to be continued...
+### Build
+### Logs
+### TODO...
+
