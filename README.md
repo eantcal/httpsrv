@@ -178,7 +178,7 @@ Even if the functional tests sollicit the application in the most common scenari
 * Unit tests for each class/function exposed (for example using [Google Test](https://github.com/google/googletest)).
 * Concurrent automatic tests.
 * Automatic stress tests.
-* Dyanmic code analysis: [valgrind](https://valgrind.org/ could be systematically used to check for memory leaks and other defects.
+* Dyanmic code analysis: [valgrind](https://valgrind.org) could be systematically used to check for memory leaks and other defects.
 * HttpSrv Logs analysis to search for internal errors.
 * Tools for checking code coverege and static analysis could be used (e.g. [Coverity](https://scan.coverity.com/) or [CppCheck](http://cppcheck.sourceforge.net/))
 * An automation server like [Jenkins](https://jenkins.io/) could be used for integrating and controlling such tests.
