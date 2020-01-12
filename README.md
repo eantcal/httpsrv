@@ -162,6 +162,7 @@ Boost Filesystem can be replaced by C++ standard version if fully supported by C
 * Timestamp precision of some filesystem implementation might not support the microseconds field as result two files will have different timestamps if differ at least for 1 second. 
 
 ## Test
+
 A functional test implemented as [BASH script](test/functional_test.sh) has been provided to verify the main use scenarios. It relies on a number of welknown 3pp commands/tools including `grep`, `awk`, `sed`, `unzip`, `curl`, `jsonlint`, `sha256sum`. 
 To execute the functional tests the httpsrv binary must be running (by default bound on localhost:8080).
 The script accept as an optional parameter `hostname:port` (same syntax of curl).
@@ -201,10 +202,13 @@ The server has been built and tested on Linux, MacOS and Windows, more precisely
 * Linux 5.0.0-38-generic #41-Ubuntu SMP Tue Dec 3 00:27:35 UTC 2019 x86_64 GNU/Linux, built using g++ (Ubuntu 8.3.0-6ubuntu1) 8.3.0, CMake version 3.13.4
 * Windows 10 built using Visual Studio 2019
 
-### Build HttpSrv using CMake
+## Build Instructions
 
-`CMakeLists.txt` and Visual Studio 2019 solution (`httpsrv.sln`) and project (`httpsrv.vcxproj`) files have been provided.
-To build HttpSrv from source directory just type
+`CMakeLists.txt` and [Visual Studio 2019 C++ project](https://github.com/MicrosoftDocs/cpp-docs/blob/master/docs/build/creating-and-managing-visual-cpp-projects.md) project file (`httpsrv.vcxproj`) and solution solution (`httpsrv.sln`) have been provided.
+
+### CMake
+
+To build HttpSrv from source directory using CMake just type
 
 ```bash
 mkdir build
@@ -213,7 +217,23 @@ cmake ..
 make
 ```
 
-### HttpSrv command line
+As result a binary file named `httpsrv` will be generated.
+
+For further build instructions, see the blog post [How to Build a CMake-Based Project](http://preshing.com/20170511/how-to-build-a-cmake-based-project).
+
+### Compile and build in Visual Studio
+
+See [Compile and build in Visual Studio](https://docs.microsoft.com/en-us/cpp/build/projects-and-build-systems-cpp?view=vs-2019).
+
+Boost Libraries reference in the Visual Studiot project file is to `C:\local\boost_1_72_0\lib64-msvc-14.2`.
+You will need to replace such reference and the related include path `c:\local\boost_1_72_0` in case you want to use different version of Boost or different installation path.
+
+Binaries installers for Boost version `1.72.0` can be found at [https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/](https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/)
+Default installation path is `c:\local\boost_1_72_0`. Using such path won't require any update of project file.
+
+### HttpSrv Usage
+
+HttpSrv accept optional paramters, such as the following: 
 
 ```
 Usage:
@@ -233,5 +253,13 @@ Usage:
 
 ```
 
-### Logs
-### TODO...
+## Log files
+
+HttpSrv can generate debugging log information on the standard output. 
+An example of log output is shown here [misc/example_of_server_log.txt](misc/example_of_server_log.txt)
+
+## License
+
+HttpSrv can be distributed distributed under MIT. See also [COPYING](COPYING).
+See 3pp related license files for futher information and [Boost Software License](https://www.boost.org/users/license.html)
+
