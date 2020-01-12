@@ -258,7 +258,25 @@ Usage:
 HttpSrv can generate debugging log information on the standard output. 
 An example of log output is shown here [misc/example_of_server_log.txt](misc/example_of_server_log.txt)
 
-## License
+## Miscellanea
+
+### cloc report 
+
+Source code line of code excluding 3pp and standard libs:
+
+```
+github.com/AlDanial/cloc v 1.82  T=0.07 s (439.1 files/s, 67201.1 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+C++                             15            454            308           1990
+C/C++ Header                    16            342            797            853
+-------------------------------------------------------------------------------
+SUM:                            31            796           1105           2843
+-------------------------------------------------------------------------------
+```
+
+### License
 
 HttpSrv can be distributed distributed under MIT. See also [COPYING](COPYING).
 See 3pp related license files for futher information and [Boost Software License](https://www.boost.org/users/license.html)
