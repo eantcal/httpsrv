@@ -198,6 +198,51 @@ Valgrind 3.15.0 on Ubuntu has been used to check for issues and memory leaks.
 HttpSrv can generate debugging log information on the standard output.
 An example of log output is shown here [misc/example_of_server_log.txt](misc/example_of_server_log.txt)
 
+### Example on how to run tests on Ubuntu
+
+* Make sure your environment is configured to build and test the application, on Ubuntu you can run the following command:
+
+```console
+$ sudo apt install build-essential g++ cmake libboost-all-dev jsonlint curl unzip
+```
+
+* Then, build the application, so from project directory execute the command:
+
+```console
+$ rm -rf build && mkdir build && cmake .. && make
+$ cd -
+```
+
+* Run HttpSrv in background (enabling logging on a file) 
+
+```console
+$ ./build/httpsrv -vv > /tmp/httpsrv.log &
+```
+
+* Check if the log file contains something like in the following example
+
+```console
+$ tail /tmp/httpsrv.log 
+
+Sun Jan 12 20:35:03 2020 GMT
+Command line :'./build/httpsrv -vv'
+httpsrv is listening on TCP port 8080
+Working directory is '~/.httpsrv'
+
+```
+
+* Finally run the tests *from test directory*
+
+```console
+$ cd test && ./functional_test.sh
+```
+
+When the test completes you will see on the screen a related [report](misc/example_of_positive_test_result.txt)
+
+### build_and_run_all_test.sh
+
+You may also use the bash script [build_and_run_all_tests.sh](build_and_run_all_tests.sh) which basically executes the previous steps.
+
 ## Build Instructions
 
 ## C++ Compiler Prerequisites
@@ -210,7 +255,7 @@ To compile HttpSrv you will need a compiler supporting modern C++. As for exampl
 
 To build HttpSrv from source directory using CMake just type
 
-```bash
+```console
 $ mkdir build
 $ cd build
 $ cmake ..
