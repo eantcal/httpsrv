@@ -204,3 +204,23 @@ The server has been built and tested on Linux, MacOS and Windows, more precisely
 ### Logs
 ### TODO...
 
+### HttpSrv command line options:
+
+```
+Usage:
+	./httpsrv
+		-p | --port <port>
+			Bind server to a TCP port number (default is 8080) 
+		-n | --mrufiles <N>
+			MRU Files N (default is 3) 
+		-w | --storedir <working_dir_path>
+			Set a local working directory (default is ~/.httpsrv) 
+		-vv | --verbose
+			Enable logging on stderr
+		-v | --version
+			Show software version
+		-h | --help
+			Show this help 
+
+```
+
