@@ -144,7 +144,7 @@ Building a `release` version of HttpSrv binary strips out `assert()` calls, so i
 HttpSrv relies on C++ standard library (which is part of language) and other few 3pp part libraries such as:
 
 * [PicoSHA2](https://github.com/okdshin/PicoSHA2), single header file SHA256 hash generator
-* [zip](https://github.com/kuba--/zip), a portable simple zip library written in C)
+* [zip](https://github.com/kuba--/zip), a portable simple zip library written in C
 * [Boost Filesystem Library Version 3](https://www.boost.org/doc/libs/1_67_0/libs/filesystem/doc/index.htm)
 
 Source code of such libraries (except Boost) has been copied in HttpSrv source tree in 3pp subdir.
