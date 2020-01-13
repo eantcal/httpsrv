@@ -65,7 +65,7 @@ Application::Application(
       PORT,
       WEBROOT,
       MRUFILES_N
-   } 
+   }
    state = State::OPTION;
 
    for (int idx = 1; idx < argc; ++idx)
