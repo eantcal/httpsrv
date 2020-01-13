@@ -88,7 +88,7 @@ bool FileRepository::createMruFilesList(std::list<std::string> &mrufiles)
    for (auto it = timeOrderedFileList.rbegin();
         it != timeOrderedFileList.rend() && fileCnt < _mrufilesN;
         ++it,
-             ++fileCnt)
+        ++fileCnt)
    {
       mrufiles.push_back(it->second.filename().string());
    }
