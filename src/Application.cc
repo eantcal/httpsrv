@@ -224,7 +224,7 @@ Application::ErrCode Application::run()
    }
 
    // Finally run the server (blocking the caller)
-   if (!HttpServer::getInstance().run())
+   if (!httpSrv.run())
    {
       _errMessage = "Error starting the server";
       return ErrCode::httpSrvStartError;

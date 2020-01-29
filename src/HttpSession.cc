@@ -100,7 +100,7 @@ HttpSession::processAction HttpSession::processGetRequest(
       uriArgs[3] == HTTP_URISFX_ZIP)
    {
       const auto& id = uriArgs[2];
-      auto res = _FileRepository->createFileZip(id, nameOfFileToSend, zipCleaner);
+      const auto res = _FileRepository->createFileZip(id, nameOfFileToSend, zipCleaner);
       switch (res)
       {
       case FileRepository::createFileZipRes::idNotFound:
@@ -160,11 +160,11 @@ void HttpSession::operator()(Handle taskHandle)
    if (!incomingRequest) // out-of-memory?
       return;
 
-   // Wait for a request from peer
    while (getTcpSocketHandle())
    {
       // Create an http socket around a connected tcp socket
       HttpSocket httpSocket(getTcpSocketHandle());
+
       httpSocket >> incomingRequest;
 
       // If an error occoured terminate the task
@@ -182,7 +182,7 @@ void HttpSession::operator()(Handle taskHandle)
       HttpResponse::Handle outgoingResponse;
 
       // if assigned with non-null DirectoryRipper Handle (a shared pointer)
-      // on session termination the handle will eventually clean up the
+      // on session termination the DirectoryRipper will eventually clean up the
       // temporary directory and its content created for the zip archive
       // required by GET files/<id>/zip or GET mrufiles/zip operations
       FileUtils::DirectoryRipper::Handle zipCleaner;

@@ -125,7 +125,7 @@ Building a `release` version of HttpSrv binary strips out `assert()` calls, so i
 * Class `HttpRequest` encapsulates an HTTP request providing a parser for supported request message.
 * Class `HttpResponse` encapsulates an HTTP response providing a formatter for supported response message
 * Class `TransportSocket` and `TcpSocket` classes expose basic socket functions including `send/recv` APIs
-* Class `TcpListener` provides a wrapper of some passive TCP functions such `listen` and `accept`.
+* Class `TcpListener` provides a wrapper of some passive TCP functions such as `listen` and `accept`.
 
 #### Repository Management
 
@@ -188,7 +188,7 @@ For further build instructions, see the blog post [How to Build a CMake-Based Pr
 
 See [Compile and build in Visual Studio](https://docs.microsoft.com/en-us/cpp/build/projects-and-build-systems-cpp?view=vs-2019).
 
-Boost Libraries reference in the Visual Studiot project file is to `C:\local\boost_1_72_0\lib64-msvc-14.2`.
+Boost Libraries reference in the Visual Studio project file is to `C:\local\boost_1_72_0\lib64-msvc-14.2`.
 You will need to replace such reference and the related include path `c:\local\boost_1_72_0` in case you want to use different version of Boost or different installation path.
 
 Binaries installers for Boost version `1.72.0` can be found at [https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/](https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/)

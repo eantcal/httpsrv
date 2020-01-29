@@ -70,7 +70,7 @@ set -x
 
 tmp_dir=$(mktemp -d -t resources-XXXXXXXXXX)
 tmp_dir2=$(mktemp -d -t resources-XXXXXXXXXX)
-rm -f $HOME/.httpsrv/File*.txt
+rm -f $working_dir/File*.txt
 
 if [ -d "$tmp_dir" ]; then
   echo "Created ${tmp_dir}..."

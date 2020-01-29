@@ -143,7 +143,7 @@ void HttpRequest::parseHeader(const std::string &header)
                           
                            Even if RFC6266 - Appendix D reccomends not to use them
                            CURL and other clients might use escape in quoted string,
-                           so we try to fix it by removing such useless character (here)
+                           so we try to fix it by removing such useless characters (here)
 
                            \" = quotation mark (backslash not required for '"')
                            \' = apostrophe (backslash not required for "'")
@@ -151,7 +151,7 @@ void HttpRequest::parseHeader(const std::string &header)
                            \\ = backslash
                            */
                            const auto ch=field[i];
-                           bool punctuation = escape && (ch=='\"' || ch=='\'' || ch=='\?' || ch=='\\'); 
+                           const bool punctuation = escape && (ch=='\"' || ch=='\'' || ch=='\?' || ch=='\\'); 
 
                            if (escape && punctuation && !_filename.empty()) {
                               _filename.resize(_filename.size()-1); // remove last backslash
