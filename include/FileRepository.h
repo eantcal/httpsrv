@@ -15,6 +15,7 @@
 #include "FilenameMap.h"
 
 #include <map>
+#include <list>
 #include <memory>
 #include <cassert>
 
@@ -138,7 +139,11 @@ private:
    {
    }
 
+#ifdef WIN32
    using TimeOrderedFileList = std::multimap<std::time_t, fs::path>;
+#else
+   using TimeOrderedFileList = std::multimap<long, fs::path>;
+#endif
 
    bool init();
    bool createTimeOrderedFilesList(TimeOrderedFileList& list);

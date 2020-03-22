@@ -78,9 +78,9 @@ bool FileRepository::createTimeOrderedFilesList(TimeOrderedFileList &list)
             std::time_t key = std::time_t( fileInfo.st_mtime );
 #else
             auto fsTime = fs::last_write_time(it->path());
-            auto key = fsTime;
+            auto key = fsTime.time_since_epoch().count();
 #endif
-            list.insert({ key,*it });
+            list.insert({ key, *it });
          }
       }
       return true;

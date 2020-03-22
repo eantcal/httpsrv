@@ -24,6 +24,7 @@
 #include <pwd.h>
 #include <uuid/uuid.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #endif
 
 /* -------------------------------------------------------------------------- */
