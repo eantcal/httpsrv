@@ -13,6 +13,10 @@
 #include "StrUtils.h"
 #include "config.h"
 
+#include <fstream>
+#include <chrono>
+
+
 /* -------------------------------------------------------------------------- */
 
 bool FileRepository::init()
@@ -65,8 +69,19 @@ bool FileRepository::createTimeOrderedFilesList(TimeOrderedFileList &list)
       list.clear();
       for (fs::directory_iterator it(dirPath); it != endIt; ++it)
       {
-         if (fs::is_regular_file(it->status()))
-            list.insert({fs::last_write_time(it->path()), *it});
+         if (fs::is_regular_file(it->status())) {
+#if defined ( _WIN32 )
+            struct _stat64 fileInfo;
+            if (_wstati64(it->path().wstring().c_str(), &fileInfo) != 0)
+               return false;
+
+            std::time_t key = std::time_t( fileInfo.st_mtime );
+#else
+            auto fsTime = fs::last_write_time(it->path());
+            auto key = decltype (fsTime)::clock::to_time_t(fsTime);
+#endif
+            list.insert({ key,*it });
+         }
       }
       return true;
    }
