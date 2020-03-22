@@ -145,16 +145,14 @@ HttpSrv relies on C++ standard library (which is part of language) and other few
 
 * [PicoSHA2](https://github.com/okdshin/PicoSHA2), single header file SHA256 hash generator
 * [zip](https://github.com/kuba--/zip), a portable simple zip library written in C
-* [Boost Filesystem Library Version 3](https://www.boost.org/doc/libs/1_67_0/libs/filesystem/doc/index.htm)
 
-Source code of such libraries (except Boost) has been copied in HttpSrv source tree in 3pp subdir.
+Source code of such libraries has been copied in HttpSrv source tree in 3pp subdir.
 Related source code has been directly listed as part of src/include reference in the CMakeLists.txt and VS project file.
 
 Wrapper function/class for such libraries have been provided:
 
 * Class `ZipArchive` is a wrapper on employed `zip` functions
 * `hashCode()` function part of `FileUtils.h` is a wrapper for `picosha2::hash256_hex_string` function
-Boost Filesystem can be replaced by C++ standard version if fully supported by C++ compiler (defining the preprocessor symbol `USE_STD_FS` at compile time).
 
 ## Known Limitations
 
@@ -188,11 +186,6 @@ For further build instructions, see the blog post [How to Build a CMake-Based Pr
 
 See [Compile and build in Visual Studio](https://docs.microsoft.com/en-us/cpp/build/projects-and-build-systems-cpp?view=vs-2019).
 
-Boost Libraries reference in the Visual Studio project file is to `C:\local\boost_1_72_0\lib64-msvc-14.2`.
-You will need to replace such reference and the related include path `c:\local\boost_1_72_0` in case you want to use different version of Boost or different installation path.
-
-Binaries installers for Boost version `1.72.0` can be found at [https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/](https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/)
-Default installation path is `c:\local\boost_1_72_0`. Using such path won't require any update of project file.
 
 ### HttpSrv Usage
 
@@ -221,7 +214,6 @@ Usage:
 To run successfully HttpSrv the following software component is required on the installation computer:
 
 * Visual C++ Redistributable Packages are required
-* Boost binaries for Windows could be required if not statically linked
 
 ## Tests
 
@@ -249,9 +241,9 @@ Even if the functional tests sollicit the application in the most common scenari
 
 The server has been built and tested on Linux Ubuntu, MacOS and Windows, more precisely it has been tested on:
 
-* `Darwin (18.7.0 Darwin Kernel Version 18.7.0) on MacBook Pro, built using Apple clang version 11.0.0 (clang-1100.0.20.17), Target: x86_64-apple-darwin18.7.0, Thread model: posix, CMake version 3.12.2, Boost 1.67`
-* `Linux 5.0.0-38-generic #41-Ubuntu SMP Tue Dec 3 00:27:35 UTC 2019 x86_64 GNU/Linux, built using g++ (Ubuntu 8.3.0-6ubuntu1) 8.3.0, CMake version 3.13.4, Boost 1.67`
-* `Microsoft Windows [Version 10.0.18363.535], Visual Studio 2019 (Version 16.4.2), Boost 1.72.0`
+* `Darwin (18.7.0 Darwin Kernel Version 18.7.0) on MacBook Pro, built using Apple clang version 11.0.0 (clang-1100.0.20.17), Target: x86_64-apple-darwin18.7.0, Thread model: posix, CMake version 3.12.2`
+* `Linux 5.0.0-38-generic #41-Ubuntu SMP Tue Dec 3 00:27:35 UTC 2019 x86_64 GNU/Linux, built using g++ (Ubuntu 8.3.0-6ubuntu1) 8.3.0, CMake version 3.13.4`
+* `Microsoft Windows [Version 10.0.18363.535], Visual Studio 2019 (Version 16.4.2)`
 
 Valgrind 3.15.0 on Ubuntu has been used to check for issues and memory leaks.
 
@@ -265,7 +257,7 @@ An example of log output is shown here [misc/example_of_server_log.txt](misc/exa
 * Make sure your environment is configured to build and test the application, on Ubuntu you can run the following command:
 
 ```console
-$ sudo apt install build-essential g++ cmake libboost-all-dev jsonlint curl unzip
+$ sudo apt install build-essential g++ cmake jsonlint curl unzip
 ```
 
 * Then, build the application, so from project directory execute the command:
@@ -310,4 +302,4 @@ You may also use the bash script [build_and_run_all_tests.sh](build_and_run_all_
 HttpSrv (c) antonino.calderone@gmail.com - 2020
 
 HttpSrv can be distributed under MIT. See also [COPYING](COPYING).
-See 3pp related license files for futher information and [Boost Software License](https://www.boost.org/users/license.html)
+See 3pp related license files for futher information
