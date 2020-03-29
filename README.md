@@ -1,5 +1,7 @@
 # HttpSrv
 
+| Linux  | [![Linux Build](https://api.travis-ci.org/eantcal/httpsrv.svg?branch=master)](https://travis-ci.org/eantcal/httpsrv)  |
+
 HttpSrv is a retailed version of a lightweight HTTP server and derives from [thttpd](https://github.com/eantcal/thttpd), originally designed to implement HTTP GET/HEAD methods.
 It has been implemented in modern C++ and portable on several platforms including Linux, MacOs and Windows.
 
