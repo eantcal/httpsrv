@@ -17,12 +17,12 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
+            - llvm-toolchain-bionic-7
           packages: 
-            - clang-6.0
+            - clang-7.0
             - libstdc++-7-dev
           env:
-            - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+            - MATRIX_EVAL="CC=clang-7.0 && CXX=clang++-7.0"
     
 before_install:
     # Combine global build options with OS/compiler-dependent options
