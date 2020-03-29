@@ -1,45 +1,49 @@
 language: cpp
+dist: bionic
+
+compiler:
+- gcc
+os:
+- linux
 
 env:
-  global:
-    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
-    
-    # Global build options and C++ flags
-    - CXX_FLAGS="-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
-   
-matrix:
-  include:
-    - os: linux
-      dist: bionic
-      sudo: true
-      compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-bionic-7
-          packages: 
-            - clang-7.0
-            - libstdc++-7-dev
-          env:
-            - MATRIX_EVAL="CC=clang-7.0 && CXX=clang++-7.0"
-    
-before_install:
-    # Combine global build options with OS/compiler-dependent options
-    - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
-    - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
+- BUILD_TYPE=Debug
+
+addons:
+  apt:
+    sources:
+    - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
+      key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+    - sourceline: 'ppa:ubuntu-toolchain-r/test'
+    packages:
+    - clang-9
+    - cmake
+    - gcc-9
+    - g++-9
+  homebrew:
+    packages:
+    - cmake
+    - gcc@9
+    - llvm@9
+
+    update: true
+
+install:
+- if [ "$CXX" = "g++" ]; then export CXX="g++-9" CC="gcc-9"; fi
+- if [ "$TRAVIS_OS_NAME" = "linux" ]; then
+    if [ "$CXX" = "clang++" ]; then export CXX="clang++-9" CC="clang-9"; fi;
+  fi
+- echo ${CC}
+- echo ${CXX}
+- ${CXX} --version
+- cmake --version
 
 before_script:
-  - mkdir build
-  - cd build
-  - cmake ..
+- mkdir -p build && cd build
+- cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+    -DCMAKE_INSTALL_PREFIX=$HOME/.local
+- cmake --build .
+- cd ..
 
 script:
-    ############################################################################
-    # Build main and tests
-    ############################################################################
-
-    - make
-    
-after_success:
-    # todo
+- cd build && cmake --build . --target install
