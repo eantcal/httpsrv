@@ -49,4 +49,4 @@ script:
 - cd build && make
 - cd -
 - ./build/httpsrv -vv > /tmp/httpsrv.log &
-- cd test && ./functional_test.sh
+# - cd test && ./functional_test.sh
