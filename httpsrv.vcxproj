@@ -200,6 +200,9 @@
     <ClCompile Include="src\main.cc" />
     <ClCompile Include="3pp\zip\src\zip.c" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="COPYING" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

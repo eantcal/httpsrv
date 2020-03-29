@@ -3,15 +3,18 @@
 HttpSrv is a retailed version of a lightweight HTTP server and derives from [thttpd](https://github.com/eantcal/thttpd), originally designed to implement HTTP GET/HEAD methods.
 It has been implemented in modern C++ and portable on several platforms including Linux, MacOs and Windows.
 
-HttpSrv is capable to serve multiple clients supporting GET and POST methods and has been designed to respond to the following specifications:
-
-* Standalone application containing an embedded web server which exposes the following HTTP API for storing and retrieving text files and their associated metadata:
+HttpSrv is capable to serve multiple clients supporting GET and POST methods and has been designed to be a standalone application containing an embedded web server which exposes the following HTTP API for storing and retrieving text files and their associated metadata:
 * `POST` `some_file.txt` to `/store`: returns a JSON payload with file metadata containing name, size (in bytes), request timestamp and an auto-generated ID
 * `GET` `/files`: returns a JSON payload containing an array of files metadata containing file name, size (in bytes), timestamp and ID
 * `GET` `/files/{id}`: returns a JSON payload with file metadata containing name, size (in bytes), timestamp and ID for the provided ID `id`
 * `GET` `/files/{id}/zip`: returns a zip archive containing the file which corresponds to the provided ID `id`
 * `GET` `/mrufiles`: returns a JSON payload with an array of files metadata containing file name, size (in bytes), timestamp and ID for the top `N` most recently accessed files via the `/files/{id}` and `/files/{id}/zip` endpoints. `N` should be a configurable parameter for this application.
 * `GET` `/mrufiles/zip`: returns a zip archive containing the top `N` most recently accessed files via the `/files/{id}` and `/files/{id}/zip` endpoints. `N` should be a configurable parameter for this application.
+
+## HttpSrv educational purpose
+
+This is a very simple application can be used for educational purposes. 
+You can just copy and modify it as you desire and reusing part of source code according the limitation of license (see COPYING file).
 
 ## HttpSrv architecture
 
@@ -224,18 +227,6 @@ The script accepts as an optional parameter in the format `hostname:port` (same 
 The test shows a detailed log during the execution.
 If the test completes sucessfully it prints out a summary as shown in this [misc/example_of_positive_test_result.txt](misc/example_of_positive_test_result.txt)
 In case of error the test stops showing a related error message.
-
-### What is missing
-
-Even if the functional tests sollicit the application in the most common scenarios, a complete test framework should include:
-
-* Unit tests for each class/function exposed (for example using [Google Test](https://github.com/google/googletest)).
-* Concurrent automatic tests.
-* Automatic stress tests.
-* Dyanmic code analysis: [valgrind](https://valgrind.org) could be systematically used to check for memory leaks and other defects.
-* HttpSrv Logs analysis to search for internal errors.
-* Tools for checking code coverege and static analysis could be used (e.g. [Coverity](https://scan.coverity.com/) or [CppCheck](http://cppcheck.sourceforge.net/))
-* An automation server like [Jenkins](https://jenkins.io/) could be used for integrating and controlling such tests.
 
 ### Tested Platforms
 
